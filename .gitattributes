@@ -1,0 +1,15 @@
+# Handle line endings automatically
+* text=auto
+
+# Python files
+*.py text eol=lf
+
+# HTML templates
+*.html text eol=lf
+
+# CSS and JS
+*.css text eol=lf
+*.js text eol=lf
+
+# Exclude virtual environments from diff
+venv/** linguist-vendored
