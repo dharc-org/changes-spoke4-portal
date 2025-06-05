@@ -11,3 +11,8 @@ __pycache__/
 # OS-specific
 .DS_Store
 Thumbs.db
+
+# Babel translation files
+*.po text
+*.mo binary
+translations/**/messages.mo

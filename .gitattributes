@@ -7,9 +7,17 @@
 # HTML templates
 *.html text eol=lf
 
+# Config files
+*.cfg text eol=lf
+
 # CSS and JS
 *.css text eol=lf
 *.js text eol=lf
 
 # Exclude virtual environments from diff
 venv/** linguist-vendored
+
+# Translation files
+translations/**/messages.po text eol=lf
+messages.pot text eol=lf
+translations/**/messages.mo binary
