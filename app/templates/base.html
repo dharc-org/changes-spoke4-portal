@@ -3,14 +3,42 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{ gettext('Collezioni Digitali dello Spoke 4') }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ gettext('Portale dello Spoke 4') }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 
 <body>
-    <h1>{{ gettext('Benvenuti!') }}</h1>
-    <p>{{ gettext('Questo è il punto di accesso ai dati delle collezioni digitalizzate dallo Spoke 4.') }}</p>
+    <header class='site-header'>
+        <div class='header-section logo'>
+            <span class='logo-dot'></span>
+            <span>{{ gettext('PE5 - Spoke 4') }}<span>
+        </div>
+        <div class="header-section center">
+            <!-- Intentionally empty -->
+        </div>
+        <nav class='header-section main-nav'>
+            <ul>
+                <li><a href="/">{{ gettext('Panoramica') }}</a></li>
+                <li><a href="/projects">{{ gettext('Vai ai progetti') }}</a></li>
+                <li><a href="/contact">{{ gettext('Contatti e Informazioni') }}</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class='site-footer'>
+        <ul>
+            <li><a href="#">{{ gettext('Contatti') }}</a></li>
+            <li><a href="#">{{ gettext('Accessibilità') }}</a></li>
+            <li><a href="#">{{ gettext('Licence') }}</a></li>
+            <li><a href="#">{{ gettext('Credits') }}</a></li>
+        </ul>
+    </footer>
 </body>
 
 </html>

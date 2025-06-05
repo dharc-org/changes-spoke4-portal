@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-05 16:32+0200\n"
+"POT-Creation-Date: 2025-06-05 18:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,39 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: app/templates/base.html:6
-msgid "Collezioni Digitali dello Spoke 4"
+#: app/templates/base.html:7
+msgid "Portale dello Spoke 4"
 msgstr ""
 
-#: app/templates/base.html:12
-msgid "Benvenuti!"
+#: app/templates/base.html:15
+msgid "PE5 - Spoke 4"
 msgstr ""
 
-#: app/templates/base.html:13
-msgid ""
-"Questo è il punto di accesso ai dati delle collezioni digitalizzate dallo"
-" Spoke 4."
+#: app/templates/base.html:19
+msgid "Panoramica"
+msgstr ""
+
+#: app/templates/base.html:20
+msgid "Vai ai progetti"
+msgstr ""
+
+#: app/templates/base.html:21
+msgid "Contatti e Informazioni"
+msgstr ""
+
+#: app/templates/base.html:32
+msgid "Contatti"
+msgstr ""
+
+#: app/templates/base.html:33
+msgid "Accessibilità"
+msgstr ""
+
+#: app/templates/base.html:34
+msgid "Licence"
+msgstr ""
+
+#: app/templates/base.html:35
+msgid "Credits"
 msgstr ""
 
