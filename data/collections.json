@@ -3,24 +3,56 @@
         "id": "aldrovandi",
         "title_it": "Il Rinascimento digitale di Ulisse Aldrovandi - Acquisizione e digitalizzazione di oggetti del patrimonio culturale",
         "title_en": "The Digital Renaissance of Ulisse Aldrovandi – Acquisition and digitisation of cultural heritage objects",
-        "link": "/collection/aldrovandi"
+        "header": {
+            "title_it": "Scopri l’universo di Ulisse Aldrovandi – scienza, meraviglia e natura in un’esperienza digitale senza confini.",
+            "title_en": "Discover the universe of Ulisse Aldrovandi - science, wonder and nature in a boundless digital experience.",
+            "subtitle_it": "Un viaggio interattivo tra oggetti rari, manoscritti e modelli 3D, ispirato al lavoro di uno dei padri della scienza moderna.",
+            "subtitle_en": "An interactive journey among rare objects, manuscripts and 3D models, inspired by the work of one of the fathers of modern science."
+        },
+        "description": {
+            "title_it": "Dal passato al futuro: Un continuum",
+            "title_en": "From Past to Future: A Continuum",
+            "text_it": [
+                "Questa piattaforma digitale nasce per rendere accessibile a tutti l’universo di Ulisse Aldrovandi: collezioni, oggetti rari, storie e modelli 3D. Un ponte tra il passato rinascimentale e il futuro della cultura digitale.",
+                "Esplora oltre 200 oggetti della collezione di Ulisse Aldrovandi. Filtra per tema, tipologia o periodo per trovare ciò che ti interessa."
+            ],
+            "text_en": [
+                "This digital platform was created to make Ulisse Aldrovandi's universe accessible to everyone: collections, rare objects, stories and 3D models. A bridge between the Renaissance past and the future of digital culture.",
+                "Explore over 200 objects from Ulisse Aldrovandi's collection. Filter by theme, type or period to find what interests you."
+            ]
+        },
+        "links": {
+            "main": "/collection/aldrovandi",
+            "overview": "/collection/aldrovandi/overview",
+            "catalogue": "/collection/aldrovandi/catalogue"
+        }
     },
     {
         "id": "capellini",
         "title_it": "Museo Giovanni Capellini - Digitalizzazione e accesso 3D",
         "title_en": "Giovanni Capellini Museum - Digitisation and 3D Access",
-        "link": "/collection/capellini"
-    },
-    {
-        "id": "aldrovandi",
-        "title_it": "Il Rinascimento digitale di Ulisse Aldrovandi - Acquisizione e digitalizzazione di oggetti del patrimonio culturale",
-        "title_en": "The Digital Renaissance of Ulisse Aldrovandi – Acquisition and digitisation of cultural heritage objects",
-        "link": "/collection/aldrovandi"
-    },
-    {
-        "id": "capellini",
-        "title_it": "Museo Giovanni Capellini - Digitalizzazione e accesso 3D",
-        "title_en": "Giovanni Capellini Museum - Digitisation and 3D Access",
-        "link": "/collection/capellini"
+        "header": {
+            "title_it": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            "title_en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            "subtitle_it": "Nam tempus volutpat dapibus. Curabitur sed eros quis ipsum fermentum lobortis et et tellus.",
+            "subtitle_en": "Nam tempus volutpat dapibus. Curabitur sed eros quis ipsum fermentum lobortis et et tellus."
+        },
+        "description": {
+            "title_it": "Curabitur consectetur ornare nunc et ornare.",
+            "title_en": "Curabitur consectetur ornare nunc et ornare.",
+            "text_it": [
+                "Vivamus massa nibh, placerat quis mollis et, vehicula vitae ex. Sed mollis elit in tellus porttitor, et commodo metus egestas. Nullam tempus mattis interdum. Etiam a egestas turpis. Aliquam lacinia eu augue et sodales. Morbi at lectus aliquam, porta nisi a, dignissim nunc. Mauris iaculis magna sed vehicula fringilla.",
+                "Donec sollicitudin volutpat ligula ut fermentum. Praesent consequat dignissim nibh, id imperdiet mauris sodales vel."
+            ],
+            "text_en": [
+                "Vivamus massa nibh, placerat quis mollis et, vehicula vitae ex. Sed mollis elit in tellus porttitor, et commodo metus egestas. Nullam tempus mattis interdum. Etiam a egestas turpis. Aliquam lacinia eu augue et sodales. Morbi at lectus aliquam, porta nisi a, dignissim nunc. Mauris iaculis magna sed vehicula fringilla.",
+                "Donec sollicitudin volutpat ligula ut fermentum. Praesent consequat dignissim nibh, id imperdiet mauris sodales vel."
+            ]
+        },
+        "links": {
+            "main": "/collection/cappellini",
+            "overview": "/collection/cappellini/overview",
+            "catalogue": "/collection/cappellini/catalogue"
+        }
     }
 ]

@@ -266,3 +266,64 @@ a:hover {
 .explore:hover {
     text-decoration: underline;
 }
+
+/* --------------------
+   Collection Home Page
+--------------------- */
+
+.collection-home {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    font-family: var(--font-base);
+}
+
+.collection-header {
+    padding: 7rem 5rem;
+    text-align: center;
+}
+
+.collection-header .button {
+    display: inline-block;
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--color-accent);
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+}
+
+.collection-header .button:hover {
+    background-color: #c85b49;
+    /* Slightly darker shade for hover */
+}
+
+.collection-description {
+    padding: var(--spacing-lg) 5rem;
+}
+
+.collection-description .text-block {
+    padding-left: 10rem;
+}
+
+.collection-description a {
+    color: var(--color-secondary);
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: var(--spacing-sm);
+    transition: text-decoration 0.2s ease;
+}
+
+.collection-description a:hover {
+    text-decoration: underline;
+}
+
+.collection-credits {
+    padding: var(--spacing-lg) 5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: center;
+}

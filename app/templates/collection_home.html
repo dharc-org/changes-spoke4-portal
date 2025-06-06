@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class='collection-home'>
+
+    <!-- Header section -->
+    <section class='collection-header'>
+        <div class='header-content'>
+            <h2>{{ collection.header_title }}</h2>
+            <p class='subtitle'>{{ collection.header_subtitle }}</p>
+            <a href='{{ collection.overview_link }}' class='button'>
+                {{ gettext('Inizia il tour') }}
+            </a>
+        </div>
+    </section>
+    <hr>
+    <!-- Description Section -->
+    <section class='collection-description'>
+        <div class='text-block'>
+            <h3>{{ collection.description_title }}</h3>
+            {% for paragraph in collection.description_text %}
+            <p>{{ paragraph }}</p>
+            {% endfor %}
+            <a href='{{ collection.catalogue_link }}' class='link'>
+                {{ gettext('Vai al catalogo') }} →
+            </a>
+        </div>
+    </section>
+    <hr>
+
+    <!-- Partners / Credits Section -->
+    <section class='collection-credits'>
+        <h3>{{ gettext('Partner e Credits') }}</h3>
+        <p>{{ gettext('Sezione dedicata ai partner del progetto e ai crediti istituzionali.') }}</p>
+        <div class='credits-circles'>
+            <div class='circle'></div>
+            <div class='circle'></div>
+            <div class='circle'></div>
+        </div>
+    </section>
+</main>
+{% endblock %}
