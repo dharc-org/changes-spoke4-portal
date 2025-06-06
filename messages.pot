@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-05 18:12+0200\n"
+"POT-Creation-Date: 2025-06-06 11:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,35 +21,59 @@ msgstr ""
 msgid "Portale dello Spoke 4"
 msgstr ""
 
-#: app/templates/base.html:15
+#: app/templates/base.html:16
 msgid "PE5 - Spoke 4"
 msgstr ""
 
-#: app/templates/base.html:19
+#: app/templates/base.html:23
 msgid "Panoramica"
 msgstr ""
 
-#: app/templates/base.html:20
+#: app/templates/base.html:24
 msgid "Vai ai progetti"
 msgstr ""
 
-#: app/templates/base.html:21
+#: app/templates/base.html:25
 msgid "Contatti e Informazioni"
 msgstr ""
 
-#: app/templates/base.html:32
+#: app/templates/base.html:36
 msgid "Contatti"
 msgstr ""
 
-#: app/templates/base.html:33
+#: app/templates/base.html:37
 msgid "Accessibilità"
 msgstr ""
 
-#: app/templates/base.html:34
+#: app/templates/base.html:38
 msgid "Licence"
 msgstr ""
 
-#: app/templates/base.html:35
+#: app/templates/base.html:39
 msgid "Credits"
+msgstr ""
+
+#: app/templates/homepage.html:5
+msgid "PE5 Spoke 4"
+msgstr ""
+
+#: app/templates/homepage.html:7
+msgid "Obiettivo 1"
+msgstr ""
+
+#: app/templates/homepage.html:8
+msgid "Obiettivo 2"
+msgstr ""
+
+#: app/templates/homepage.html:9
+msgid "Obiettivo 3"
+msgstr ""
+
+#: app/templates/homepage.html:17
+msgid "collection.title"
+msgstr ""
+
+#: app/templates/homepage.html:18
+msgid "Esplora"
 msgstr ""
 

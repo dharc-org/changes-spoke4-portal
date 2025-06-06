@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class='homepage'>
+    <section class='center-text'>
+        <h1>{{ gettext('PE5 Spoke 4')}}</h1>
+        <div class='objectives'>
+            <div class="objective">
+                <div class='circle'></div>
+                <p>{{ gettext('Obiettivo 1')}}</p>
+            </div>
+            <div class="objective">
+                <div class='circle'></div>
+                <p>{{ gettext('Obiettivo 2')}}</p>
+            </div>
+            <div class="objective">
+                <div class='circle'></div>
+                <p>{{ gettext('Obiettivo 3')}}</p>
+            </div>
+        </div>
+    </section>
+    <section class='collections'>
+        {% for collection in collections %}
+        <div class='collection-card dark'>
+            <div class='thumbnail'></div>
+            <div class='info'>
+                <h3>{{ collection.display_title }}</h3>
+                <!-- shouldn't we use url_for? -->
+                <a href='{{ collection.link }}' class='explore'>{{ gettext('Esplora')}} →</a>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</main>
+{% endblock %}
