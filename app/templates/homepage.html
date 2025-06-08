@@ -25,7 +25,8 @@
             <div class='info'>
                 <h3>{{ collection.display_title }}</h3>
                 <!-- shouldn't we use url_for? -->
-                <a href='{{ collection.link }}' class='explore'>{{ gettext('Esplora')}} →</a>
+                <a href="{{ url_for('main.collection_home', collection_id=collection.id) }}" class='explore'>{{
+                    gettext('Esplora')}} →</a>
             </div>
         </div>
         {% endfor %}
