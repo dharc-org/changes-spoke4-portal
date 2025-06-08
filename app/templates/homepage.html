@@ -1,34 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-<main class='homepage'>
-    <section class='center-text'>
-        <h1>{{ gettext('PE5 Spoke 4')}}</h1>
-        <div class='objectives'>
-            <div class="objective">
-                <div class='circle'></div>
+<main class='py-5'>
+    <section class='center-text border-bottom border-dark section-extra-space'>
+        <h1 class='fs-2 mb-4'>{{ gettext('PE5 Spoke 4')}}</h1>
+        <div class='objectives d-flex justify-content-center gap-5 flex-wrap'>
+            <div class='objective text-center'>
+                <div class='circle mx-auto'></div>
                 <p>{{ gettext('Obiettivo 1')}}</p>
             </div>
-            <div class="objective">
-                <div class='circle'></div>
+            <div class='objective text-center'>
+                <div class='circle mx-auto'></div>
                 <p>{{ gettext('Obiettivo 2')}}</p>
             </div>
-            <div class="objective">
-                <div class='circle'></div>
+            <div class='objective text-center'>
+                <div class='circle mx-auto'></div>
                 <p>{{ gettext('Obiettivo 3')}}</p>
             </div>
         </div>
     </section>
-    <section class='collections'>
-        {% for collection in collections %}
-        <div class='collection-card dark'>
-            <div class='thumbnail'></div>
-            <div class='info'>
-                <h3>{{ collection.display_title }}</h3>
-                <a href="{{ url_for('main.collection_home', collection_id=collection.id) }}" class='explore'>{{
-                    gettext('Esplora')}} →</a>
+    <section class='collections container py-5'>
+        <div class='row gy-4'>
+            {% for collection in collections %}
+            <div class='col-sm-12 col-md-6 col-lg-4 d-flex'>
+                <div class='collection-card dark w-100 d-flex'>
+                    <div class='thumbnail'></div>
+                    <div class='info'>
+                        <h3>{{ collection.display_title }}</h3>
+                        <a href="{{ url_for('main.collection_home', collection_id=collection.id) }}" class='explore'>{{
+                            gettext('Esplora')}} →</a>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </section>
 </main>
 {% endblock %}
