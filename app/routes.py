@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, jsonify, request
 import json
 import os
 from .extensions import get_locale
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 main = Blueprint('main', __name__)
 
@@ -47,3 +48,58 @@ def collection_home(collection_id):
     }
 
     return render_template('collection_home.html', collection=collection_data)
+
+
+@main.route('/catalogue/<collection_id>')
+def catalogue(collection_id):
+    with open('data/collections.json') as f:
+        all_collections = json.load(f)
+
+    # Find matching collection config
+    collection = next(
+        (c for c in all_collections if c['id'] == collection_id), None)
+    if not collection:
+        abort(404)
+
+    return render_template('collection_catalogue.html', collection_id=collection_id)
+
+
+@main.route("/api/<collection_id>/filters")
+def get_filters(collection_id):
+    print(collection_id)
+    lang = get_locale()
+    structure_only = request.args.get("structureOnly") == "true"
+
+    with open("data/collections.json") as f:
+        all_collections = json.load(f)
+    collection = next(
+        (c for c in all_collections if c["id"] == collection_id), None)
+    if not collection:
+        abort(404)
+
+    config_path = os.path.join("data", collection["config_path"])
+    with open(config_path) as f:
+        config = json.load(f)
+
+    sparql = SPARQLWrapper(config['sparql_endpoint'])
+    results = []
+
+    for group in config["filters"]:
+        entry = {
+            "label": group.get(f"label_{lang}", group.get("label_it")),
+            "key": group["key"],
+        }
+
+        if not structure_only:
+            sparql = SPARQLWrapper(config["sparql_endpoint"])
+            sparql.setQuery(group["query"])
+            sparql.setReturnFormat(JSON)
+            raw = sparql.query().convert()
+            entry["options"] = [
+                {"label": r["label"]["value"], "uri": r["uri"]["value"]}
+                for r in raw["results"]["bindings"]
+            ]
+
+        results.append(entry)
+
+    return jsonify(results)

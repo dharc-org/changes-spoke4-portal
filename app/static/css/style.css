@@ -316,3 +316,21 @@ a:hover {
     line-height: 1.5;
     text-align: center;
 }
+
+/* Filters in catalogue page */
+
+.form-check.checkbox-right {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-check.checkbox-right .form-check-input {
+    order: 1;
+    /* Move checkbox to the right */
+}
+
+.form-check.checkbox-right .form-check-label {
+    margin-left: 0;
+    /* Remove left margin */
+}

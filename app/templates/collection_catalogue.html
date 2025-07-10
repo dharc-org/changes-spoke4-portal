@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <aside class="col-md-3 bg-dark text-light p-3" id="filters">
+            <h5>Filtra la collezione</h5>
+            <div id="filter-groups"></div>
+            <button id="apply-filters" class="btn btn-outline-light mt-3">Applica filtri</button>
+        </aside>
+        <main class="col-md-9 p-3">
+            <div class="d-flex justify-content-between">
+                <span id="page-indicator">Pagina <span id="page-number">1</span></span>
+                <div>
+                    <button id="prev-page" class="btn btn-sm btn-outline-secondary">←</button>
+                    <button id="next-page" class="btn btn-sm btn-outline-secondary">→</button>
+                </div>
+            </div>
+            <div class="row mt-3" id="cards-container"></div>
+        </main>
+    </div>
+</div>
+<script>
+    const COLLECTION_ID = "{{ collection_id }}";
+</script>
+<script src="{{ url_for('static', filename='js/catalogue.js') }}"></script>
+{% endblock %}

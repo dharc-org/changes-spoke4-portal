@@ -1,0 +1,26 @@
+{
+    "sparql_endpoint": "https://chad-kg.duckdns.org/chadkg/sparql",
+    "filters": [
+        {
+            "key": "subject",
+            "label_it": "Temi",
+            "label_en": "Subjects",
+            "property": "crm:P129_is_about",
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?expression crm:P129_is_about ?uri . BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/sub/\"), \"/\\\\d+$\", \"\"), \"_\", \"\") AS ?label) } ORDER BY ?label"
+        },
+        {
+            "key": "object_type",
+            "label_it": "Tipo di oggetto",
+            "label_en": "Object Type",
+            "property": "crm:P2_has_type",
+            "query": "PREFIX aat: <http://vocab.getty.edu/page/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item .  ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression .  ?manifestation crm:P2_has_type ?uri .   BIND(REPLACE(STR(?uri), \"^.*/aat/\", \"\") AS ?label)} ORDER BY ?label"
+        },
+        {
+            "key": "conservation_org",
+            "label_it": "Ente Conservatore",
+            "label_en": "Conservation Institution",
+            "property": "crm:P14_carried_out_by",
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/page/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?uri . BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/acr/\"), \"/\\\\d+$\", \"\"), \"_\", \" \") AS ?label) } ORDER BY ?label"
+        }
+    ]
+}
