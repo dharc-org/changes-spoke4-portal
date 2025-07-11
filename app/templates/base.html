@@ -16,7 +16,7 @@
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
     <!-- Header -->
     <header class='site-header container-fluid'>
         <div class='row align-items-stretch'>
@@ -40,8 +40,9 @@
             </nav>
         </div>
     </header>
-
-    {% block content %}{% endblock %}
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
 
     <footer class='site-footer text-center py-4 mt-5'>
         <div class='container'>
