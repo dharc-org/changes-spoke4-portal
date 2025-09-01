@@ -1,0 +1,26 @@
+{
+  "name": "changes-spoke4-portal",
+  "version": "1.0.0",
+  "description": "A web application that serves as the main access point to explore the Spoke 4 digitised museum collections. The platform presents information about the project, visualisations of the digitisation process, and tools for searching and navigating through individual collections and their objects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dharc-org/changes-spoke4-portal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dharc-org/changes-spoke4-portal/issues"
+  },
+  "homepage": "https://github.com/dharc-org/changes-spoke4-portal#readme",
+  "dependencies": {
+    "@fontsource/pt-serif": "^5.2.6",
+    "@fontsource/work-sans": "^5.2.6",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1"
+  }
+}

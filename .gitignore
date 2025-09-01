@@ -12,6 +12,10 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Node.js (when using npm to fetch assets)
+node_modules/
+npm-debug.log*
+
 # Babel translation files
 *.po text
 *.mo binary
