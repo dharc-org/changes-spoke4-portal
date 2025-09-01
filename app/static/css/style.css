@@ -28,6 +28,21 @@ body {
     color: var(--bs-body-color);
 }
 
+/* Header nav hover underline in accent color */
+header .nav-link {
+    text-decoration: none;
+}
+
+header .nav-link:hover,
+header .nav-link:focus {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 0.2em;
+    /* gap between text and underline */
+    text-decoration-thickness: 2px;
+    /* optional thickness */
+}
+
 /* Self-hosted fonts (place files under app/static/fonts/...) */
 @font-face {
     font-family: 'PT Serif';
