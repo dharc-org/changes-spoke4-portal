@@ -28,6 +28,34 @@ body {
     color: var(--bs-body-color);
 }
 
+/* Utility: link colored with secondary (for dark backgrounds) */
+.link-on-dark,
+.link-on-dark:hover,
+.link-on-dark:focus {
+    color: var(--color-secondary) !important;
+    text-decoration-color: var(--color-secondary);
+}
+
+/* Collection page theming (dark sections with secondary-colored text and dividers) */
+.collection-hero,
+.band,
+.credits {
+    color: var(--color-secondary);
+}
+
+.collection-hero .border-top,
+.collection-hero .border-bottom,
+.band {
+    border-color: var(--color-secondary) !important;
+}
+
+.band h3,
+.credits h3,
+.collection-hero h1,
+.collection-hero p {
+    color: var(--color-secondary);
+}
+
 /* Header nav hover underline in accent color */
 header .nav-link {
     text-decoration: none;

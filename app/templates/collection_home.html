@@ -1,42 +1,105 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ collection.display_title or collection.header_title }}{% endblock %}
+
 {% block content %}
-<div class='collection-home'>
+<style>
+    /* Page-scoped styles for the collection home */
+    .collection-hero {
+        padding: 10rem 2rem;
+        background-color: var(--bs-dark);
+        color: var(--color-secondary);
+    }
 
-    <!-- Header section -->
-    <section class='collection-header'>
-        <div class='header-content'>
-            <h2>{{ collection.header_title }}</h2>
-            <p class='subtitle'>{{ collection.header_subtitle }}</p>
-            <a href='{{ collection.overview_link }}' class='button'>
-                {{ gettext('Inizia il tour') }}
-            </a>
-        </div>
-    </section>
-    <hr>
-    <!-- Description Section -->
-    <section class='collection-description'>
-        <div class='text-block'>
-            <h3>{{ collection.description_title }}</h3>
-            {% for paragraph in collection.description_text %}
-            <p>{{ paragraph }}</p>
-            {% endfor %}
-            <a href='{{ collection.catalogue_link }}' class='link'>
-                {{ gettext('Vai al catalogo') }} →
-            </a>
-        </div>
-    </section>
-    <hr>
+    .btn-accent {
+        --bs-btn-bg: var(--color-accent);
+        --bs-btn-border-color: var(--color-accent);
+        --bs-btn-hover-bg: #bc2787;
+        /* slightly lighter */
+        --bs-btn-hover-border-color: #bc2787;
+        --bs-btn-color: var(--color-secondary);
+    }
 
-    <!-- Partners / Credits Section -->
-    <section class='collection-credits'>
-        <h3>{{ gettext('Partner e Credits') }}</h3>
-        <p>{{ gettext('Sezione dedicata ai partner del progetto e ai crediti istituzionali.') }}</p>
-        <div class='credits-circles'>
-            <div class='circle'></div>
-            <div class='circle'></div>
-            <div class='circle'></div>
+    .decor-circle {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        background-color: var(--color-accent);
+    }
+
+    .band {
+        padding: 5rem 2rem;
+        border-top: 1px solid var(--color-secondary);
+        border-bottom: 1px solid var(--color-secondary);
+        background-color: var(--bs-dark);
+        color: var(--color-secondary);
+    }
+
+    .band h3 {
+        color: var(--color-secondary);
+    }
+
+    .credits {
+        padding: 5rem 2rem;
+        border-bottom: 1px solid var(--color-secondary);
+    }
+
+    .credits .decor-circle {
+        width: 72px;
+        height: 72px;
+    }
+</style>
+
+<!-- Hero -->
+<section class="collection-hero text-center font-sans">
+    <div class="container-xxl">
+        <h3 class="display-6 mb-4">{{ collection.header_title }}</h3>
+        <p class="mx-auto mb-4" style="max-width: 56ch;">
+            {{ collection.header_subtitle }}
+        </p>
+        <a href="{{ collection.catalogue_link }}" class="btn btn-accent btn-sm">
+            {{ gettext('Esplora il catalogo') }}
+        </a>
+    </div>
+
+</section>
+
+<!-- Description band -->
+<section class="band">
+    <div class="container-xxl">
+        <div class="row align-items-start gy-4">
+            <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center justify-content-md-start">
+                <div class="decor-circle"></div>
+            </div>
+            <div class="col-12 col-md-9 col-lg-7">
+                <h3 class="h4 mb-3">{{ collection.description_title }}</h3>
+                {% for paragraph in collection.description_text %}
+                <p class="mb-3 font-sans">{{ paragraph }}</p>
+                {% endfor %}
+                <a class="mt-4 d-inline-block font-sans link-on-dark link-underline-opacity-0 link-underline-opacity-75-hover"
+                    href="{{ collection.overview_link }}">
+                    {{ gettext('Esplora i dettagli di progetto') }} →
+                </a>
+            </div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
+
+<!-- Partners / Credits -->
+<section class="py-5 credits" style="background-color: var(--bs-dark); color: var(--color-secondary);">
+    <div class="container-xxl text-center">
+        <h3 class="h5 mb-5">{{ gettext('Partners and Credits') }}</h3>
+        <div class="row g-5 justify-content-center">
+            <div class="col-4 col-md-3 col-lg-2 d-flex justify-content-center">
+                <div class="decor-circle"></div>
+            </div>
+            <div class="col-4 col-md-3 col-lg-2 d-flex justify-content-center">
+                <div class="decor-circle"></div>
+            </div>
+            <div class="col-4 col-md-3 col-lg-2 d-flex justify-content-center">
+                <div class="decor-circle"></div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
