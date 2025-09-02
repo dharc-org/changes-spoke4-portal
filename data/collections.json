@@ -1,6 +1,7 @@
 [
     {
         "id": "aldrovandi",
+        "config_path": "configs/aldrovandi.json",
         "title_it": "Il Rinascimento digitale di Ulisse Aldrovandi - Acquisizione e digitalizzazione di oggetti del patrimonio culturale",
         "title_en": "The Digital Renaissance of Ulisse Aldrovandi – Acquisition and digitisation of cultural heritage objects",
         "header": {
@@ -20,15 +21,11 @@
                 "This digital platform was created to make Ulisse Aldrovandi's universe accessible to everyone: collections, rare objects, stories and 3D models. A bridge between the Renaissance past and the future of digital culture.",
                 "Explore over 200 objects from Ulisse Aldrovandi's collection. Filter by theme, type or period to find what interests you."
             ]
-        },
-        "links": {
-            "main": "/collection/aldrovandi",
-            "overview": "/collection/aldrovandi/overview",
-            "catalogue": "/collection/aldrovandi/catalogue"
         }
     },
     {
         "id": "capellini",
+        "config_path": "configs/capellini.json",
         "title_it": "Museo Giovanni Capellini - Digitalizzazione e accesso 3D",
         "title_en": "Giovanni Capellini Museum - Digitisation and 3D Access",
         "header": {
@@ -48,11 +45,6 @@
                 "Vivamus massa nibh, placerat quis mollis et, vehicula vitae ex. Sed mollis elit in tellus porttitor, et commodo metus egestas. Nullam tempus mattis interdum. Etiam a egestas turpis. Aliquam lacinia eu augue et sodales. Morbi at lectus aliquam, porta nisi a, dignissim nunc. Mauris iaculis magna sed vehicula fringilla.",
                 "Donec sollicitudin volutpat ligula ut fermentum. Praesent consequat dignissim nibh, id imperdiet mauris sodales vel."
             ]
-        },
-        "links": {
-            "main": "/collection/cappellini",
-            "overview": "/collection/cappellini/overview",
-            "catalogue": "/collection/cappellini/catalogue"
         }
     }
 ]
