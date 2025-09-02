@@ -1,26 +1,50 @@
 {
-    "sparql_endpoint": "https://chad-kg.duckdns.org/chadkg/sparql",
+    "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
     "filters": [
         {
             "key": "subject",
             "label_it": "Temi",
             "label_en": "Subjects",
-            "property": "crm:P129_is_about",
+            "var": "?subject_uri",
+            "triples": "?expression crm:P129_is_about ?subject_uri.",
             "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?expression crm:P129_is_about ?uri . BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/sub/\"), \"/\\\\d+$\", \"\"), \"_\", \"\") AS ?label) } ORDER BY ?label"
         },
         {
             "key": "object_type",
             "label_it": "Tipo di oggetto",
             "label_en": "Object Type",
-            "property": "crm:P2_has_type",
+            "var": "?object_type_uri",
+            "triples": "?manifestation crm:P2_has_type ?object_type_uri .",
             "query": "PREFIX aat: <http://vocab.getty.edu/page/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item .  ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression .  ?manifestation crm:P2_has_type ?uri .   BIND(REPLACE(STR(?uri), \"^.*/aat/\", \"\") AS ?label)} ORDER BY ?label"
         },
         {
             "key": "conservation_org",
             "label_it": "Ente Conservatore",
             "label_en": "Conservation Institution",
-            "property": "crm:P14_carried_out_by",
+            "var": "?conservation_org_uri",
+            "triples": "?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?conservation_org_uri .",
             "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/page/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?uri . BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/acr/\"), \"/\\\\d+$\", \"\"), \"_\", \" \") AS ?label) } ORDER BY ?label"
+        }
+    ],
+    "cards": {
+        "select": "?item ?title",
+        "where": " ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?work crm:P102_has_title ?title_uri . ?title_uri crm:P2_has_type aat:300417207 ; crm:P190_has_symbolic_content ?title. FILTER( lang(?title) = \"it\")",
+        "limit": 24
+    },
+    "visualizations": [
+        {
+            "id": "object-types-bubble",
+            "type": "bubble",
+            "title": {
+                "it": "Tipi di oggetti nella collezione",
+                "en": "Object Types in the Collection"
+            },
+            "sparql_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?type (COUNT(?item) AS ?count) WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?type . } GROUP BY ?type",
+            "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
+            "description": {
+                "it": "Distribuzione degli oggetti per tipologia.",
+                "en": "Distribution of objects by type."
+            }
         }
     ]
 }
