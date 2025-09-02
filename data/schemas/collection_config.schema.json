@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "sparql_endpoint",
+    "cards"
+  ],
+  "properties": {
+    "sparql_endpoint": {
+      "type": "string"
+    },
+    "filters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label_it",
+          "label_en",
+          "var",
+          "triples",
+          "query"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label_it": {
+            "type": "string"
+          },
+          "label_en": {
+            "type": "string"
+          },
+          "var": {
+            "type": "string"
+          },
+          "triples": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "cards": {
+      "type": "object",
+      "required": [
+        "select",
+        "where"
+      ],
+      "properties": {
+        "select": {
+          "type": "string"
+        },
+        "where": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": true
+    },
+    "visualizations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "sparql_query"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "object"
+          },
+          "sparql_query": {
+            "type": "string"
+          },
+          "description": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

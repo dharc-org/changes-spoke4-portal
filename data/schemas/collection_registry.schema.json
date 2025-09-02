@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "config_path",
+      "title_it",
+      "title_en"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "config_path": {
+        "type": "string",
+        "minLength": 1
+      },
+      "title_it": {
+        "type": "string"
+      },
+      "title_en": {
+        "type": "string"
+      },
+      "header": {
+        "type": "object"
+      },
+      "description": {
+        "type": "object"
+      },
+      "thumbnail": {
+        "type": "string"
+      },
+      "order": {
+        "type": "number"
+      },
+      "status": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": true
+  }
+}
