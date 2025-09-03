@@ -184,15 +184,20 @@
         {
             "id": "object-types-bubble",
             "type": "bubble",
-            "title": {
-                "it": "Tipi di oggetti nella collezione",
-                "en": "Object Types in the Collection"
+            "title": {},
+            "text": {
+                "it": [
+                    "Oltre 200 oggetti schedati, digitalizzati e in parte modellati in 3D costituiscono una base solida per l’interrogazione semantica e la costruzione di nuove narrazioni scientifico-culturali."
+                ],
+                "en": [
+                    "Over 200 objects catalogued, digitised and partly modelled in 3D form a solid basis for semantic querying and the construction of new scientific and cultural narratives."
+                ]
             },
             "sparql_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?type (COUNT(?item) AS ?count) WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?type . } GROUP BY ?type",
             "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
             "description": {
-                "it": "Distribuzione degli oggetti per tipologia.",
-                "en": "Distribution of objects by type."
+                "it": "",
+                "en": ""
             }
         }
     ]

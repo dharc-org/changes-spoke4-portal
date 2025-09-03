@@ -3,8 +3,9 @@
 {% block title %}{{ overview['title_' + lang] or gettext('Dettagli di progetto') }}{% endblock %}
 
 {% block extra_head %}
-<!-- D3 for overview visualizations -->
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<!-- Local vendor libraries only (no CDNs) -->
+<script src="{{ url_for('static', filename='vendor/d3/d3.v7.min.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -17,17 +18,8 @@
     }
 
     .overview-section {
-        padding: 4rem 2rem;
+        padding: 10rem 2rem;
         border-bottom: 1px solid var(--bs-dark);
-    }
-
-    .pill-dot {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--color-accent);
-        margin-right: .5rem;
     }
 
     .overview-card {
@@ -39,12 +31,12 @@
     }
 
     .chart-card {
-        border: 1px solid var(--bs-dark);
-        border-radius: .5rem;
-        background: #fff;
-        padding: 1rem;
+        border: none;
+        background: transparent;
+        padding: 0;
         height: 100%;
     }
+
 
     /* Simple timeline band inspired by mockup */
     .timeline-band {
@@ -303,7 +295,40 @@
 <section class="overview-section">
     <div class="container-xxl">
         <div class="row g-4">
-
+            {% if visualizations and visualizations|length > 0 %}
+            {% for viz in visualizations %}
+            <div class="col-12">
+                <div class="chart-card font-sans" data-chart-type="{{ viz.type }}" data-sparql="{{ viz.sparql_query }}"
+                    data-endpoint="{{ viz.sparql_endpoint }}">
+                    <div class="row gx-2 gy-3 align-items-start">
+                        <div class="col-12 col-lg-8 d-flex justify-content-lg-end">
+                            <div id="chart-{{ loop.index }}"></div>
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            {% set vtitle = viz.title and (viz.title[lang] or viz.title['it']) %}
+                            {% if vtitle %}
+                            <h3 class="h6 mb-2">{{ vtitle }}</h3>
+                            {% endif %}
+                            {% if viz.text %}
+                            {% set vtext = viz.text[lang] or viz.text['it'] %}
+                            {% if vtext is string %}
+                            <p class="mb-0">{{ vtext }}</p>
+                            {% elif vtext %}
+                            {% for p in vtext %}<p class="mb-2 pt-5">{{ p }}</p>{% endfor %}
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-secondary" role="alert">
+                    {{ gettext('Nessuna visualizzazione configurata per questa collezione.') }}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>
