@@ -114,15 +114,21 @@ def collection_overview(collection_id):
     if not collection:
         abort(404)
 
-    # Load config to fetch visualizations
+    # Load config to fetch visualizations and overview copy
     config_path = os.path.join(
         DATA_DIR, collection["config_path"])  # absolute within repo
     with open(config_path, encoding='utf-8') as f:
         config = json.load(f)
 
     visualizations = config.get('visualizations', [])
+    overview = config.get('overview', {})
     lang = get_locale()
-    return render_template('collection_overview.html', visualizations=visualizations, lang=lang)
+    return render_template(
+        'collection_overview.html',
+        visualizations=visualizations,
+        overview=overview,
+        lang=lang
+    )
 
 
 @main.route('/catalogue/<collection_id>')

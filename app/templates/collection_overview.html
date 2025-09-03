@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ overview['title_' + lang] or gettext('Dettagli di progetto') }}{% endblock %}
+
+{% block extra_head %}
+<!-- D3 for overview visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+{% endblock %}
+
+{% block content %}
+<style>
+    /* Page-scoped styles for the collection overview */
+    .overview-hero {
+        padding: 4rem 2rem;
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+    }
+
+    .overview-section {
+        padding: 4rem 2rem;
+        border-bottom: 1px solid var(--bs-dark);
+    }
+
+    .pill-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--color-accent);
+        margin-right: .5rem;
+    }
+
+    .overview-card {
+        background: var(--bs-body-bg);
+        border: 1px solid var(--bs-dark);
+        border-radius: .5rem;
+        padding: 1.25rem;
+        height: 100%;
+    }
+
+    .chart-card {
+        border: 1px solid var(--bs-dark);
+        border-radius: .5rem;
+        background: #fff;
+        padding: 1rem;
+        height: 100%;
+    }
+
+    /* Simple timeline band inspired by mockup */
+    .timeline-band {
+        background: #fff;
+        border: 1px solid var(--bs-dark);
+        border-radius: .5rem;
+        padding: 1rem;
+    }
+
+    .timeline-scale {
+        height: 20px;
+        background: #efe7dc;
+        border-radius: 4px;
+        position: relative;
+    }
+
+    .timeline-scale .seg {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        border-radius: 4px;
+    }
+
+    .seg-a {
+        background: #d3c3b5;
+        left: 0%;
+        width: 18%;
+    }
+
+    .seg-b {
+        background: #c07f6b;
+        left: 18%;
+        width: 10%;
+    }
+
+    .seg-c {
+        background: #7d725f;
+        left: 28%;
+        width: 40%;
+    }
+
+    .seg-d {
+        background: #cdbfb0;
+        left: 68%;
+        width: 10%;
+    }
+
+    .seg-e {
+        background: #9d8f7f;
+        left: 78%;
+        width: 22%;
+    }
+
+    /* Phases diagram using CSS Grid to avoid overlap */
+    .phases-diagram {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-areas:
+            "p1 . ."
+            ". p2 ."
+            ". . p3";
+    }
+
+    .phase-card {
+        width: min(520px, 100%);
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    .phase-1 {
+        grid-area: p1;
+        /* justify-self: start; */
+        align-self: start;
+    }
+
+    .phase-2 {
+        grid-area: p2;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .phase-3 {
+        grid-area: p3;
+        justify-self: end;
+        align-self: end;
+    }
+
+    .phase-badge {
+        display: inline-block;
+        background: transparent;
+        border: none;
+        padding: 0;
+        font-size: .85rem;
+        margin-bottom: .5rem;
+        color: var(--bs-body-color);
+    }
+
+    /* Action blocks */
+    .action-block {
+        margin-bottom: 1.25rem;
+    }
+
+    .action-header {
+        display: block;
+        width: 100%;
+        border: 1px solid var(--bs-dark);
+        border-radius: .5rem;
+        padding: .375rem .625rem;
+        font-weight: 400;
+        /* not bold */
+        text-align: center;
+        /* centered text */
+    }
+
+    .action-header.phase-1 {
+        background: var(--color-accent);
+        color: var(--color-secondary);
+        border-color: var(--color-accent);
+    }
+
+    .action-header.phase-2 {
+        background: transparent;
+        color: inherit;
+        border-color: var(--bs-dark);
+    }
+
+    .action-header.phase-3 {
+        background: #436179;
+        color: var(--color-secondary);
+        border-color: #436179;
+    }
+
+    /* Ensure all phase content left-aligned and tighter spacing */
+    .phase-card,
+    .phase-card * {
+        text-align: left;
+    }
+
+    .action-block ul {
+        margin-top: .25rem !important;
+        margin-bottom: 0;
+        line-height: 1.35;
+        padding-left: 1.25rem;
+    }
+
+    .action-block ul li {
+        margin-bottom: .15rem;
+    }
+
+    /* Center phase 2 action header and content */
+    .phase-2 .action-block {
+        text-align: center;
+    }
+
+    .phase-2 .action-header {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @media (max-width: 767.98px) {
+        .phases-diagram {
+            grid-template-columns: 1fr;
+            grid-template-areas:
+                "p1"
+                "p2"
+                "p3";
+        }
+
+        .phase-card {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- Intro / hero copy -->
+<section class="overview-hero">
+    <div class="container-xxl">
+        <div class="row g-4 align-items-center">
+            <div class="col-12 col-lg-8 mx-auto text-center">
+                {% set intro = overview['intro_' + lang] or [] %}
+                {% for paragraph in intro %}
+                <p class="mb-2 font-sans mx-auto" style="max-width: 64ch;">{{ paragraph }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- Phases diagram (1 top-left, 2 center, 3 bottom-right) -->
+<section class="overview-section font-sans">
+    <div class="container-xxl">
+        {% set phases = overview.phases or [] %}
+        {% if phases|length >= 1 %}
+        <div class="phases-diagram">
+            {% if phases|length >= 1 %}
+            {% set p1 = phases[0] %}
+            <div class="phase-card phase-1">
+                <div class="phase-badge">({{ p1['label_' + lang] or gettext('Fase 1') }})</div>
+                {% for act in (p1.actions or []) %}
+                {% set aitems = act['items_' + lang] or [] %}
+                <div class="action-block">
+                    <div class="action-header phase-1 text-center">{{ act['title_' + lang] }}</div>
+                    {% if aitems %}
+                    <ul class="mb-0 mt-1">
+                        {% for it in aitems %}<li>{{ it }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if phases|length >= 2 %}
+            {% set p2 = phases[1] %}
+            <div class="phase-card phase-2">
+                <div class="phase-badge">({{ p2['label_' + lang] or gettext('Fase 2') }})</div>
+                {% for act in (p2.actions or []) %}
+                {% set aitems = act['items_' + lang] or [] %}
+                <div class="action-block">
+                    <div class="action-header phase-2 text-center">{{ act['title_' + lang] }}</div>
+                    {% if aitems %}
+                    <ul class="mb-0 mt-1">
+                        {% for it in aitems %}<li>{{ it }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if phases|length >= 3 %}
+            {% set p3 = phases[2] %}
+            <div class="phase-card phase-3">
+                <div class="phase-badge">({{ p3['label_' + lang] or gettext('Fase 3') }})</div>
+                {% for act in (p3.actions or []) %}
+                {% set aitems = act['items_' + lang] or [] %}
+                <div class="action-block">
+                    <div class="action-header phase-3 text-center">{{ act['title_' + lang] }}</div>
+                    {% if aitems %}
+                    <ul class="mb-0 mt-1">
+                        {% for it in aitems %}<li>{{ it }}</li>{% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Visualizations from config -->
+<section class="overview-section">
+    <div class="container-xxl">
+        <div class="row g-4">
+
+        </div>
+    </div>
+</section>
+
+<!-- Timeline placeholder -->
+<section class="overview-section">
+    <div class="container-xxl">
+
+    </div>
+</section>
+{% endblock %}
