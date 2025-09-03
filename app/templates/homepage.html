@@ -1,151 +1,151 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container-xxl py-5">
-    <style>
-        /* Minimal, page-scoped tweaks */
-        #hpAccordion .accordion-button::after {
-            display: none;
-        }
 
-        #hpAccordion .accordion-button {
-            background-color: transparent;
-        }
+<style>
+    /* Minimal, page-scoped tweaks */
+    #hpAccordion .accordion-button::after {
+        display: none;
+    }
 
-        /* Extra bottom padding for Title & Objectives */
-        #hp-hero {
-            padding-bottom: 7rem;
-        }
-    </style>
-    <!-- Title & Objectives -->
-    <section id="hp-hero" class="text-center pt-5 my-5 border-bottom border-dark">
-        <h1 class="h3 mb-4">{{ gettext('PE5 Spoke 4') }}</h1>
-        <div class="row g-4 justify-content-center">
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle mb-2"
-                        style="width:64px;height:64px;background-color: var(--color-accent);"></div>
-                    <small class="text-body-secondary">{{ gettext('obiettivo 1') }}</small>
+    #hpAccordion .accordion-button {
+        background-color: transparent;
+    }
+
+    /* Extra bottom padding for Title & Objectives */
+    #hp-hero {
+        padding-bottom: 7rem;
+    }
+</style>
+<!-- Title & Objectives -->
+<section id="hp-hero" class="text-center pt-5 my-5 border-bottom border-dark px-5">
+    <h1 class="h3 mb-4">{{ gettext('PE5 Spoke 4') }}</h1>
+    <div class="row g-4 justify-content-center">
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="d-flex flex-column align-items-center">
+                <div class="rounded-circle mb-2" style="width:64px;height:64px;background-color: var(--color-accent);">
                 </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle mb-2"
-                        style="width:64px;height:64px;background-color: var(--color-accent);"></div>
-                    <small class="text-body-secondary">{{ gettext('obiettivo 2') }}</small>
-                </div>
-            </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                <div class="d-flex flex-column align-items-center">
-                    <div class="rounded-circle mb-2"
-                        style="width:64px;height:64px;background-color: var(--color-accent);"></div>
-                    <small class="text-body-secondary">{{ gettext('obiettivo 3') }}</small>
-                </div>
+                <small class="text-body-secondary">{{ gettext('obiettivo 1') }}</small>
             </div>
         </div>
-    </section>
-    <!-- Collections -->
-    <section class="py-5 my-5 pt-5">
-        <div class="row gy-4 justify-content-center">
-            {% for c in collections %}
-            <div class="col-12 col-md-6 col-lg-6 col-xl-5 d-flex">
-                <div class="card border border-dark shadow-0 h-100 w-100">
-                    <div class="card-body d-flex gap-3 align-items-start">
-                        <div class="bg-dark rounded flex-shrink-0" style="width:96px;height:64px;"></div>
-                        <div class="flex-grow-1">
-                            <h2 class="h6 mb-1">{{ c.display_title }}</h2>
-                            <p class="mb-2 small text-body-secondary font-sans">Digital Library • 3D • Open Access</p>
-                            <a href="{{ url_for('main.collection_home', collection_id=c.id) }}"
-                                class="link-dark fw-semibold font-sans text-decoration-none">{{ gettext('Esplora') }}
-                                →</a>
-                        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="d-flex flex-column align-items-center">
+                <div class="rounded-circle mb-2" style="width:64px;height:64px;background-color: var(--color-accent);">
+                </div>
+                <small class="text-body-secondary">{{ gettext('obiettivo 2') }}</small>
+            </div>
+        </div>
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="d-flex flex-column align-items-center">
+                <div class="rounded-circle mb-2" style="width:64px;height:64px;background-color: var(--color-accent);">
+                </div>
+                <small class="text-body-secondary">{{ gettext('obiettivo 3') }}</small>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Collections -->
+<section class="py-5 my-5 pt-5 px-5">
+    <div class="row gy-4 justify-content-center">
+        {% for c in collections %}
+        <div class="col-12 col-md-6 col-lg-6 col-xl-5 d-flex">
+            <div class="card border border-dark shadow-0 h-100 w-100">
+                <div class="card-body d-flex gap-3 align-items-start">
+                    <div class="bg-dark rounded flex-shrink-0" style="width:96px;height:64px;"></div>
+                    <div class="flex-grow-1">
+                        <h2 class="h6 mb-1">{{ c.display_title }}</h2>
+                        <p class="mb-2 small text-body-secondary font-sans">Digital Library • 3D • Open Access</p>
+                        <a href="{{ url_for('main.collection_home', collection_id=c.id) }}"
+                            class="link-dark fw-semibold font-sans text-decoration-none">{{ gettext('Esplora') }}
+                            →</a>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-    </section>
+        {% endfor %}
+    </div>
+</section>
 
 
-    <!-- Info Accordion -->
-    <section class="py-5 my-5">
-        <div class="accordion accordion-flush font-sans" id="hpAccordion">
-            <div class="accordion-item border-top border-bottom border-dark-subtle">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#accOne" aria-expanded="false" aria-controls="accOne">
-                        {{ gettext('Descrizione delle attività di metadatazione') }}
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </button>
-                </h2>
-                <div id="accOne" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
-                    <div class="accordion-body text-body-secondary font-sans">{{ gettext('Testo segnaposto per
-                        descrivere le
-                        attività di metadatazione.') }}</div>
-                </div>
-            </div>
-            <div class="accordion-item border-bottom border-dark-subtle">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#accTwo" aria-expanded="false" aria-controls="accTwo">
-                        {{ gettext('Standard adottati') }}
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </button>
-                </h2>
-                <div id="accTwo" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
-                    <div class="accordion-body text-body-secondary font-sans">{{ gettext('Elenco degli standard adottati
-                        - testo
-                        segnaposto.') }}</div>
-                </div>
-            </div>
-            <div class="accordion-item border-bottom border-dark-subtle">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#accThree" aria-expanded="false" aria-controls="accThree">
-                        {{ gettext('Dettagli sulla validazione semantica') }}
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </button>
-                </h2>
-                <div id="accThree" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
-                    <div class="accordion-body text-body-secondary font-sans">{{ gettext('Informazioni sulla validazione
-                        semantica
-                        - testo segnaposto.') }}</div>
-                </div>
-            </div>
-            <div class="accordion-item border-bottom border-dark-subtle">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#accFour" aria-expanded="false" aria-controls="accFour">
-                        {{ gettext('API per accesso ai dati in tempo reale') }}
-                        <i class="bi bi-chevron-down ms-auto"></i>
-                    </button>
-                </h2>
-                <div id="accFour" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
-                    <div class="accordion-body text-body-secondary font-sans">{{ gettext('Dettagli sulle API e accesso
-                        ai dati -
-                        testo segnaposto.') }}</div>
-                </div>
+<!-- Info Accordion -->
+<section class="py-5 my-5">
+    <div class="accordion accordion-flush font-sans" id="hpAccordion">
+        <div class="accordion-item border-top border-bottom border-dark-subtle">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#accOne" aria-expanded="false" aria-controls="accOne">
+                    {{ gettext('Descrizione delle attività di metadatazione') }}
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
+            </h2>
+            <div id="accOne" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
+                <div class="accordion-body text-body-secondary font-sans">{{ gettext('Testo segnaposto per
+                    descrivere le
+                    attività di metadatazione.') }}</div>
             </div>
         </div>
-    </section>
+        <div class="accordion-item border-bottom border-dark-subtle">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#accTwo" aria-expanded="false" aria-controls="accTwo">
+                    {{ gettext('Standard adottati') }}
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
+            </h2>
+            <div id="accTwo" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
+                <div class="accordion-body text-body-secondary font-sans">{{ gettext('Elenco degli standard adottati
+                    - testo
+                    segnaposto.') }}</div>
+            </div>
+        </div>
+        <div class="accordion-item border-bottom border-dark-subtle">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#accThree" aria-expanded="false" aria-controls="accThree">
+                    {{ gettext('Dettagli sulla validazione semantica') }}
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
+            </h2>
+            <div id="accThree" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
+                <div class="accordion-body text-body-secondary font-sans">{{ gettext('Informazioni sulla validazione
+                    semantica
+                    - testo segnaposto.') }}</div>
+            </div>
+        </div>
+        <div class="accordion-item border-bottom border-dark-subtle">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#accFour" aria-expanded="false" aria-controls="accFour">
+                    {{ gettext('API per accesso ai dati in tempo reale') }}
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
+            </h2>
+            <div id="accFour" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
+                <div class="accordion-body text-body-secondary font-sans">{{ gettext('Dettagli sulle API e accesso
+                    ai dati -
+                    testo segnaposto.') }}</div>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <!-- Technologies -->
-    <section class="py-5 my-5">
-        <div class="row align-items-center g-4 justify-content-center">
-            <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center justify-content-md-start">
-                <div class="rounded-circle" style="width:72px;height:72px;background-color: var(--color-accent);"></div>
-            </div>
-            <div class="col-12 col-md-8 col-lg-6">
-                <ul class="list-unstyled mb-0 font-sans">
-                    <li>Technologie di acquisizione</li>
-                    <li>fotogrammetria</li>
-                    <li>scansioni a luce strutturata</li>
-                    <li>Technologie di modellazione</li>
-                    <li>Blender</li>
-                    <li>Figma</li>
-                    <li>Technologie di prototipazione</li>
-                </ul>
-            </div>
+<!-- Technologies -->
+<section class="py-5 my-5 px-5">
+    <div class="row align-items-center g-4 justify-content-center">
+        <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center justify-content-md-start">
+            <div class="rounded-circle" style="width:72px;height:72px;background-color: var(--color-accent);"></div>
         </div>
-    </section>
-</div>
+        <div class="col-12 col-md-8 col-lg-6">
+            <ul class="list-unstyled mb-0 font-sans">
+                <li>Technologie di acquisizione</li>
+                <li>fotogrammetria</li>
+                <li>scansioni a luce strutturata</li>
+                <li>Technologie di modellazione</li>
+                <li>Blender</li>
+                <li>Figma</li>
+                <li>Technologie di prototipazione</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

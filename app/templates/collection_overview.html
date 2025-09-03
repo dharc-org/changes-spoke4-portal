@@ -161,7 +161,7 @@
 </style>
 
 <!-- Intro / hero copy -->
-<section class="overview-hero">
+<section class="overview-hero px-5">
     <div class="container-xxl">
         <div class="row g-4 align-items-center">
             <div class="col-12 col-lg-8 mx-auto text-center">
@@ -176,7 +176,7 @@
 </section>
 
 <!-- Phases diagram (1 top-left, 2 center, 3 bottom-right) -->
-<section class="overview-section font-sans">
+<section class="overview-section font-sans px-5">
     <div class="container-xxl">
         {% set phases = overview.phases or [] %}
         {% if phases|length >= 1 %}
@@ -242,7 +242,7 @@
 <!-- Bubble Visualizations -->
 {% set bubble_viz = visualizations | selectattr('type','ne','timeline') | list %}
 {% if bubble_viz and bubble_viz|length > 0 %}
-<section class="overview-section">
+<section class="overview-section px-5">
     <div class="container-xxl">
         <div class="row g-4">
             {% for viz in bubble_viz %}

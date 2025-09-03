@@ -6,7 +6,7 @@
 <style>
     /* Page-scoped styles for the collection home */
     .collection-hero {
-        padding: 10rem 2rem;
+        padding: 10rem;
         background-color: var(--bs-dark);
         color: var(--color-secondary);
     }
@@ -51,7 +51,7 @@
 </style>
 
 <!-- Hero -->
-<section class="collection-hero text-center font-sans">
+<section class="collection-hero text-center font-sans px-5">
     <div class="container-xxl">
         <h3 class="display-6 mb-4">{{ collection.header_title }}</h3>
         <p class="mx-auto mb-4" style="max-width: 56ch;">
@@ -65,7 +65,7 @@
 </section>
 
 <!-- Description band -->
-<section class="band">
+<section class="band px-5">
     <div class="container-xxl">
         <div class="row align-items-start gy-4">
             <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center justify-content-md-start">
@@ -86,7 +86,7 @@
 </section>
 
 <!-- Partners / Credits -->
-<section class="py-5 credits" style="background-color: var(--bs-dark); color: var(--color-secondary);">
+<section class="py-5 credits px5" style="background-color: var(--bs-dark); color: var(--color-secondary);">
     <div class="container-xxl text-center">
         <h3 class="h5 mb-5">{{ gettext('Partners and Credits') }}</h3>
         <div class="row g-5 justify-content-center">
