@@ -15,8 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;  // Skip this chart
         }
 
-        // Branch by chart type (D3 for packed bubble; Chart.js for others)
-        if (chartType === 'bubble') {
+        // Branch by chart type (D3 for packed bubble; timeline handled separately by charts.js)
+        if (chartType === 'timeline') {
+            // Skip here; charts.js will auto-initialize canvas.timeline-chart
+            return;
+        } else if (chartType === 'bubble') {
             // Set a reasonable height for bubble layout
             if (!container.style.height) container.style.height = '520px';
             // Clear container (SVG will be injected)

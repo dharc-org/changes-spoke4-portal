@@ -5,6 +5,8 @@
 {% block extra_head %}
 <!-- Local vendor libraries only (no CDNs) -->
 <script src="{{ url_for('static', filename='vendor/d3/d3.v7.min.js') }}" defer></script>
+<script src="{{ url_for('static', filename='vendor/chart.js/chart.umd.js') }}" defer></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 <script src="{{ url_for('static', filename='js/charts.js') }}" defer></script>
 {% endblock %}
 
@@ -22,14 +24,6 @@
         border-bottom: 1px solid var(--bs-dark);
     }
 
-    .overview-card {
-        background: var(--bs-body-bg);
-        border: 1px solid var(--bs-dark);
-        border-radius: .5rem;
-        padding: 1.25rem;
-        height: 100%;
-    }
-
     .chart-card {
         border: none;
         background: transparent;
@@ -37,57 +31,11 @@
         height: 100%;
     }
 
-
-    /* Simple timeline band inspired by mockup */
-    .timeline-band {
-        background: #fff;
-        border: 1px solid var(--bs-dark);
-        border-radius: .5rem;
-        padding: 1rem;
-    }
-
     .timeline-scale {
         height: 20px;
         background: #efe7dc;
         border-radius: 4px;
         position: relative;
-    }
-
-    .timeline-scale .seg {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        border-radius: 4px;
-    }
-
-    .seg-a {
-        background: #d3c3b5;
-        left: 0%;
-        width: 18%;
-    }
-
-    .seg-b {
-        background: #c07f6b;
-        left: 18%;
-        width: 10%;
-    }
-
-    .seg-c {
-        background: #7d725f;
-        left: 28%;
-        width: 40%;
-    }
-
-    .seg-d {
-        background: #cdbfb0;
-        left: 68%;
-        width: 10%;
-    }
-
-    .seg-e {
-        background: #9d8f7f;
-        left: 78%;
-        width: 22%;
     }
 
     /* Phases diagram using CSS Grid to avoid overlap */
@@ -291,12 +239,13 @@
     </div>
 </section>
 
-<!-- Visualizations from config -->
+<!-- Bubble Visualizations -->
+{% set bubble_viz = visualizations | selectattr('type','ne','timeline') | list %}
+{% if bubble_viz and bubble_viz|length > 0 %}
 <section class="overview-section">
     <div class="container-xxl">
         <div class="row g-4">
-            {% if visualizations and visualizations|length > 0 %}
-            {% for viz in visualizations %}
+            {% for viz in bubble_viz %}
             <div class="col-12">
                 <div class="chart-card font-sans" data-chart-type="{{ viz.type }}" data-sparql="{{ viz.sparql_query }}"
                     data-endpoint="{{ viz.sparql_endpoint }}">
@@ -306,15 +255,13 @@
                         </div>
                         <div class="col-12 col-lg-4">
                             {% set vtitle = viz.title and (viz.title[lang] or viz.title['it']) %}
-                            {% if vtitle %}
-                            <h3 class="h6 mb-2">{{ vtitle }}</h3>
-                            {% endif %}
+                            {% if vtitle %}<h3 class="h6 mb-2">{{ vtitle }}</h3>{% endif %}
                             {% if viz.text %}
                             {% set vtext = viz.text[lang] or viz.text['it'] %}
                             {% if vtext is string %}
                             <p class="mb-0">{{ vtext }}</p>
                             {% elif vtext %}
-                            {% for p in vtext %}<p class="mb-2 pt-5">{{ p }}</p>{% endfor %}
+                            {% for p in vtext %}<p class="mb-2">{{ p }}</p>{% endfor %}
                             {% endif %}
                             {% endif %}
                         </div>
@@ -322,21 +269,46 @@
                 </div>
             </div>
             {% endfor %}
-            {% else %}
-            <div class="col-12">
-                <div class="alert alert-secondary" role="alert">
-                    {{ gettext('Nessuna visualizzazione configurata per questa collezione.') }}
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
 </section>
+{% endif %}
 
-<!-- Timeline placeholder -->
+<!-- Timeline Visualizations -->
+{% set timeline_viz = visualizations | selectattr('type','equalto','timeline') | list %}
+{% if timeline_viz and timeline_viz|length > 0 %}
 <section class="overview-section">
     <div class="container-xxl">
-
+        <div class="row g-4">
+            {% for viz in timeline_viz %}
+            <div class="col-12">
+                <div class="chart-card font-sans" data-chart-type="{{ viz.type }}">
+                    <div class="row gx-2 gy-3 align-items-start">
+                        {% set vtitle = viz.title and (viz.title[lang] or viz.title['it']) %}
+                        <p class="mb-7 text-center">{{ vtitle }}</p>
+                        <div class="col-12 d-flex justify-content-lg-end">
+                            <canvas class="timeline-chart w-100" id="timeline-chart-{{ loop.index }}"
+                                data-sparql="{{ viz.sparql_query }}" data-endpoint="{{ viz.sparql_endpoint }}"
+                                data-title="{{ vtitle }}" aria-label="Timeline chart" role="img"></canvas>
+                        </div>
+                        {% set vtext = viz.text and (viz.text[lang] or viz.text['it']) %}
+                        {% if vtext %}
+                        <div class="col-12 col-lg-4">
+                            {# Title rendered above chart; keep only text here #}
+                            {% if vtext is string %}
+                            <p class="mb-0">{{ vtext }}</p>
+                            {% else %}
+                            {% for p in vtext %}<p class="mb-2">{{ p }}</p>{% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </section>
+{% endif %}
+
 {% endblock %}

@@ -199,6 +199,17 @@
                 "it": "",
                 "en": ""
             }
+        },
+        {
+            "id": "timeline",
+            "type": "timeline",
+            "title": {
+                "it": "Timeline della collezione",
+                "en": "Collection Timeline"
+            },
+            "text": {},
+            "sparql_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?begin ?end WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end . }",
+            "sparql_endpoint": "http://localhost:3030/chad-kg/sparql"
         }
     ]
 }
