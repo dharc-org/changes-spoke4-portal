@@ -1,0 +1,312 @@
+{
+    "head": {
+        "vars": [
+            "type_label",
+            "count"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "medals"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "2"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "models (representations)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "21"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "artifacts (object genre)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "25"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "lamps (lighting devices)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "paintings (visual works)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "7"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "herbaria (documents)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "7"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "microscopes"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "woodcuts (prints)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "5"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "charm pendant"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "bottles"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "rattles (indirectly struck idiophones)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "spark arresters"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "vases"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "dioramas"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "masks (costume)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "statues"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "2"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "axe weapons"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "necklaces"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "maps (documents)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "2"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "incunabula (books)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "specimens"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "110"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "compasses (drawing instruments)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "1"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "molds (shaping equipment)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "13"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "prints (visual works)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "21"
+                }
+            },
+            {
+                "type_label": {
+                    "type": "literal",
+                    "xml:lang": "en",
+                    "value": "gems (worked stones)"
+                },
+                "count": {
+                    "type": "literal",
+                    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+                    "value": "9"
+                }
+            }
+        ]
+    }
+}

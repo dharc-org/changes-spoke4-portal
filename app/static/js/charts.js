@@ -281,9 +281,28 @@
   document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('canvas.timeline-chart').forEach(async (canvas) => {
       const sparql = canvas.dataset.sparql || ''; const endpoint = canvas.dataset.endpoint || '';
+      const dataJson = canvas.dataset.json || '';
       try {
-        if (!sparql || !endpoint) return;
-        const raw = await fetchTimelineSparql(sparql, endpoint);
+        let raw;
+        if (dataJson) {
+          // Load precomputed rows from static JSON
+          const res = await fetch(dataJson, { headers: { 'Accept': 'application/json' } });
+          if (!res.ok) throw new Error(`Static JSON HTTP ${res.status}`);
+          const json = await res.json();
+          if (json && json.results && Array.isArray(json.results.bindings)) {
+            const rows = json.results.bindings.map(b => { const out = {}; for (const k in b) out[k] = b[k].value; return out; });
+            raw = rows;
+          } else if (Array.isArray(json)) {
+            raw = json;
+          } else if (Array.isArray(json.rows)) {
+            raw = json.rows;
+          } else {
+            throw new Error('Unsupported static JSON shape');
+          }
+        } else {
+          if (!sparql || !endpoint) return;
+          raw = await fetchTimelineSparql(sparql, endpoint);
+        }
         const deduped = dedupeTimelineRows(raw);
         const normalized = normalizeTimelineRows(deduped);
         const { starts, labels, counts } = processToHalfCenturies(normalized);

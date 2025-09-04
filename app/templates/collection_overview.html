@@ -163,6 +163,16 @@
 <!-- Intro / hero copy -->
 <section class="overview-hero px-5">
     <div class="container-xxl">
+        {% if STATIC_BUILD %}
+        <div class="d-flex justify-content-end mb-2">
+            {% if lang == 'it' %}
+            <a class="small text-body text-decoration-none" href="./docs/en/index.html"
+                aria-label="English version">EN</a>
+            {% elif lang == 'en' %}
+            <a class="small text-body text-decoration-none" href="../index.html" aria-label="Versione italiana">IT</a>
+            {% endif %}
+        </div>
+        {% endif %}
         <div class="row g-4 align-items-center">
             <div class="col-12 col-lg-8 mx-auto text-center">
                 {% set intro = overview['intro_' + lang] or [] %}
@@ -248,7 +258,8 @@
             {% for viz in bubble_viz %}
             <div class="col-12">
                 <div class="chart-card font-sans" data-chart-type="{{ viz.type }}" data-sparql="{{ viz.sparql_query }}"
-                    data-endpoint="{{ viz.sparql_endpoint }}">
+                    data-endpoint="{{ viz.sparql_endpoint }}" {% if viz.data_json %} data-json="{{ viz.data_json }}" {%
+                    endif %}>
                     <div class="row gx-2 gy-3 align-items-start">
                         <div class="col-12 col-lg-8 d-flex justify-content-lg-end">
                             <div id="chart-{{ loop.index }}"></div>
@@ -288,8 +299,9 @@
                         <p class="mb-7 text-center">{{ vtitle }}</p>
                         <div class="col-12 d-flex justify-content-lg-end">
                             <canvas class="timeline-chart w-100" id="timeline-chart-{{ loop.index }}"
-                                data-sparql="{{ viz.sparql_query }}" data-endpoint="{{ viz.sparql_endpoint }}"
-                                data-title="{{ vtitle }}" aria-label="Timeline chart" role="img"></canvas>
+                                data-sparql="{{ viz.sparql_query }}" data-endpoint="{{ viz.sparql_endpoint }}" {% if
+                                viz.data_json %} data-json="{{ viz.data_json }}" {% endif %} data-title="{{ vtitle }}"
+                                aria-label="Timeline chart" role="img"></canvas>
                         </div>
                         {% set vtext = viz.text and (viz.text[lang] or viz.text['it']) %}
                         {% if vtext %}

@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dettagli di progetto</title>
+    <title>Project Details</title>
 
     <!-- Bootstrap CSS (local) -->
-    <link rel="stylesheet" href="./app/static/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./app/static/vendor/bootstrap-icons/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../../app/static/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../app/static/vendor/bootstrap-icons/bootstrap-icons.min.css">
     <!-- Custom CSS (design tokens + light overrides) -->
-    <link rel="stylesheet" href="./app/static/css/style.css">
+    <link rel="stylesheet" href="../../app/static/css/style.css">
 
     <!-- Local vendor libraries only (no CDNs) -->
-    <script src="./app/static/vendor/d3/d3.v7.min.js" defer></script>
-    <script src="./app/static/vendor/chart.js/chart.umd.js" defer></script>
+    <script src="../../app/static/vendor/d3/d3.v7.min.js" defer></script>
+    <script src="../../app/static/vendor/chart.js/chart.umd.js" defer></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-    <script src="./app/static/js/charts.js" defer></script>
+    <script src="../../app/static/js/charts.js" defer></script>
 
     <!-- Base app JS -->
-    <script src="./app/static/js/main.js" defer></script>
+    <script src="../../app/static/js/main.js" defer></script>
     <style>
         /* Tiny utility to use secondary font where needed */
         .font-sans {
@@ -35,7 +35,7 @@
             <!-- Logo / Title -->
             <div
                 class="col-12 col-lg-3 d-flex align-items-center justify-content-start px-4 py-3 border-lg-end border-dark">
-                <a href="./index.html" class="d-inline-flex align-items-center text-body text-decoration-none">
+                <a href="../../index.html" class="d-inline-flex align-items-center text-body text-decoration-none">
                     <span class="rounded-circle bg-dark me-2" style="width:16px;height:16px;"></span>
                     <span class="fw-semibold">PROJECT CHANGES - SPOKE 4</span>
                 </a>
@@ -215,8 +215,8 @@
 
                 <div class="d-flex justify-content-end mb-2">
 
-                    <a class="small text-body text-decoration-none" href="./docs/en/index.html"
-                        aria-label="English version">EN</a>
+                    <a class="small text-body text-decoration-none" href="../../index.html"
+                        aria-label="Versione italiana">IT</a>
 
                 </div>
 
@@ -224,13 +224,11 @@
                     <div class="col-12 col-lg-8 mx-auto text-center">
 
 
-                        <p class="mb-2 font-sans mx-auto" style="max-width: 64ch;">Il progetto nasce nell’ambito
-                            dell’iniziativa nazionale CHANGES (PE5 – Spoke 4), con l’obiettivo di promuovere la
-                            digitalizzazione strutturata del patrimonio culturale a vocazione scientifica. Il caso
-                            studio dedicato a Ulisse Aldrovandi integra tecnologie 3D, metadatazione avanzata e
-                            strategie di comunicazione digitale per costruire modelli replicabili di digital twin
-                            culturali. La piattaforma è pensata per ricercatori, curatori, studenti e istituzioni
-                            culturali interessate a strumenti di consultazione, analisi e narrazione dei dati.</p>
+                        <p class="mb-2 font-sans mx-auto" style="max-width: 64ch;">The project leverages Spoke 4 results
+                            for acquisition, modelling and enhancement of cultural heritage data.</p>
+
+                        <p class="mb-2 font-sans mx-auto" style="max-width: 64ch;">Below are the main work areas and
+                            some knowledge graph-based visualizations.</p>
 
                     </div>
                 </div>
@@ -247,17 +245,17 @@
 
 
                     <div class="phase-card phase-1">
-                        <div class="phase-badge">(Fase 1)</div>
+                        <div class="phase-badge">(Phase 1)</div>
 
 
                         <div class="action-block">
-                            <div class="action-header phase-1 text-center">Raccolta e organizzazione dei dati culturali
+                            <div class="action-header phase-1 text-center">Collection and organization of cultural data
                             </div>
 
                             <ul class="mb-0 mt-1">
-                                <li>Acquisizione e modellazione di oggetti 3D e ambienti</li>
-                                <li>Raccolta di metadati da musei, gallerie e archivi</li>
-                                <li>Mappatura delle fonti preesistenti</li>
+                                <li>Acquisition and modelling of 3D objects and environments</li>
+                                <li>Collection of metadata from museums, galleries and archives</li>
+                                <li>Mapping of pre-existing sources</li>
                             </ul>
 
                         </div>
@@ -268,28 +266,28 @@
 
 
                     <div class="phase-card phase-2">
-                        <div class="phase-badge">(Fase 2)</div>
+                        <div class="phase-badge">(Phase 2)</div>
 
 
                         <div class="action-block">
-                            <div class="action-header phase-2 text-center">Metadazione e standardizzazione</div>
+                            <div class="action-header phase-2 text-center">Metadata and standardization</div>
 
                             <ul class="mb-0 mt-1">
-                                <li>Conversione e armonizzazione dei metadati secondo standard europei</li>
-                                <li>Progettazione di profili applicativi (es. CHAD-AP)</li>
-                                <li>Validazione e arricchimento semantico dei dati</li>
+                                <li>Convergence and harmonization of metadata according to European standards</li>
+                                <li>Design of application profiles (e.g. CHAD-AP)</li>
+                                <li>Validation and semantic enrichment of data</li>
                             </ul>
 
                         </div>
 
 
                         <div class="action-block">
-                            <div class="action-header phase-2 text-center">Creazione dei prototipi digitali</div>
+                            <div class="action-header phase-2 text-center">Creation of digital prototypes</div>
 
                             <ul class="mb-0 mt-1">
-                                <li>Design di modelli interattivi (Data Stories)</li>
-                                <li>Sviluppo software e interfacce per l’accesso</li>
-                                <li>Integrazione con dati e metadati in tempo reale</li>
+                                <li>Design of interactive models (Data Stories)</li>
+                                <li>Software and interface development for access</li>
+                                <li>Integration with real-time data and metadata</li>
                             </ul>
 
                         </div>
@@ -300,16 +298,16 @@
 
 
                     <div class="phase-card phase-3">
-                        <div class="phase-badge">(Fase 3)</div>
+                        <div class="phase-badge">(Phase 3)</div>
 
 
                         <div class="action-block">
-                            <div class="action-header phase-3 text-center">Diffusione e valorizzazione</div>
+                            <div class="action-header phase-3 text-center">Dissemination and valorization</div>
 
                             <ul class="mb-0 mt-1">
-                                <li>Strategie di comunicazione e storytelling digitale</li>
-                                <li>Creazione di datastorie e piattaforme open access</li>
-                                <li>Coinvolgimento di università, musei, scuole e ricercatori</li>
+                                <li>Communication strategies and digital storytelling</li>
+                                <li>Creation of data stories and open access platforms</li>
+                                <li>Engagement of universities, museums, schools and researchers</li>
                             </ul>
 
                         </div>
@@ -332,7 +330,7 @@
                         <div class="chart-card font-sans" data-chart-type="bubble"
                             data-sparql="PREFIX crm: &lt;http://www.cidoc-crm.org/cidoc-crm/&gt; PREFIX lrmoo: &lt;http://iflastandards.info/ns/lrm/lrmoo/&gt; PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; SELECT ?type_label (COUNT(DISTINCT ?item) AS ?count) WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?type_uri .  ?type_uri rdfs:label ?type_label . FILTER( lang(?type_label) = &#34;$LANG$&#34;)} GROUP BY ?type_label"
                             data-endpoint="http://localhost:3030/chad-kg/sparql"
-                            data-json="docs/data/object-types-bubble_it.json">
+                            data-json="data/object-types-bubble_en.json">
                             <div class="row gx-2 gy-3 align-items-start">
                                 <div class="col-12 col-lg-8 d-flex justify-content-lg-end">
                                     <div id="chart-1"></div>
@@ -343,9 +341,9 @@
 
 
 
-                                    <p class="mb-2">Oltre 200 oggetti schedati, digitalizzati e in parte modellati in 3D
-                                        costituiscono una base solida per l’interrogazione semantica e la costruzione di
-                                        nuove narrazioni scientifico-culturali.</p>
+                                    <p class="mb-2">Over 200 objects catalogued, digitised and partly modelled in 3D
+                                        form a solid basis for semantic querying and the construction of new scientific
+                                        and cultural narratives.</p>
 
 
                                 </div>
@@ -369,12 +367,12 @@
                         <div class="chart-card font-sans" data-chart-type="timeline">
                             <div class="row gx-2 gy-3 align-items-start">
 
-                                <p class="mb-7 text-center">Timeline della collezione</p>
+                                <p class="mb-7 text-center">Collection Timeline</p>
                                 <div class="col-12 d-flex justify-content-lg-end">
                                     <canvas class="timeline-chart w-100" id="timeline-chart-1"
                                         data-sparql="PREFIX crm: &lt;http://www.cidoc-crm.org/cidoc-crm/&gt; PREFIX lrmoo: &lt;http://iflastandards.info/ns/lrm/lrmoo/&gt; SELECT ?item ?begin ?end WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end . }"
                                         data-endpoint="http://localhost:3030/chad-kg/sparql"
-                                        data-json="docs/data/timeline_it.json" data-title="Timeline della collezione"
+                                        data-json="data/timeline_en.json" data-title="Collection Timeline"
                                         aria-label="Timeline chart" role="img"></canvas>
                                 </div>
 
@@ -412,7 +410,7 @@
     </footer>
 
     <!-- Bootstrap JS Bundle (local) -->
-    <script src="./app/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="app/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

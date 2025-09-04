@@ -16,8 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) { /* no-op */ }
         const endpoint = card.dataset.endpoint;
         const containerId = `chart-${index + 1}`;
-        const container = document.getElementById(containerId);
-        if (!container) {
+        const container = chartType === 'timeline' ? null : document.getElementById(containerId);
+        if (chartType !== 'timeline' && !container) {
             console.error(`Container with id '${containerId}' not found!`);
             return;  // Skip this chart
         }
@@ -31,7 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!container.style.height) container.style.height = '520px';
             // Clear container (SVG will be injected)
             container.innerHTML = '';
-            fetchSparqlData(sparqlQuery, endpoint)
+            const dataJsonUrl = card.dataset.json;
+            const dataPromise = dataJsonUrl ? fetchPreloadedData(dataJsonUrl) : fetchSparqlData(sparqlQuery, endpoint);
+            dataPromise
                 .then(data => renderPackedBubbleD3(container, data))
                 .catch(err => {
                     console.error(`Error loading chart ${containerId}:`, err);
@@ -104,3 +106,23 @@ function renderChartJS(canvas, type, data) {
 // Bubble chart via Chart.js removed; using D3 (see charts.js)
 
 // bubble chart implementation moved to charts.js (window.renderPackedBubbleD3)
+async function fetchPreloadedData(url) {
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    // Accept either SPARQL JSON or an array of rows
+    if (json && json.results && Array.isArray(json.results.bindings)) {
+        return transformSparqlResults(json);
+    }
+    if (Array.isArray(json)) {
+        // Normalize: ensure label/count fields and clean label capitalization
+        return json.map(r => {
+            const count = Number(r.count || r.value || r.total || 0);
+            const raw = r.type_label || r.label || r.type || '';
+            const label = (String(raw || '').trim());
+            const clean = label ? label.charAt(0).toUpperCase() + label.slice(1) : label;
+            return { label: clean, count };
+        });
+    }
+    throw new Error('Unsupported preloaded JSON shape');
+}
