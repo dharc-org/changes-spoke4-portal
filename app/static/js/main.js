@@ -6,7 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     document.querySelectorAll(".chart-card").forEach((card, index) => {
         const chartType = card.dataset.chartType;
-        const sparqlQuery = card.dataset.sparql;
+        let sparqlQuery = card.dataset.sparql;
+        // Inject dynamic language into SPARQL if placeholder present
+        try {
+            const pageLang = (document.documentElement.getAttribute('lang') || 'it').slice(0, 2);
+            if (sparqlQuery && sparqlQuery.includes('$LANG$')) {
+                sparqlQuery = sparqlQuery.replaceAll('$LANG$', pageLang);
+            }
+        } catch (e) { /* no-op */ }
         const endpoint = card.dataset.endpoint;
         const containerId = `chart-${index + 1}`;
         const container = document.getElementById(containerId);
@@ -67,14 +74,20 @@ async function fetchSparqlData(query, endpoint) {
 
 // Simplified transformer — map to usable array
 function transformSparqlResults(json) {
+    function cleanLabel(s) {
+        const t = String(s || '').trim();
+        return t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+    }
     return json.results.bindings.map(b => {
         const out = {};
         for (const key in b) out[key] = b[key].value;
-        // Best-effort label extraction if only URI is present
+        // Prefer explicit type_label when present (new bubble query)
+        if (out.type_label) out.label = cleanLabel(out.type_label);
+        // Fallback: derive from URI if label still missing
         if (!out.label) {
             const t = out.type || '';
             const parts = t.split(/[\/#]/);
-            out.label = parts[parts.length - 1] || t;
+            out.label = cleanLabel(parts[parts.length - 1] || t);
         }
         return out;
     });

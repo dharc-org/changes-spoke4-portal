@@ -131,7 +131,7 @@
                     "Over 200 objects catalogued, digitised and partly modelled in 3D form a solid basis for semantic querying and the construction of new scientific and cultural narratives."
                 ]
             },
-            "sparql_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?type (COUNT(?item) AS ?count) WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?type . } GROUP BY ?type",
+            "sparql_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?type_label (COUNT(DISTINCT ?item) AS ?count) WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?type_uri .  ?type_uri rdfs:label ?type_label . FILTER( lang(?type_label) = \"$LANG$\")} GROUP BY ?type_label",
             "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
             "description": {
                 "it": "",
