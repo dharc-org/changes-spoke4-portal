@@ -19,14 +19,14 @@
                         "title_it": "Raccolta e organizzazione dei dati culturali",
                         "title_en": "Collection and organization of cultural data",
                         "items_it": [
-                            "Acquisizione e modellazione di 3D e oggetti",
-                            "Relazioni e metadati dei musei, archivi e biblioteche",
-                            "Integrazione delle fonti preesistenti"
+                            "Acquisizione e modellazione di oggetti 3D e ambienti",
+                            "Raccolta di metadati da musei, gallerie e archivi",
+                            "Mappatura delle fonti preesistenti"
                         ],
                         "items_en": [
-                            "Acquisition and modelling of 3D and objects",
-                            "Relationships and metadata from museums, archives and libraries",
-                            "Integration of pre-existing sources"
+                            "Acquisition and modelling of 3D objects and environments",
+                            "Collection of metadata from museums, galleries and archives",
+                            "Mapping of pre-existing sources"
                         ]
                     }
                 ]
@@ -39,14 +39,14 @@
                         "title_it": "Metadazione e standardizzazione",
                         "title_en": "Metadata and standardization",
                         "items_it": [
-                            "Convergenza e armonizzazione dei metadati",
-                            "Adozione di modelli concettuali (CRM, LRMoo)",
-                            "Piattaforme e workflow per la gestione dei dati"
+                            "Conversione e armonizzazione dei metadati secondo standard europei",
+                            "Progettazione di profili applicativi (es. CHAD-AP)",
+                            "Validazione e arricchimento semantico dei dati"
                         ],
                         "items_en": [
-                            "Convergence and harmonization of metadata",
-                            "Adoption of conceptual models (CRM, LRMoo)",
-                            "Platforms and workflows for data management"
+                            "Convergence and harmonization of metadata according to European standards",
+                            "Design of application profiles (e.g. CHAD-AP)",
+                            "Validation and semantic enrichment of data"
                         ]
                     },
                     {
@@ -74,80 +74,18 @@
                         "title_en": "Dissemination and valorization",
                         "items_it": [
                             "Strategie di comunicazione e storytelling digitale",
-                            "Creazione di interfacce e open access platform",
-                            "Coinvolgimento di comunità, scuole, società"
+                            "Creazione di datastorie e piattaforme open access",
+                            "Coinvolgimento di università, musei, scuole e ricercatori"
                         ],
                         "items_en": [
                             "Communication strategies and digital storytelling",
-                            "Creation of interfaces and open access platform",
-                            "Engagement of communities, schools, society"
+                            "Creation of data stories and open access platforms",
+                            "Engagement of universities, museums, schools and researchers"
                         ]
                     }
                 ]
             }
-        ],
-        "sections": [
-            {
-                "title_it": "Raccolta e organizzazione dei dati culturali",
-                "title_en": "Collection and organization of cultural data",
-                "items_it": [
-                    "Acquisizione e modellazione di 3D e oggetti",
-                    "Relazioni e metadati dei musei, archivi e biblioteche",
-                    "Integrazione delle fonti preesistenti"
-                ],
-                "items_en": [
-                    "Acquisition and modelling of 3D and objects",
-                    "Relationships and metadata from museums, archives and libraries",
-                    "Integration of pre-existing sources"
-                ]
-            },
-            {
-                "title_it": "Metadazione e standardizzazione",
-                "title_en": "Metadata and standardization",
-                "items_it": [
-                    "Convergenza e armonizzazione dei metadati",
-                    "Adozione di modelli concettuali (CRM, LRMoo)",
-                    "Piattaforme e workflow per la gestione dei dati"
-                ],
-                "items_en": [
-                    "Convergence and harmonization of metadata",
-                    "Adoption of conceptual models (CRM, LRMoo)",
-                    "Platforms and workflows for data management"
-                ]
-            },
-            {
-                "title_it": "Innovazione e analisi dei dati",
-                "title_en": "Innovation and data analysis",
-                "items_it": [
-                    "Design di modelli e percorsi interattivi",
-                    "Visual analytics su tipologie, tempi e luoghi",
-                    "Sperimentazione su modelli 3D e immagini"
-                ],
-                "items_en": [
-                    "Design of interactive models and paths",
-                    "Visual analytics on types, time and places",
-                    "Experimentation on 3D models and images"
-                ]
-            },
-            {
-                "title_it": "Diffusione e valorizzazione",
-                "title_en": "Dissemination and valorization",
-                "items_it": [
-                    "Strategie di comunicazione e storytelling digitale",
-                    "Creazione di interfacce e open access platform",
-                    "Coinvolgimento di comunità, scuole, società"
-                ],
-                "items_en": [
-                    "Communication strategies and digital storytelling",
-                    "Creation of interfaces and open access platform",
-                    "Engagement of communities, schools, society"
-                ]
-            }
-        ],
-        "timeline": {
-            "title_it": "Timeline della collezione",
-            "title_en": "Collection Timeline"
-        }
+        ]
     },
     "filters": [
         {

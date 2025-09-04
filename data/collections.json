@@ -2,32 +2,54 @@
     {
         "id": "aldrovandi",
         "config_path": "configs/aldrovandi.json",
-        "title_it": "Il Rinascimento digitale di Ulisse Aldrovandi - Acquisizione e digitalizzazione di oggetti del patrimonio culturale",
+        "title_it": "Il Rinascimento Digitale di Ulisse Aldrovandi - Acquisizione e digitalizzazione di oggetti del patrimonio culturale",
         "title_en": "The Digital Renaissance of Ulisse Aldrovandi – Acquisition and digitisation of cultural heritage objects",
+        "keywords_it": [
+            "Mostra virtuale",
+            "Digital Library",
+            "3D",
+            "Open Access"
+        ],
+        "keywords_en": [
+            "Virtual Exhibition",
+            "Digital Library",
+            "3D",
+            "Open Access"
+        ],
         "header": {
-            "title_it": "Scopri l’universo di Ulisse Aldrovandi – scienza, meraviglia e natura in un’esperienza digitale senza confini.",
-            "title_en": "Discover the universe of Ulisse Aldrovandi - science, wonder and nature in a boundless digital experience.",
-            "subtitle_it": "Un viaggio interattivo tra oggetti rari, manoscritti e modelli 3D, ispirato al lavoro di uno dei padri della scienza moderna.",
-            "subtitle_en": "An interactive journey among rare objects, manuscripts and 3D models, inspired by the work of one of the fathers of modern science."
+            "title_it": "Esplora l’eredità scientifica di Ulisse Aldrovandi attraverso una collezione digitale accessibile, interrogabile e tridimensionale.",
+            "title_en": "Explore Ulisse Aldrovandi's scientific legacy through an accessible, searchable and three-dimensional digital collection.",
+            "subtitle_it": "Una piattaforma per la consultazione e valorizzazione del patrimonio culturale scientifico: oggetti rari, manoscritti e esemplari naturalistici resi fruibili in formato 3D attraverso strumenti digitali avanzati.",
+            "subtitle_en": "A platform for the consultation and enhancement of scientific cultural heritage: rare objects, manuscripts and naturalistic specimens made available in 3D format through advanced digital tools."
         },
         "description": {
             "title_it": "Dal passato al futuro: Un continuum",
             "title_en": "From Past to Future: A Continuum",
             "text_it": [
-                "Questa piattaforma digitale nasce per rendere accessibile a tutti l’universo di Ulisse Aldrovandi: collezioni, oggetti rari, storie e modelli 3D. Un ponte tra il passato rinascimentale e il futuro della cultura digitale.",
-                "Esplora oltre 200 oggetti della collezione di Ulisse Aldrovandi. Filtra per tema, tipologia o periodo per trovare ciò che ti interessa."
+                "Questa piattaforma nasce per documentare e rendere fruibile, in formato digitale, il patrimonio materiale e intellettuale legato a Ulisse Aldrovandi.",
+                "Integra collezioni eterogenee provenienti da musei, archivi e biblioteche, in un ecosistema pensato per l’esplorazione, la ricerca e l’elaborazione critica."
             ],
             "text_en": [
-                "This digital platform was created to make Ulisse Aldrovandi's universe accessible to everyone: collections, rare objects, stories and 3D models. A bridge between the Renaissance past and the future of digital culture.",
-                "Explore over 200 objects from Ulisse Aldrovandi's collection. Filter by theme, type or period to find what interests you."
+                "This platform was created to document and make accessible, in digital format, the material and intellectual heritage related to Ulisse Aldrovandi.",
+                "It integrates heterogeneous collections from museums, archives and libraries, in an ecosystem designed for exploration, research and critical processing."
             ]
         }
     },
     {
         "id": "capellini",
         "config_path": "configs/capellini.json",
-        "title_it": "Museo Giovanni Capellini - Digitalizzazione e accesso 3D",
-        "title_en": "Giovanni Capellini Museum - Digitisation and 3D Access",
+        "title_it": "Museo Giovanni Capellini",
+        "title_en": "Giovanni Capellini Museum",
+        "keywords_it": [
+            "Digital Library",
+            "3D",
+            "Open Access"
+        ],
+        "keywords_en": [
+            "Digital Library",
+            "3D",
+            "Open Access"
+        ],
         "header": {
             "title_it": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
             "title_en": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",

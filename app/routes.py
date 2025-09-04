@@ -78,8 +78,16 @@ def homepage():
 
     lang = get_locale()
     title_key = f'title_{lang}'
+    keywords_key = f'keywords_{lang}'
     for c in collections:
         c['display_title'] = c.get(title_key, c.get('title_it'))
+        # Prepare localized keywords list if available
+        if isinstance(c.get(keywords_key), list):
+            c['display_keywords'] = c.get(keywords_key)
+        elif isinstance(c.get('keywords_it'), list):
+            c['display_keywords'] = c.get('keywords_it')
+        else:
+            c['display_keywords'] = []
     return render_template('homepage.html', collections=collections)
 
 
