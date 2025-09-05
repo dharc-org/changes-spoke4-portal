@@ -25,6 +25,14 @@
         .font-sans {
             font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
         }
+
+        /* Keep current nav item underlined using accent color */
+        header .nav-link[aria-current="page"] {
+            text-decoration: underline;
+            text-decoration-color: var(--color-accent);
+            text-underline-offset: 0.2em;
+            text-decoration-thickness: 2px;
+        }
     </style>
 </head>
 
@@ -48,7 +56,8 @@
             <nav
                 class="col-12 col-lg-3 d-flex align-items-center justify-content-lg-end px-4 py-3 border-lg-start border-dark">
                 <ul class="nav gap-3 small font-sans flex-nowrap text-nowrap">
-                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/">Il progetto</a></li>
+                    <li class="nav-item"><a class="nav-link px-0 text-body" href="./index.html" aria-current="page">The
+                            project</a></li>
                     <li class="nav-item"><a class="nav-link px-0 text-body" href="/projects">I casi
                             applicativi</a></li>
                     <li class="nav-item"><a class="nav-link px-0 text-body" href="/contact">Contatti e informazioni</a>
