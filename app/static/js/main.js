@@ -27,10 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // Skip here; charts.js will auto-initialize canvas.timeline-chart
             return;
         } else if (chartType === 'bubble') {
-            // Set a reasonable height for bubble layout (smaller on phones)
+            // Set a reasonable height based on width to avoid tall empty space on narrow screens
             if (!container.style.height) {
-                const isPhone = window.matchMedia('(max-width: 576px)').matches;
-                const h = isPhone ? 360 : 520;
+                const w = container.clientWidth || 520;
+                const h = Math.min(520, Math.max(320, Math.round(w))); // roughly square, clamped
                 container.style.height = `${h}px`;
             }
             // Clear container (SVG will be injected)
