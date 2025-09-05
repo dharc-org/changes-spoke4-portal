@@ -33,6 +33,17 @@
             text-underline-offset: 0.2em;
             text-decoration-thickness: 2px;
         }
+
+        /* Coming soon nav items: greyish, non-click look */
+        header .nav-link.coming-soon {
+            color: var(--bs-secondary-color, #6c757d) !important;
+            cursor: not-allowed;
+        }
+
+        header .nav-link.coming-soon:hover,
+        header .nav-link.coming-soon:focus {
+            text-decoration: none !important;
+        }
     </style>
 </head>
 
@@ -58,9 +69,11 @@
                 <ul class="nav gap-3 small font-sans flex-nowrap text-nowrap">
                     <li class="nav-item"><a class="nav-link px-0 text-body" href="./index.html" aria-current="page">Il
                             progetto</a></li>
-                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/projects">I casi
+                    <li class="nav-item"><a class="nav-link px-0 coming-soon" href="#" aria-disabled="true"
+                            onclick="event.preventDefault()" title="Prossimamente">I casi
                             applicativi</a></li>
-                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/contact">Contatti e informazioni</a>
+                    <li class="nav-item"><a class="nav-link px-0 coming-soon" href="#" aria-disabled="true"
+                            onclick="event.preventDefault()" title="Prossimamente">Contatti e informazioni</a>
                     </li>
                 </ul>
             </nav>
@@ -234,7 +247,7 @@
 
 
                         <p class="mb-2 font-sans mx-auto" style="max-width: 64ch;">Il progetto nasce nell’ambito
-                            dell’iniziativa nazionale CHANGES (PE5 – Spoke 4), con l’obiettivo di promuovere la
+                            dell’iniziativa nazionale CHANGES (Spoke 4), con l’obiettivo di promuovere la
                             digitalizzazione strutturata del patrimonio culturale a vocazione scientifica. Il caso
                             studio dedicato a Ulisse Aldrovandi integra tecnologie 3D, metadatazione avanzata e
                             strategie di comunicazione digitale per costruire modelli replicabili di digital twin

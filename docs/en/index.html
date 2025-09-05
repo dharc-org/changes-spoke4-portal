@@ -33,6 +33,17 @@
             text-underline-offset: 0.2em;
             text-decoration-thickness: 2px;
         }
+
+        /* Coming soon nav items: greyish, non-click look, no underline */
+        header .nav-link.coming-soon {
+            color: var(--bs-secondary-color, #6c757d) !important;
+            cursor: not-allowed;
+        }
+
+        header .nav-link.coming-soon:hover,
+        header .nav-link.coming-soon:focus {
+            text-decoration: none !important;
+        }
     </style>
 </head>
 
@@ -58,9 +69,10 @@
                 <ul class="nav gap-3 small font-sans flex-nowrap text-nowrap">
                     <li class="nav-item"><a class="nav-link px-0 text-body" href="./index.html" aria-current="page">The
                             project</a></li>
-                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/projects">I casi
-                            applicativi</a></li>
-                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/contact">Contatti e informazioni</a>
+                    <li class="nav-item"><a class="nav-link px-0 coming-soon" href="#" aria-disabled="true"
+                            onclick="event.preventDefault()" title="Coming soon">Use cases</a></li>
+                    <li class="nav-item"><a class="nav-link px-0 coming-soon" href="#" aria-disabled="true"
+                            onclick="event.preventDefault()" title="Coming soon">Contacts and information</a>
                     </li>
                 </ul>
             </nav>
@@ -234,7 +246,7 @@
 
 
                         <p class="mb-2 font-sans mx-auto" style="max-width: 64ch;">The project was born within the
-                            framework of the national CHANGES initiative (PE5 – Spoke 4), with the aim of promoting the
+                            framework of the national CHANGES initiative (Spoke 4), with the aim of promoting the
                             structured digitization of cultural heritage with a scientific vocation. The case study
                             dedicated to Ulisse Aldrovandi integrates 3D technologies, advanced metadata and digital
                             communication strategies to build replicable models of cultural digital twins. The platform
