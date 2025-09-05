@@ -34,15 +34,18 @@
             text-decoration-thickness: 2px;
         }
 
-        /* Coming soon nav items: greyish, non-click look, no underline */
-        header .nav-link.coming-soon {
-            color: var(--bs-secondary-color, #6c757d) !important;
+        /* Coming soon helpers */
+        .coming-soon {
             cursor: not-allowed;
         }
 
-        header .nav-link.coming-soon:hover,
-        header .nav-link.coming-soon:focus {
+        .coming-soon:hover,
+        .coming-soon:focus {
             text-decoration: none !important;
+        }
+
+        header .nav-link.coming-soon {
+            color: var(--bs-secondary-color, #6c757d) !important;
         }
     </style>
 </head>
@@ -417,16 +420,18 @@
         <div class="container text-center">
             <ul class="list-inline mb-0 small font-sans text-white-50">
                 <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover"
-                        href="#">Contatti</a></li>
+                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover coming-soon" href="#"
+                        aria-disabled="true" onclick="event.preventDefault()" title="Coming soon">Contacts</a></li>
                 <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover"
-                        href="#">Accessibilità</a></li>
+                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover coming-soon" href="#"
+                        aria-disabled="true" onclick="event.preventDefault()" title="Coming soon">Accessibility</a></li>
                 <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" href="#">Licenze</a>
+                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover coming-soon" href="#"
+                        aria-disabled="true" onclick="event.preventDefault()" title="Coming soon">Licences</a>
                 </li>
                 <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" href="#">Credits</a>
+                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover coming-soon" href="#"
+                        aria-disabled="true" onclick="event.preventDefault()" title="Coming soon">Credits</a>
                 </li>
             </ul>
         </div>
