@@ -101,8 +101,18 @@
             }
 
             .overview-section {
-                padding: 4rem 1rem;
+                padding: 3rem 1rem;
                 border-bottom: 1px solid var(--bs-dark);
+            }
+
+            @media (max-width: 576px) {
+                .overview-section {
+                    padding: 2rem 0.5rem;
+                }
+
+                .overview-section .mb-7 {
+                    margin-bottom: 1rem !important;
+                }
             }
 
             .chart-card {

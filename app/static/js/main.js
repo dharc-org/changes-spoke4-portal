@@ -27,8 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
             // Skip here; charts.js will auto-initialize canvas.timeline-chart
             return;
         } else if (chartType === 'bubble') {
-            // Set a reasonable height for bubble layout
-            if (!container.style.height) container.style.height = '520px';
+            // Set a reasonable height for bubble layout (smaller on phones)
+            if (!container.style.height) {
+                const isPhone = window.matchMedia('(max-width: 576px)').matches;
+                const h = isPhone ? 360 : 520;
+                container.style.height = `${h}px`;
+            }
             // Clear container (SVG will be injected)
             container.innerHTML = '';
             const dataJsonUrl = card.dataset.json;
