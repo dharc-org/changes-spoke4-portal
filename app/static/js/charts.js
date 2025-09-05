@@ -41,11 +41,29 @@
     const colors = ['#A62176', '#436179', '#C07F6B', '#7D725F', '#9D8F7F', '#6A9FB5', '#B77FBD', '#D2A679', '#6F9E6E', '#B55A5A', '#CDBFB0', '#EFE7DC'];
     const color = (i) => colors[i % colors.length];
 
+    const leaves = root.leaves();
     const nodes = svg.append('g')
       .selectAll('g')
-      .data(root.leaves())
+      .data(leaves)
       .join('g')
       .attr('transform', d => `translate(${d.x},${d.y})`);
+
+    // Helper to measure and truncate text so it fits inside the circle
+    const measureCtx = document.createElement('canvas').getContext('2d');
+    function truncateToWidth(text, maxPx, fontCss) {
+      const str = String(text ?? '');
+      if (!str) return '';
+      measureCtx.font = fontCss;
+      if (measureCtx.measureText(str).width <= maxPx) return str;
+      let low = 0, high = str.length;
+      while (low < high) {
+        const mid = Math.floor((low + high) / 2);
+        const candidate = str.slice(0, mid) + '…';
+        if (measureCtx.measureText(candidate).width <= maxPx) low = mid + 1; else high = mid;
+      }
+      const finalTxt = str.slice(0, Math.max(0, low - 1)) + '…';
+      return finalTxt;
+    }
 
     nodes.append('circle')
       .attr('r', d => d.r)
@@ -60,7 +78,12 @@
       .style('font-family', 'Work Sans, system-ui, sans-serif')
       .style('font-weight', 400)
       .style('font-size', d => `${Math.min(16, Math.max(10, d.r / 3))}px`)
-      .text(d => d.data.label);
+      .text(function (d) {
+        const fs = Math.min(16, Math.max(10, d.r / 3));
+        const font = `${400} ${fs}px Work Sans, system-ui, sans-serif`;
+        const maxWidth = Math.max(0, 2 * (d.r - 6));
+        return truncateToWidth(d.data.label, maxWidth, font);
+      });
 
     nodes.filter(d => d.r >= 26).append('text')
       .attr('text-anchor', 'middle')
