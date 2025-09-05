@@ -261,12 +261,12 @@
                     data-endpoint="{{ viz.sparql_endpoint }}" {% if viz.data_json %} data-json="{{ viz.data_json }}" {%
                     endif %}>
                     <div class="row gx-2 gy-3 align-items-start">
+                        {% set vtitle = viz.title and (viz.title[lang] or viz.title['it']) %}
+                        {% if vtitle %}<p class="mb-7 text-center">{{ vtitle }}</p>{% endif %}
                         <div class="col-12 col-lg-8 d-flex justify-content-lg-end">
                             <div id="chart-{{ loop.index }}"></div>
                         </div>
                         <div class="col-12 col-lg-4">
-                            {% set vtitle = viz.title and (viz.title[lang] or viz.title['it']) %}
-                            {% if vtitle %}<h3 class="h6 mb-2">{{ vtitle }}</h3>{% endif %}
                             {% if viz.text %}
                             {% set vtext = viz.text[lang] or viz.text['it'] %}
                             {% if vtext is string %}
