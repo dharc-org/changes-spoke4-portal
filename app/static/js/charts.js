@@ -70,37 +70,86 @@
       .attr('fill', (d, i) => color(i))
       .attr('fill-opacity', 0.85);
 
-    // Labels: big bubbles -> label (normal) + count (bold). Medium -> count (bold)
-    nodes.filter(d => d.r >= 26).append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '-0.2em')
-      .attr('fill', '#fff')
-      .style('font-family', 'Work Sans, system-ui, sans-serif')
-      .style('font-weight', 400)
-      .style('font-size', d => `${Math.min(16, Math.max(10, d.r / 3))}px`)
-      .text(function (d) {
-        const fs = Math.min(16, Math.max(10, d.r / 3));
-        const font = `${400} ${fs}px Work Sans, system-ui, sans-serif`;
-        const maxWidth = Math.max(0, 2 * (d.r - 6));
-        return truncateToWidth(d.data.label, maxWidth, font);
+    // Labels: big bubbles -> multi-line label + count below
+    function wrapLines(text, maxWidth, fontCss, maxLines) {
+      measureCtx.font = fontCss;
+      const words = String(text || '').split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = '';
+      for (let i = 0; i < words.length; i++) {
+        const test = line ? line + ' ' + words[i] : words[i];
+        if (measureCtx.measureText(test).width <= maxWidth) {
+          line = test;
+        } else {
+          if (line) lines.push(line);
+          // If a single word is longer than maxWidth, hard-truncate it
+          if (measureCtx.measureText(words[i]).width > maxWidth) {
+            lines.push(truncateToWidth(words[i], maxWidth, fontCss));
+            line = '';
+          } else {
+            line = words[i];
+          }
+        }
+      }
+      if (line) lines.push(line);
+      if (lines.length > maxLines) {
+        const kept = lines.slice(0, maxLines - 1);
+        const rest = lines.slice(maxLines - 1).join(' ');
+        kept.push(truncateToWidth(rest, maxWidth, fontCss));
+        return kept;
+      }
+      return lines;
+    }
+
+    nodes.filter(d => d.r >= 26).each(function (d) {
+      const g = d3.select(this);
+      const pad = 6;
+      const maxWidth = Math.max(0, 2 * (d.r - pad));
+      // Slightly smaller fonts to improve centering and fit
+      const fsLabel = Math.min(15, Math.max(9, d.r / 3.6));
+      const fsCount = Math.min(16, Math.max(10, d.r / 3.5));
+      const lineHeight = fsLabel * 1.15;
+      const gap = Math.max(2, fsLabel * 0.25);
+      const availH = Math.max(0, 2 * (d.r - pad));
+      const maxLines = Math.max(1, Math.floor((availH - fsCount - gap) / lineHeight));
+      const fontCss = `${400} ${fsLabel}px Work Sans, system-ui, sans-serif`;
+      const lines = wrapLines(d.data.label, maxWidth, fontCss, maxLines);
+      const totalH = lines.length * lineHeight + gap + fsCount;
+      // Center the block: use middle baseline for more consistent alignment
+      const startY = -totalH / 2 + lineHeight / 2;
+
+      // Render label lines
+      lines.forEach((ln, i) => {
+        g.append('text')
+          .attr('text-anchor', 'middle')
+          .attr('y', startY + i * lineHeight)
+          .attr('dominant-baseline', 'middle')
+          .attr('fill', '#fff')
+          .style('font-family', 'Work Sans, system-ui, sans-serif')
+          .style('font-weight', 400)
+          .style('font-size', `${fsLabel}px`)
+          .text(ln);
       });
 
-    nodes.filter(d => d.r >= 26).append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '1.1em')
-      .attr('fill', '#fff')
-      .style('font-family', 'Work Sans, system-ui, sans-serif')
-      .style('font-weight', 700)
-      .style('font-size', d => `${Math.min(18, Math.max(10, d.r / 3))}px`)
-      .text(d => d.data.value);
+      // Render count under label block
+      g.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('y', startY + lines.length * lineHeight + gap + fsCount / 2)
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', '#fff')
+        .style('font-family', 'Work Sans, system-ui, sans-serif')
+        .style('font-weight', 700)
+        .style('font-size', `${fsCount}px`)
+        .text(d.data.value);
+    });
 
     nodes.filter(d => d.r >= 16 && d.r < 26).append('text')
       .attr('text-anchor', 'middle')
-      .attr('dy', '0.35em')
+      .attr('dominant-baseline', 'middle')
       .attr('fill', d => d.r >= 20 ? '#fff' : '#1E1E1E')
       .style('font-family', 'Work Sans, system-ui, sans-serif')
       .style('font-weight', 700)
-      .style('font-size', d => `${Math.min(16, Math.max(10, d.r / 3))}px`)
+      .style('font-size', d => `${Math.min(15, Math.max(10, d.r / 3.6))}px`)
       .text(d => d.data.value);
 
     // Tooltip on hover
