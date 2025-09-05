@@ -95,7 +95,7 @@
         <style>
             /* Page-scoped styles for the collection overview */
             .overview-hero {
-                padding: 4rem 2rem;
+                padding: 2rem 2rem;
                 background-color: var(--bs-body-bg);
                 color: var(--bs-body-color);
             }
@@ -241,16 +241,25 @@
             }
         </style>
 
+        <!-- Language selector placed just under the header -->
+        <div>
+            <div class="container-xxl d-flex justify-content-end mt-2">
+                <div class="dropdown ms-lg-auto">
+                    <button class="btn btn-outline-dark btn-sm rounded-pill dropdown-toggle px-3" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Seleziona lingua">
+                        Italiano
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item active" aria-current="true">Italiano</span></li>
+                        <li><a class="dropdown-item" href="./docs/en/index.html">English</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <!-- Intro / hero copy -->
         <section class="overview-hero px-5">
             <div class="container-xxl">
-
-                <div class="d-flex justify-content-end mb-2">
-
-                    <a class="small text-body text-decoration-none" href="./docs/en/index.html"
-                        aria-label="English version">EN</a>
-
-                </div>
 
                 <div class="row g-4 align-items-center">
                     <div class="col-12 col-lg-8 mx-auto text-center">
@@ -263,8 +272,8 @@
                             strategie di comunicazione digitale per costruire modelli replicabili di digital twin
                             culturali. La piattaforma è pensata per ricercatori, curatori, studenti e istituzioni
                             culturali interessate a strumenti di consultazione, analisi e narrazione dei dati.</p>
-
                     </div>
+
                 </div>
             </div>
 

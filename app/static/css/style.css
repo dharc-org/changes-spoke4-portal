@@ -71,6 +71,45 @@ header .nav-link:focus {
     /* optional thickness */
 }
 
+/* Dropdown: keep active item styled like the button (primary color text, no blue bg) */
+.dropdown-menu .dropdown-item.active,
+.dropdown-menu .dropdown-item:active {
+    background-color: var(--color-primary) !important;
+    color: var(--color-secondary) !important;
+}
+
+.dropdown-menu .dropdown-item.active:hover {
+    background-color: var(--color-primary) !important;
+    color: var(--color-secondary) !important;
+}
+
+/* Language dropdown: Work Sans, smaller, and menu matches button width */
+.dropdown .btn {
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: 0.85rem;
+}
+
+.dropdown-menu {
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: 0.85rem;
+    /* smaller than default */
+    padding: .25rem;
+    /* tighter top/bottom spacing */
+    width: 100%;
+    min-width: 100% !important;
+    /* match trigger width */
+}
+
+.dropdown-menu .dropdown-item {
+    padding: .25rem .5rem;
+    /* reduce vertical padding */
+}
+
+/* Make the language button corners less round even if .rounded-pill is present */
+.dropdown .btn.rounded-pill {
+    border-radius: .5rem !important;
+}
+
 /* Self-hosted fonts (place files under app/static/fonts/...) */
 @font-face {
     font-family: 'PT Serif';
