@@ -1,5 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
+<style>
+    #filters {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        /* or 100% if container already fills viewport */
+        overflow: hidden;
+        /* prevent full sidebar scroll */
+    }
+
+    /* Make the filter list scrollable */
+    #filter-groups {
+        overflow-y: auto;
+        flex-grow: 1;
+        min-height: 0;
+        /* critical for scrolling inside flex */
+    }
+
+    /* Ensure button does not shrink */
+    #apply-filters {
+        flex-shrink: 0;
+    }
+</style>
 <div class="container-fluid h-100">
     <div class="row h-100">
 

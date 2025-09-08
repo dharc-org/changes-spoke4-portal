@@ -2,6 +2,11 @@
 
 {% block title %}{{ overview['title_' + lang] or gettext('Dettagli di progetto') }}{% endblock %}
 
+{% from 'macros/header_brand.html' import header_brand_collection %}
+{% block header_brand %}
+{{ header_brand_collection(collection_meta.id, collection_meta.image, collection_meta.nav_title) }}
+{% endblock %}
+
 {% block extra_head %}
 <!-- Local vendor libraries only (no CDNs) -->
 <script src="{{ url_for('static', filename='vendor/d3/d3.v7.min.js') }}" defer></script>

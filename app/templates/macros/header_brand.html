@@ -1,0 +1,12 @@
+{% macro header_brand_collection(brand_id, brand_image, brand_label) -%}
+<a href="{{ url_for('main.collection_home', collection_id=brand_id) }}"
+    class="d-inline-flex align-items-center text-body text-decoration-none">
+    {% if brand_image %}
+    <img src="{{ url_for('static', filename=brand_image) }}" alt="{{ brand_label }}" class="me-2"
+        style="width:28px;height:28px;object-fit:cover;border-radius:4px;" />
+    {% else %}
+    <span class="rounded-circle bg-dark me-2" style="width:16px;height:16px;"></span>
+    {% endif %}
+    <span class="fw-semibold">{{ brand_label }}</span>
+</a>
+{%- endmacro %}

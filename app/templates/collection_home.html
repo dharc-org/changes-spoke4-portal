@@ -2,6 +2,11 @@
 
 {% block title %}{{ collection.display_title or collection.header_title }}{% endblock %}
 
+{% from 'macros/header_brand.html' import header_brand_collection %}
+{% block header_brand %}
+{{ header_brand_collection(collection.id, collection.image, collection.nav_title or collection.display_title) }}
+{% endblock %}
+
 {% block content %}
 <style>
     /* Page-scoped styles for the collection home */

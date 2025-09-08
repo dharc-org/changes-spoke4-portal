@@ -100,6 +100,9 @@ def collection_home(collection_id):
         abort(404)
 
     lang = get_locale()
+    # Optional short nav title; fallback to localized title
+    nav_title = collection.get(f'nav_title_{lang}', collection.get(
+        f'title_{lang}', collection['title_it']))
     collection_data = {
         'id': collection['id'],
         'display_title': collection.get(f'title_{lang}', collection['title_it']),
@@ -107,6 +110,8 @@ def collection_home(collection_id):
         'header_subtitle': collection['header'].get(f'subtitle_{lang}', collection['header']['subtitle_it']),
         'description_title': collection['description'].get(f'title_{lang}', collection['description']['title_it']),
         'description_text': collection['description'].get(f'text_{lang}', collection['description']['text_it']),
+        'image': collection.get('image'),
+        'nav_title': nav_title,
         # Derive links from routes to avoid drift/typos
         'overview_link': url_for('main.collection_overview', collection_id=collection['id']),
         'catalogue_link': url_for('main.catalogue', collection_id=collection['id']),
@@ -131,11 +136,18 @@ def collection_overview(collection_id):
     visualizations = config.get('visualizations', [])
     overview = config.get('overview', {})
     lang = get_locale()
+    nav_title = collection.get(f'nav_title_{lang}', collection.get(
+        f'title_{lang}', collection['title_it']))
     return render_template(
         'collection_overview.html',
         visualizations=visualizations,
         overview=overview,
-        lang=lang
+        lang=lang,
+        collection_meta={
+            'id': collection['id'],
+            'image': collection.get('image'),
+            'nav_title': nav_title
+        }
     )
 
 
