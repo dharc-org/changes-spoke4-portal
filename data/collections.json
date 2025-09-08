@@ -40,6 +40,7 @@
         "config_path": "configs/capellini.json",
         "title_it": "Museo Giovanni Capellini",
         "title_en": "Giovanni Capellini Museum",
+        "coming_soon": true,
         "keywords_it": [
             "Digital Library",
             "3D",

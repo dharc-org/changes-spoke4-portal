@@ -110,6 +110,24 @@ header .nav-link:focus {
     border-radius: .5rem !important;
 }
 
+/* Homepage: visually mark cards that are not yet available */
+.coming-soon-card {
+    opacity: .65;
+    filter: grayscale(0.25);
+    border-style: dashed !important;
+    cursor: not-allowed;
+}
+
+.coming-soon-card .link-dark,
+.coming-soon-card a {
+    pointer-events: none;
+}
+
+.coming-soon-badge {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+}
+
 /* Self-hosted fonts (place files under app/static/fonts/...) */
 @font-face {
     font-family: 'PT Serif';

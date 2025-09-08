@@ -58,7 +58,13 @@
     <div class="row gy-4 justify-content-center">
         {% for c in collections %}
         <div class="col-12 col-md-6 col-lg-6 col-xl-5 d-flex">
-            <div class="card border border-dark shadow-0 h-100 w-100">
+            <div class="card border border-dark shadow-0 h-100 w-100 {% if c.get('coming_soon') %}coming-soon-card position-relative{% endif %}"
+                aria-disabled="{{ 'true' if c.get('coming_soon') else 'false' }}">
+                {% if c.get('coming_soon') %}
+                <span
+                    class="badge text-bg-light border border-dark position-absolute top-0 end-0 m-2 small coming-soon-badge">{{
+                    gettext('Prossimamente') }}</span>
+                {% endif %}
                 <div class="card-body d-flex gap-3 align-items-start">
                     <div class="bg-dark rounded flex-shrink-0" style="width:96px;height:64px;"></div>
                     <div class="flex-grow-1">
@@ -66,9 +72,13 @@
                         <p class="mb-2 small text-body-secondary font-sans">{% if c.display_keywords %}{{
                             c.display_keywords | join(' • ') }}{% endif %}</p>
                         <p class="mb-2 small text-body-secondary font-sans">Digital Library • 3D • Open Access</p>
+                        {% if c.get('coming_soon') %}
+                        <span class="text-body-secondary small font-sans" aria-disabled="true">{{
+                            gettext('Prossimamente') }}</span>
+                        {% else %}
                         <a href="{{ url_for('main.collection_home', collection_id=c.id) }}"
-                            class="link-dark fw-semibold font-sans text-decoration-none">{{ gettext('Esplora') }}
-                            →</a>
+                            class="link-dark fw-semibold font-sans text-decoration-none">{{ gettext('Esplora') }} →</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
