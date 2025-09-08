@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, jsonify, request, url_for
+from flask import Blueprint, render_template, abort, jsonify, request, url_for, redirect, make_response
 import json
 import os
 from .extensions import get_locale
@@ -190,3 +190,23 @@ def get_filters(collection_id):
         results.append(entry)
 
     return jsonify(results)
+
+
+@main.route('/set-language/<lang>')
+def set_language(lang: str):
+    """Persist user language preference in a cookie and redirect back.
+
+    Only 'it' and 'en' are accepted; invalid values are ignored.
+    """
+    lang = (lang or '').lower()
+    if lang not in {"it", "en"}:
+        # Ignore invalid values; just go back without setting cookie
+        target = request.referrer or url_for('main.homepage')
+        return redirect(target)
+
+    target = request.referrer or url_for('main.homepage')
+    resp = make_response(redirect(target))
+    # 180 days
+    resp.set_cookie('lang', lang, max_age=60 * 60 *
+                    24 * 180, path='/', samesite='Lax')
+    return resp

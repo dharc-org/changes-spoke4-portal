@@ -39,17 +39,40 @@
             <div
                 class="d-none d-lg-flex col-lg-6 align-items-center justify-content-center px-4 py-3 border-lg-start border-lg-end border-dark">
             </div>
-            <!-- Navigation -->
+            <!-- Navigation + Language -->
             <nav
-                class="col-12 col-lg-3 d-flex align-items-center justify-content-lg-end px-4 py-3 border-lg-start border-dark">
-                <ul class="nav gap-3 small font-sans flex-nowrap text-nowrap">
-                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/">{{ gettext('Il progetto')
-                            }}</a></li>
+                class="col-12 col-lg-3 d-flex align-items-center justify-content-between justify-content-lg-end pl-4 py-3 border-lg-start border-dark gap-3">
+                <ul class="nav gap-3 small font-sans flex-nowrap text-nowrap mb-0">
+                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/">{{ gettext('Il progetto') }}</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link px-0 text-body" href="/projects">{{ gettext('I casi
                             applicativi') }}</a></li>
-                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/contact">{{
-                            gettext('Contatti e informazioni') }}</a></li>
+                    <li class="nav-item"><a class="nav-link px-0 text-body" href="/contact">{{ gettext('Contatti e
+                            informazioni') }}</a></li>
                 </ul>
+                {% set _lang = get_locale() %}
+                <div class="dropdown ms-lg-3 ms-auto">
+                    <button class="btn btn-outline-dark btn-sm rounded-pill dropdown-toggle px-3" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="Select language">
+                        {{ 'IT' if _lang == 'it' else 'EN' }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            {% if _lang == 'it' %}
+                            <span class="dropdown-item active" aria-current="true">IT</span>
+                            {% else %}
+                            <a class="dropdown-item" href="{{ url_for('main.set_language', lang='it') }}">IT</a>
+                            {% endif %}
+                        </li>
+                        <li>
+                            {% if _lang == 'en' %}
+                            <span class="dropdown-item active" aria-current="true">EN</span>
+                            {% else %}
+                            <a class="dropdown-item" href="{{ url_for('main.set_language', lang='en') }}">EN</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
             </nav>
         </div>
     </header>
