@@ -2,6 +2,7 @@
     {
         "id": "aldrovandi",
         "config_path": "configs/aldrovandi.json",
+        "image": "img/logo_aldrovandi.jpg",
         "title_it": "Il Rinascimento Digitale di Ulisse Aldrovandi - Acquisizione e digitalizzazione di oggetti del patrimonio culturale",
         "title_en": "The Digital Renaissance of Ulisse Aldrovandi – Acquisition and digitisation of cultural heritage objects",
         "keywords_it": [
