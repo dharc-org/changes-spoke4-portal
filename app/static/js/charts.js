@@ -192,13 +192,46 @@
   function rgbToCss({ r, g, b }, alpha = 1) { return alpha === 1 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${alpha})`; }
   function getYearUTC(x) { const d = new Date(x); return Number.isFinite(d.getTime()) ? d.getUTCFullYear() : NaN; }
   function representativeYear(a, b) { return (a === b) ? a : Math.round((a + b) / 2); }
-  function toHalfCenturyStart(y) { return Math.floor(y / 50) * 50; }
-  function halfCenturyLabel(s) { return `${s}–${s + 49}`; }
 
-  function processToHalfCenturies(data) {
+  // Decide bin size from range aiming for a target number of bins.
+  function chooseBinSize(minYear, maxYear, opts = {}) {
+    const range = Math.max(0, (maxYear ?? 0) - (minYear ?? 0) + 1);
+    const explicit = Number(opts.binSize);
+    if (Number.isFinite(explicit) && explicit > 0) return Math.max(1, Math.floor(explicit));
+    const target = Math.max(4, Number(opts.targetBins) || 32); // aim for ~32 bins by default
+    const minBins = Math.max(3, Number(opts.minBins) || 12);
+    const maxBins = Math.max(minBins, Number(opts.maxBins) || 64);
+    const candidates = Array.isArray(opts.allowed)
+      ? opts.allowed
+      : [1, 2, 5, 10, 20, 25, 50, 75, 100, 200, 250, 500, 1000, 5000, 10000];
+    if (!range || range <= 1) return 1;
+    let best = candidates[0];
+    let bestScore = Infinity;
+    for (const s of candidates) {
+      if (!(Number.isFinite(s) && s > 0)) continue;
+      const bins = Math.ceil(range / s);
+      // Penalize outside [minBins, maxBins] harder
+      const outside = (bins < minBins) ? (minBins - bins) : (bins > maxBins ? (bins - maxBins) : 0);
+      const score = Math.abs(bins - target) + outside * 2;
+      if (score < bestScore) { bestScore = score; best = s; }
+    }
+    return best;
+  }
+
+  function floorToBinStart(y, binSize) { return Math.floor(y / binSize) * binSize; }
+  function makeBinLabel(start, binSize, clampEndToYear = null) {
+    if (binSize <= 1) return String(start);
+    let end = start + binSize - 1;
+    if (Number.isFinite(clampEndToYear)) {
+      end = Math.min(end, clampEndToYear);
+    }
+    return `${start}–${end}`;
+  }
+
+  // Generalized bucketing (e.g., 10/20/30/50-year bins)
+  function processToBins(data, opts = {}) {
     const years = [];
     for (const obj of data) {
-      // Support both mapped bindings (begin/end as strings) and nested .value
       const beginRaw = obj.begin ?? obj?.begin?.value ?? obj.start ?? obj.dateBegin ?? obj.from;
       const endRaw = obj.end ?? obj?.end?.value ?? obj.finish ?? obj.dateEnd ?? obj.to ?? beginRaw;
       if (!beginRaw || !endRaw) continue;
@@ -206,15 +239,24 @@
       if (!Number.isFinite(by) || !Number.isFinite(ey)) continue;
       years.push(representativeYear(by, ey));
     }
-    const buckets = years.map(toHalfCenturyStart);
-    if (!buckets.length) return { starts: [], labels: [], counts: [], maxCount: 0, minYear: null, maxYear: null };
-    const minB = Math.min(...buckets), maxB = Math.max(...buckets), countMap = {};
-    for (const b of buckets) countMap[b] = (countMap[b] || 0) + 1;
-    const starts = [], labels = [], counts = [];
-    for (let b = minB; b <= maxB; b += 50) { starts.push(b); labels.push(halfCenturyLabel(b)); counts.push(countMap[b] ?? 0); }
-    const maxCount = counts.length ? Math.max(...counts) : 0;
+    if (!years.length) {
+      return { starts: [], labels: [], counts: [], maxCount: 0, minYear: null, maxYear: null, binSize: 0 };
+    }
     const minYear = Math.min(...years), maxYear = Math.max(...years);
-    return { starts, labels, counts, maxCount, minYear, maxYear };
+    const binSize = chooseBinSize(minYear, maxYear, opts);
+    const countMap = {};
+    for (const y of years) {
+      const b = floorToBinStart(y, binSize);
+      countMap[b] = (countMap[b] || 0) + 1;
+    }
+    const starts = []; const labels = []; const counts = [];
+    for (let b = floorToBinStart(minYear, binSize); b <= maxYear; b += binSize) {
+      starts.push(b);
+      labels.push(makeBinLabel(b, binSize, maxYear));
+      counts.push(countMap[b] ?? 0);
+    }
+    const maxCount = counts.length ? Math.max(...counts) : 0;
+    return { starts, labels, counts, maxCount, minYear, maxYear, binSize };
   }
 
   function buildEqualWidthDatasets(starts, labels, counts, maxCount) {
@@ -246,7 +288,7 @@
     }
   };
 
-  function renderTimeline(canvas, labels, datasets) {
+  function renderTimeline(canvas, labels, datasets, tickEvery = null) {
     if (typeof Chart === 'undefined') { return; }
     Chart.register(barBackgroundPlugin);
     const ctx = canvas.getContext('2d'); if (canvas._chart) { canvas._chart.destroy(); }
@@ -254,6 +296,7 @@
     canvas.style.height = canvas.dataset.height || '160px';
     Chart.defaults.devicePixelRatio = 2;
     const n = labels.length;
+    const tickStep = Math.max(1, tickEvery || Math.ceil(n / 8));
     canvas._chart = new Chart(ctx, {
       type: 'bar', data: { labels: [''], datasets }, options: {
         responsive: true, maintainAspectRatio: false, indexAxis: 'y', layout: { padding: 5 },
@@ -265,7 +308,7 @@
               callback: (val) => {
                 const i = Math.round(val - 0.5);
                 if (!(i >= 0 && i < n)) return '';
-                if (i % 4 !== 0) return '';
+                if (i % tickStep !== 0) return '';
                 const lab = labels[i] || '';
                 const start = String(lab).split(/[^0-9]/)[0] || lab;
                 return start;
@@ -354,6 +397,15 @@
     document.querySelectorAll('canvas.timeline-chart').forEach(async (canvas) => {
       const sparql = canvas.dataset.sparql || ''; const endpoint = canvas.dataset.endpoint || '';
       const dataJson = canvas.dataset.json || '';
+      // Optional controls to influence binning behavior per chart
+      const binSizeOpt = Number(canvas.dataset.binSize);
+      const targetBinsOpt = Number(canvas.dataset.targetBins);
+      const minBinsOpt = Number(canvas.dataset.minBins);
+      const maxBinsOpt = Number(canvas.dataset.maxBins);
+      const allowedBinsOpt = (canvas.dataset.allowedBins || '')
+        .split(',')
+        .map(s => Number(s.trim()))
+        .filter(n => Number.isFinite(n) && n > 0);
       try {
         let raw;
         if (dataJson) {
@@ -377,10 +429,18 @@
         }
         const deduped = dedupeTimelineRows(raw);
         const normalized = normalizeTimelineRows(deduped);
-        const { starts, labels, counts } = processToHalfCenturies(normalized);
+        const { starts, labels, counts, binSize } = processToBins(normalized, {
+          binSize: binSizeOpt,
+          targetBins: targetBinsOpt,
+          minBins: minBinsOpt,
+          maxBins: maxBinsOpt,
+          allowed: allowedBinsOpt && allowedBinsOpt.length ? allowedBinsOpt : undefined
+        });
         if (!starts.length) { return; }
         const datasets = buildEqualWidthDatasets(starts, labels, counts, Math.max(...counts, 0));
-        renderTimeline(canvas, labels, datasets);
+        // Choose tick frequency to keep labels readable (~6–8 ticks)
+        const tickEvery = Math.max(1, Math.ceil(labels.length / 8));
+        renderTimeline(canvas, labels, datasets, tickEvery);
       } catch (e) { console.error('Timeline error:', e); }
     });
   });
