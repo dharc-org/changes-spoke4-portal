@@ -114,7 +114,7 @@
     ],
     "cards": {
         "select": "?item ?title",
-        "where": " ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?work crm:P102_has_title ?title_uri . ?title_uri crm:P2_has_type aat:300417207 ; crm:P190_has_symbolic_content ?title. FILTER( lang(?title) = \"it\")",
+        "where": " ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?work crm:P102_has_title ?title_uri . ?title_uri crm:P190_has_symbolic_content ?title. FILTER( lang(?title) = \"$LANG$\")",
         "limit": 24
     },
     "visualizations": [

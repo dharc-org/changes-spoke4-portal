@@ -4,6 +4,7 @@ import os
 from .extensions import get_locale
 from SPARQLWrapper import SPARQLWrapper, JSON
 import math
+import re
 
 # Helpers to load and validate registry/configs
 
@@ -201,7 +202,11 @@ def get_filters(collection_id):
 
         if not structure_only:
             sparql = SPARQLWrapper(config["sparql_endpoint"])
-            sparql.setQuery(group["query"])
+            # Inject dynamic language when placeholder is present
+            q = group.get("query", "")
+            if "$LANG$" in q:
+                q = q.replace("$LANG$", lang)
+            sparql.setQuery(q)
             sparql.setReturnFormat(JSON)
             raw = sparql.query().convert()
             entry["options"] = [
@@ -249,6 +254,23 @@ def _build_cards_where(base_where: str, config_filters: list, selected: dict):
     return "\n".join(parts)
 
 
+def _inject_lang(query: str, lang: str) -> str:
+    """Replace $LANG$ placeholders and simple lang(?var) = "it|en" patterns.
+
+    Keeps the rest of the query intact. Case-insensitive for the LANG function.
+    """
+    if not isinstance(query, str):
+        return query
+    out = query.replace("$LANG$", lang)
+    # Replace patterns like: lang(?title) = "it" (or EN)
+    out = re.sub(r'(?i)(lang\s*\(\s*\?[A-Za-z0-9_]+\s*\)\s*=\s*")(?:(?:it)|(?:en))("\s*)',
+                 r"\1" + lang + r"\2", out)
+    # Replace LANGMATCHES(lang(?x), "it") if present
+    out = re.sub(r'(?i)(langmatches\s*\(\s*lang\s*\(\s*\?[A-Za-z0-9_]+\s*\)\s*,\s*")(?:(?:it)|(?:en))("\s*\))',
+                 r"\1" + lang + r"\2", out)
+    return out
+
+
 @main.route("/api/<collection_id>/cards", methods=["POST"])
 def api_cards(collection_id):
     """Return paginated cards for a collection, applying selected filters.
@@ -270,9 +292,10 @@ def api_cards(collection_id):
     page = max(1, int(body.get('page') or 1))
     limit = int(config.get('cards', {}).get('limit', 24))
     offset = (page - 1) * limit
+    lang = get_locale()
 
     # Build WHERE with filters
-    base_where = config['cards']['where']
+    base_where = _inject_lang(config['cards']['where'], lang)
     where = _build_cards_where(base_where, config.get('filters', []), selected)
 
     prefixes = _sparql_prefixes()
@@ -298,7 +321,7 @@ WHERE {{
     total_pages = max(1, math.ceil(total / limit))
 
     # Fetch page of cards
-    select_clause = config['cards']['select']
+    select_clause = _inject_lang(config['cards']['select'], lang)
     data_query = f"""
 {prefixes}
 SELECT DISTINCT {select_clause}
