@@ -10,6 +10,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentPage = 1;
         await loadCards();
     });
+    const clearBtn = document.getElementById("clear-filters");
+    if (clearBtn) {
+        clearBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            document.querySelectorAll('#filter-groups input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+            currentPage = 1;
+            await loadCards();
+        });
+    }
     document.getElementById("prev-page").addEventListener("click", async () => {
         if (currentPage > 1) {
             currentPage--;
@@ -128,11 +137,16 @@ async function loadCards() {
         selectedFilters[key].push(input.value);
     });
 
-    const res = await fetch("/api/search", {
+    const res = await fetch(`/api/${COLLECTION_ID}/cards`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ filters: selectedFilters, page: currentPage })
     });
+
+    if (!res.ok) {
+        console.error("Error loading cards:", await res.text());
+        return;
+    }
 
     const { cards, totalPages } = await res.json();
     document.getElementById("page-number").textContent = `${currentPage} / ${totalPages}`;
@@ -140,15 +154,16 @@ async function loadCards() {
     const container = document.getElementById("cards-container");
     container.innerHTML = "";
 
+    console.log(cards);
+
     cards.forEach(card => {
         const col = document.createElement("div");
         col.className = "col-md-4 mb-3";
         col.innerHTML = `
-      <div class="card h-100">
+      <div class="card h-100 hover-shadow">
         <div class="card-body">
           <h5 class="card-title">${card.title}</h5>
           <p class="card-text">${card.summary}</p>
-          <a href="/object/${encodeURIComponent(card.id)}" class="btn btn-outline-primary">Vai alla scheda</a>
         </div>
       </div>`;
         container.appendChild(col);

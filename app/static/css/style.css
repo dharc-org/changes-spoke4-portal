@@ -20,6 +20,9 @@
     /* for .bg-dark/.border-dark */
     --bs-border-color: var(--color-primary);
     --bs-border-color-translucent: rgba(30, 30, 30, 0.2);
+    /* layout helpers (approx header/footer heights) */
+    --header-h: 64px;
+    --footer-h: 56px;
 }
 
 body {
@@ -159,4 +162,152 @@ header .nav-link:focus {
     font-weight: 600;
     font-style: normal;
     font-display: swap;
+}
+
+/* Catalogue sidebar (filters) */
+.catalogue-layout {
+    /* Fix the height so opening filters doesn't grow the page */
+    height: calc(100vh - var(--header-h) - var(--footer-h));
+}
+
+.catalogue-layout>.row {
+    height: 100%;
+}
+
+.catalogue-sidebar {
+    background: var(--bs-dark);
+    color: var(--color-secondary);
+    /* Stretch to match the row height */
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.catalogue-sidebar #filter-groups {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Dark, subtle scrollbars inside the sidebar (WebKit + Firefox) */
+.catalogue-sidebar #filter-groups {
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+    /* thumb | track */
+}
+
+.catalogue-sidebar #filter-groups::-webkit-scrollbar {
+    width: 10px;
+}
+
+.catalogue-sidebar #filter-groups::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.catalogue-sidebar #filter-groups::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.35);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    /* creates inset look on dark bg */
+    background-clip: content-box;
+}
+
+.catalogue-sidebar #filter-groups::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.catalogue-sidebar a {
+    color: var(--color-secondary);
+}
+
+.catalogue-sidebar a:hover {
+    color: var(--color-secondary);
+}
+
+.catalogue-sidebar .filter-toggle {
+    cursor: pointer;
+    user-select: none;
+    padding: .5rem .75rem !important;
+    background: transparent;
+    color: var(--color-secondary);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.catalogue-sidebar .filter-toggle .small,
+.catalogue-sidebar .filter-toggle .fw-bold {
+    letter-spacing: .02em;
+}
+
+.catalogue-sidebar .filter-toggle .arrow i {
+    color: var(--color-secondary);
+}
+
+.catalogue-sidebar .collapse {
+    padding: .25rem .75rem .75rem .75rem !important;
+}
+
+.catalogue-sidebar .form-check.checkbox-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    color: var(--color-secondary);
+    padding: .25rem 0;
+}
+
+.catalogue-sidebar .form-check.checkbox-right .form-check-input {
+    order: 2;
+    margin-left: .5rem;
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.75);
+}
+
+.catalogue-sidebar .form-check.checkbox-right .form-check-input:checked {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+}
+
+.catalogue-sidebar .form-check.checkbox-right .form-check-label {
+    order: 1;
+    flex: 1 1 auto;
+}
+
+.catalogue-sidebar .border-secondary {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.catalogue-sidebar a#clear-filters {
+    opacity: .9;
+}
+
+.catalogue-sidebar a#clear-filters:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Use Work Sans inside the sidebar for UI text */
+.catalogue-sidebar,
+.catalogue-sidebar * {
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+/* On small screens, fall back to natural flow */
+@media (max-width: 991.98px) {
+    .catalogue-layout {
+        height: auto;
+    }
+
+    .catalogue-layout>.row {
+        height: auto;
+    }
+
+    .catalogue-sidebar {
+        height: auto;
+    }
+
+    .catalogue-sidebar #filter-groups {
+        overflow: visible;
+    }
 }

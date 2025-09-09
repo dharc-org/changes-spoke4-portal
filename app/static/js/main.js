@@ -4,6 +4,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.Chart && window.ChartDataLabels) {
         Chart.register(ChartDataLabels);
     }
+    // Update CSS variables for header/footer heights so layouts can span viewport reliably
+    try {
+        const root = document.documentElement;
+        const header = document.querySelector('header');
+        const footer = document.querySelector('footer');
+        if (header) root.style.setProperty('--header-h', `${header.offsetHeight}px`);
+        if (footer) root.style.setProperty('--footer-h', `${footer.offsetHeight}px`);
+        window.addEventListener('resize', () => {
+            if (header) root.style.setProperty('--header-h', `${header.offsetHeight}px`);
+            if (footer) root.style.setProperty('--footer-h', `${footer.offsetHeight}px`);
+        });
+    } catch (e) { /* no-op */ }
     document.querySelectorAll(".chart-card").forEach((card, index) => {
         const chartType = card.dataset.chartType;
         let sparqlQuery = card.dataset.sparql;

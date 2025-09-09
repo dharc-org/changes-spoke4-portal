@@ -1,61 +1,45 @@
 {% extends "base.html" %}
-{% block content %}
-<style>
-    #filters {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        /* or 100% if container already fills viewport */
-        overflow: hidden;
-        /* prevent full sidebar scroll */
-    }
 
-    /* Make the filter list scrollable */
-    #filter-groups {
-        overflow-y: auto;
-        flex-grow: 1;
-        min-height: 0;
-        /* critical for scrolling inside flex */
-    }
+{% block title %}{{ gettext('Il catalogo') }}{% endblock %}
 
-    /* Ensure button does not shrink */
-    #apply-filters {
-        flex-shrink: 0;
-    }
-</style>
-<div class="container-fluid h-100">
-    <div class="row h-100">
-
-        <!-- Sidebar -->
-        <aside class="col-md-3 bg-dark text-light d-flex flex-column p-3 h-100" id="filters">
-            <h5 class='border-bottom py-3'>Filtra la collezione</h5>
-
-            <!-- This grows and scrolls -->
-            <div id="filter-groups" class="flex-grow-1 overflow-auto my-2">
-                <!-- Accordion filters here -->
-            </div>
-
-            <!-- Sticks to the bottom -->
-            <button id="apply-filters" class="btn btn-outline-light w-100 mt-auto">Applica filtri</button>
-        </aside>
-
-
-        <!-- Main content -->
-        <div class="col-md-9 p-3 d-flex flex-column">
-            <div class="d-flex justify-content-between">
-                <span id="page-indicator">Pagina <span id="page-number">1</span></span>
-                <div>
-                    <button id="prev-page" class="btn btn-sm btn-outline-secondary">←</button>
-                    <button id="next-page" class="btn btn-sm btn-outline-secondary">→</button>
-                </div>
-            </div>
-            <div class="row mt-3 flex-grow-1" id="cards-container"></div>
-        </div>
-    </div>
-</div>
-
+{% block extra_head %}
 <script>
+    // Expose collection id to catalogue.js
+    window.COLLECTION_ID = "{{ collection_id }}";
     const COLLECTION_ID = "{{ collection_id }}";
 </script>
-<script src="{{ url_for('static', filename='js/catalogue.js') }}"></script>
+<script src="{{ url_for('static', filename='js/catalogue.js') }}" defer></script>
+{% endblock %}
+
+{% from 'macros/header_brand.html' import header_brand_collection %}
+{% block header_brand %}
+{{ header_brand_collection(collection_meta.id, collection_meta.image, collection_meta.nav_title) }}
+{% endblock %}
+
+{% block content %}
+<section class="container-fluid px-0 catalogue-layout">
+    <div class="row g-0">
+        <!-- Filters sidebar -->
+        <aside class="col-12 col-lg-3 border-end border-dark bg-dark text-light catalogue-sidebar">
+            <div class="d-flex align-items-center justify-content-between px-3 py-3 border-bottom border-secondary">
+                <h2 class="h6 m-0 text-uppercase small">{{ gettext('Filtra la collezione') }}</h2>
+                <a id="clear-filters" href="#" class="small link-on-dark text-decoration-none">{{ gettext('Cancella
+                    filtri') }} <span aria-hidden="true">×</span></a>
+                <button id="apply-filters" class="btn btn-outline-light btn-sm visually-hidden">{{ gettext('Applica')
+                    }}</button>
+            </div>
+            <div id="filter-groups" class="py-2"></div>
+        </aside>
+
+        <!-- Results -->
+        <section class="col-12 col-lg-9 px-3 px-lg-4 py-3">
+            <div id="cards-container" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3"></div>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+                <button id="prev-page" class="btn btn-outline-dark btn-sm">{{ gettext('Precedente') }}</button>
+                <span class="small" id="page-number">1 / 1</span>
+                <button id="next-page" class="btn btn-outline-dark btn-sm">{{ gettext('Successivo') }}</button>
+            </div>
+        </section>
+    </div>
+</section>
 {% endblock %}

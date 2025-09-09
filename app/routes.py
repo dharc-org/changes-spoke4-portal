@@ -158,8 +158,18 @@ def catalogue(collection_id):
         (c for c in all_collections if c['id'] == collection_id), None)
     if not collection:
         abort(404)
-
-    return render_template('collection_catalogue.html', collection_id=collection_id)
+    lang = get_locale()
+    nav_title = collection.get(f'nav_title_{lang}', collection.get(
+        f'title_{lang}', collection['title_it']))
+    return render_template(
+        'collection_catalogue.html',
+        collection_id=collection_id,
+        collection_meta={
+            'id': collection['id'],
+            'image': collection.get('image'),
+            'nav_title': nav_title
+        }
+    )
 
 
 @main.route("/api/<collection_id>/filters")
@@ -202,6 +212,122 @@ def get_filters(collection_id):
         results.append(entry)
 
     return jsonify(results)
+
+
+def _sparql_prefixes():
+    return "\n".join([
+        "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>",
+        "PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/>",
+        "PREFIX aat: <http://vocab.getty.edu/page/aat/>",
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+    ])
+
+
+def _build_cards_where(base_where: str, config_filters: list, selected: dict):
+    """Combine base WHERE with filter triples and VALUES clauses.
+
+    - base_where: string with core triple patterns (from config['cards']['where'])
+    - config_filters: list of filter config objects
+    - selected: dict mapping filter key -> list of selected URIs
+    """
+    parts = [base_where.strip()]
+    if not isinstance(selected, dict):
+        selected = {}
+    # Attach triples/VALUES for each selected group
+    for group in config_filters or []:
+        key = group.get('key')
+        values = selected.get(key)
+        if not values:
+            continue
+        triples = (group.get('triples') or '').strip()
+        var = group.get('var') or ''
+        if triples:
+            parts.append(triples)
+        if var and isinstance(values, list) and values:
+            encoded = " ".join(f"<" + v + ">" for v in values)
+            parts.append(f"VALUES {var} {{ {encoded} }}")
+    return "\n".join(parts)
+
+
+@main.route("/api/<collection_id>/cards", methods=["POST"])
+def api_cards(collection_id):
+    """Return paginated cards for a collection, applying selected filters.
+
+    Expects JSON body: { filters: {key: [uris]}, page: n }
+    """
+    collection = get_collection(collection_id)
+    if not collection:
+        abort(404)
+
+    config_path = os.path.join(
+        DATA_DIR, collection["config_path"])  # absolute within repo
+    with open(config_path, encoding='utf-8') as f:
+        config = json.load(f)
+    _validate_config(config, collection_id)
+
+    body = request.get_json(silent=True) or {}
+    selected = body.get('filters') or {}
+    page = max(1, int(body.get('page') or 1))
+    limit = int(config.get('cards', {}).get('limit', 24))
+    offset = (page - 1) * limit
+
+    # Build WHERE with filters
+    base_where = config['cards']['where']
+    where = _build_cards_where(base_where, config.get('filters', []), selected)
+
+    prefixes = _sparql_prefixes()
+
+    # Count total distinct items
+    count_query = f"""
+{prefixes}
+SELECT (COUNT(DISTINCT ?item) AS ?total)
+WHERE {{
+  {where}
+}}
+"""
+
+    sparql = SPARQLWrapper(config['sparql_endpoint'])
+    sparql.setReturnFormat(JSON)
+    sparql.setQuery(count_query)
+    count_raw = sparql.query().convert()
+    total = 0
+    try:
+        total = int(count_raw['results']['bindings'][0]['total']['value'])
+    except Exception:
+        total = 0
+    total_pages = max(1, math.ceil(total / limit))
+
+    # Fetch page of cards
+    select_clause = config['cards']['select']
+    data_query = f"""
+{prefixes}
+SELECT DISTINCT {select_clause}
+WHERE {{
+  {where}
+}}
+LIMIT {limit}
+OFFSET {offset}
+"""
+    sparql.setQuery(data_query)
+    data_raw = sparql.query().convert()
+    rows = data_raw['results']['bindings']
+
+    def get_val(b, key):
+        x = b.get(key)
+        return x.get('value') if isinstance(x, dict) else None
+
+    cards = []
+    for b in rows:
+        item = get_val(b, 'item') or get_val(b, 'id') or get_val(b, 'uri')
+        title = get_val(b, 'title') or get_val(
+            b, 'label') or (item or 'Untitled')
+        cards.append({
+            'id': item,
+            'title': title,
+            'summary': ''
+        })
+
+    return jsonify({'cards': cards, 'totalPages': total_pages})
 
 
 @main.route('/set-language/<lang>')
