@@ -229,7 +229,8 @@ header .nav-link:focus {
 .catalogue-sidebar .filter-toggle {
     cursor: pointer;
     user-select: none;
-    padding: .5rem .75rem !important;
+    padding: .5rem 1rem !important;
+    /* align with sidebar header (px-3) */
     background: transparent;
     color: var(--color-secondary);
     border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -244,8 +245,42 @@ header .nav-link:focus {
     color: var(--color-secondary);
 }
 
+/* Sidebar header elements */
+.catalogue-sidebar .sidebar-title {
+    font-family: var(--font-base);
+    color: var(--color-secondary);
+    letter-spacing: .02em;
+}
+
+.catalogue-sidebar .clear-filters {
+    font-size: .8rem;
+    opacity: .9;
+}
+
+.catalogue-sidebar .clear-filters:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Apply button: smaller and using secondary color on dark */
+.catalogue-sidebar #apply-filters.btn {
+    --bs-btn-font-size: .75rem;
+    --bs-btn-padding-y: .125rem;
+    --bs-btn-padding-x: .5rem;
+    --bs-btn-color: var(--color-secondary);
+    --bs-btn-border-color: var(--color-secondary);
+    --bs-btn-hover-color: var(--color-secondary);
+    --bs-btn-hover-bg: rgba(255, 255, 255, 0.08);
+    --bs-btn-hover-border-color: var(--color-secondary);
+    --bs-btn-active-color: var(--color-secondary);
+    --bs-btn-active-bg: rgba(255, 255, 255, 0.12);
+    --bs-btn-active-border-color: var(--color-secondary);
+    --bs-btn-focus-shadow-rgb: 255, 248, 240;
+}
+
 .catalogue-sidebar .collapse {
-    padding: .25rem .75rem .75rem .75rem !important;
+    padding: .25rem 1rem .75rem 1rem !important;
+    /* align labels with sidebar header */
 }
 
 .catalogue-sidebar .form-check.checkbox-right {
@@ -255,6 +290,9 @@ header .nav-link:focus {
     gap: .5rem;
     color: var(--color-secondary);
     padding: .25rem 0;
+    /* left alignment handled by parent padding */
+    padding-right: 1rem;
+    /* match header right padding, override pe-3 */
 }
 
 .catalogue-sidebar .form-check.checkbox-right .form-check-input {
@@ -272,6 +310,8 @@ header .nav-link:focus {
 .catalogue-sidebar .form-check.checkbox-right .form-check-label {
     order: 1;
     flex: 1 1 auto;
+    color: var(--color-secondary);
+    font-weight: 400;
 }
 
 .catalogue-sidebar .border-secondary {

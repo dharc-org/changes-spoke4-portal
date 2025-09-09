@@ -53,7 +53,7 @@ async function loadFilters() {
         header.setAttribute("aria-controls", groupId);
 
         header.innerHTML = `
-      <span class="fw-bold text-uppercase small">${group.label}</span>
+      <span class="text-uppercase small filter-group-title">${group.label}</span>
       <span class="arrow" data-arrow><i class="bi bi-chevron-down"></i></span>
     `;
 
@@ -86,7 +86,7 @@ async function loadFilters() {
             group.options.forEach(opt => {
                 const id = `filter-${btoa(opt.uri)}`;
                 wrapper.innerHTML += `
-                <div class="form-check checkbox-right pe-3">
+                <div class="form-check checkbox-right pe-2">
                     <label class="form-check-label" for="${id}">${opt.label}</label>
                     <input class="form-check-input" type="checkbox" value="${opt.uri}" id="${id}" name="${group.key}">
                 </div>`;

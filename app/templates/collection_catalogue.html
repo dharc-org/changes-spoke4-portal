@@ -22,13 +22,14 @@
         <!-- Filters sidebar -->
         <aside class="col-12 col-lg-3 border-end border-dark bg-dark text-light catalogue-sidebar">
             <div class="d-flex align-items-center justify-content-between px-3 py-3 border-bottom border-secondary">
-                <h2 class="h6 m-0 text-uppercase small">{{ gettext('Filtra la collezione') }}</h2>
-                <a id="clear-filters" href="#" class="small link-on-dark text-decoration-none">{{ gettext('Cancella
-                    filtri') }} <span aria-hidden="true">×</span></a>
-                <button id="apply-filters" class="btn btn-outline-light btn-sm visually-hidden">{{ gettext('Applica')
-                    }}</button>
+                <h3 class="h6 m-0 sidebar-title">{{ gettext('Filtra la collezione') }}</h3>
+                <div class="d-flex align-items-center gap-2">
+                    <button id="apply-filters" class="btn btn-outline-light btn-sm">{{ gettext('Applica') }}</button>
+                    <a id="clear-filters" href="#" class="clear-filters link-on-dark text-decoration-none">{{
+                        gettext('Cancella') }} <span aria-hidden="true">×</span></a>
+                </div>
             </div>
-            <div id="filter-groups" class="py-2"></div>
+            <div id="filter-groups"></div>
         </aside>
 
         <!-- Results -->
