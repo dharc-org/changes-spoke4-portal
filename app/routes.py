@@ -322,12 +322,18 @@ WHERE {{
 
     # Fetch page of cards
     select_clause = _inject_lang(config['cards']['select'], lang)
+    # Order results alphabetically by title (case-insensitive). If the
+    # configured SELECT doesn't expose ?title, fall back to ?label.
+    order_var = "?title" if "?title" in select_clause else (
+        "?label" if "?label" in select_clause else None)
+
     data_query = f"""
 {prefixes}
 SELECT DISTINCT {select_clause}
 WHERE {{
   {where}
 }}
+{f'ORDER BY LCASE({order_var})' if order_var else ''}
 LIMIT {limit}
 OFFSET {offset}
 """
