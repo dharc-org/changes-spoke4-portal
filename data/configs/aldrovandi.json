@@ -93,7 +93,7 @@
             "label_en": "Subjects",
             "var": "?subject_uri",
             "triples": "?expression crm:P129_is_about ?subject_uri.",
-            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?expression crm:P129_is_about ?uri . OPTIONAL { ?uri rdfs:label ?_lbl . FILTER( lang(?_lbl) = \"$LANG$\") } BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/sub/\"), \"/\\\\d+$\", \"\"), \"_\", \"\") AS ?_fallback) BIND(COALESCE(?_lbl, ?_fallback) AS ?label) } ORDER BY ?label"
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?expression crm:P129_is_about ?uri . ?uri crm:P1_is_identified_by ?uri_appellation . ?uri_appellation crm:P190_has_symbolic_content ?label .} ORDER BY ?label"
         },
         {
             "key": "object_type",
@@ -101,15 +101,15 @@
             "label_en": "Object Type",
             "var": "?object_type_uri",
             "triples": "?manifestation crm:P2_has_type ?object_type_uri .",
-            "query": "PREFIX aat: <http://vocab.getty.edu/page/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?manifestation crm:P2_has_type ?uri . OPTIONAL { ?uri rdfs:label ?_lbl . FILTER( lang(?_lbl) = \"$LANG$\") } BIND(REPLACE(STR(?uri), \"^.*/aat/\", \"\") AS ?_fallback) BIND(COALESCE(?_lbl, ?_fallback) AS ?label) } ORDER BY ?label"
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?uri .  ?uri rdfs:label ?label . FILTER( lang(?label) = \"$LANG$\")} ORDER BY ?label"
         },
         {
             "key": "conservation_org",
             "label_it": "Ente Conservatore",
             "label_en": "Conservation Institution",
             "var": "?conservation_org_uri",
-            "triples": "?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?conservation_org_uri .",
-            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/page/aat/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?uri . OPTIONAL { ?uri rdfs:label ?_lbl . FILTER( lang(?_lbl) = \"$LANG$\") } BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/acr/\"), \"/\\\\d+$\", \"\"), \"_\", \" \") AS ?_fallback) BIND(COALESCE(?_lbl, ?_fallback) AS ?label) } ORDER BY ?label"
+            "triples": "?activity crm:P16_used_specific_object ?item ; a crm:E7_Activity ; crm:P14_carried_out_by ?conservation_org_uri .",
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/page/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; a crm:E7_Activity ; crm:P14_carried_out_by ?uri . BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/acr/\"), \"/\\\\d+$\", \"\"), \"_\", \" \") AS ?label)} "
         }
     ],
     "cards": {
