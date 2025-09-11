@@ -2,6 +2,17 @@
 
 let currentPage = 1;
 const cardsPerPage = 24;
+const UI_LOCALE = document.documentElement?.lang || 'it';
+
+function capitalizeFirst(str, locale = UI_LOCALE) {
+    if (typeof str !== 'string') return str;
+    // Preserve leading whitespace, capitalize the first visible character
+    const trimmedStart = str.trimStart();
+    const startIdx = str.length - trimmedStart.length;
+    if (trimmedStart.length === 0) return str;
+    const first = trimmedStart[0].toLocaleUpperCase(locale);
+    return str.slice(0, startIdx) + first + trimmedStart.slice(1);
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
     await loadFilters();
@@ -87,7 +98,7 @@ async function loadFilters() {
                 const id = `filter-${btoa(opt.uri)}`;
                 wrapper.innerHTML += `
                 <div class="form-check checkbox-right pe-2">
-                    <label class="form-check-label" for="${id}">${opt.label}</label>
+                    <label class="form-check-label" for="${id}">${capitalizeFirst(opt.label)}</label>
                     <input class="form-check-input" type="checkbox" value="${opt.uri}" id="${id}" name="${group.key}">
                 </div>`;
 
