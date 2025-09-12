@@ -198,22 +198,42 @@ def get_filters(collection_id):
         entry = {
             "label": group.get(f"label_{lang}", group.get("label_it")),
             "key": group["key"],
+            "type": group.get("type", "checkbox"),
         }
 
         if not structure_only:
             sparql = SPARQLWrapper(config["sparql_endpoint"])
             # Inject dynamic language when placeholder is present
             q = group.get("query", "")
-            if "$LANG$" in q:
-                q = q.replace("$LANG$", lang)
-            sparql.setQuery(q)
-            sparql.setReturnFormat(JSON)
-            raw = sparql.query().convert()
-            entry["options"] = [
-                {"label": r["label"]["value"], "uri": r["uri"]["value"]}
-                for r in raw["results"]["bindings"]
-            ]
-
+            gtype = entry["type"]
+            if gtype == "range":
+                range_q = group.get("range_query")
+                if range_q:
+                    if "$LANG$" in range_q:
+                        range_q = range_q.replace("$LANG$", lang)
+                    sparql.setQuery(range_q)
+                    sparql.setReturnFormat(JSON)
+                    raw = sparql.query().convert()
+                    b = raw["results"]["bindings"]
+                    if b:
+                        try:
+                            mn = int(float(b[0]["min"]["value"]))
+                            mx = int(float(b[0]["max"]["value"]))
+                            entry["range"] = {"min": mn, "max": mx}
+                        except Exception:
+                            pass
+            else:
+                if "$LANG$" in q:
+                    q = q.replace("$LANG$", lang)
+                sparql.setQuery(q)
+                sparql.setReturnFormat(JSON)
+                raw = sparql.query().convert()
+                entry["options"] = [
+                    {"label": r.get("label", {}).get("value"),
+                     "uri": r.get("uri", {}).get("value")}
+                    for r in raw["results"]["bindings"]
+                    if r.get("label") and r.get("uri")
+                ]
         results.append(entry)
 
     return jsonify(results)
@@ -241,15 +261,44 @@ def _build_cards_where(base_where: str, config_filters: list, selected: dict):
     # Attach triples/VALUES for each selected group
     for group in config_filters or []:
         key = group.get('key')
-        values = selected.get(key)
-        if not values:
+        sel_val = selected.get(key)
+        if not sel_val:
             continue
         triples = (group.get('triples') or '').strip()
+        gtype = (group.get('type') or 'checkbox').lower()
+        if gtype == 'range' and isinstance(sel_val, dict):
+            # Expect begin/end year overlap against provided min/max
+            min_y = sel_val.get('min')
+            max_y = sel_val.get('max')
+            # No filter if both missing or invalid
+            if min_y is None and max_y is None:
+                continue
+            if triples:
+                parts.append(triples)
+            begin_var = group.get('begin_var', '?begin')
+            end_var = group.get('end_var', '?end')
+            conds = []
+            if isinstance(min_y, (int, float, str)) and str(min_y).strip():
+                conds.append(f"YEAR({end_var}) >= {int(float(min_y))}")
+            if isinstance(max_y, (int, float, str)) and str(max_y).strip():
+                conds.append(f"YEAR({begin_var}) <= {int(float(max_y))}")
+            if conds:
+                parts.append(f"FILTER( {' && '.join(conds)} )")
+            continue
+
+        # Default: checkbox/URIs or literal VALUES
+        values = sel_val
         var = group.get('var') or ''
+        value_type = (group.get('value_type') or 'uri').lower()
         if triples:
             parts.append(triples)
         if var and isinstance(values, list) and values:
-            encoded = " ".join(f"<" + v + ">" for v in values)
+            if value_type == 'literal':
+                def _q(s):
+                    return '"' + str(s).replace('"', '\\"') + '"'
+                encoded = " ".join(_q(v) for v in values)
+            else:
+                encoded = " ".join(f"<" + v + ">" for v in values)
             parts.append(f"VALUES {var} {{ {encoded} }}")
     return "\n".join(parts)
 

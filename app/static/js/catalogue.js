@@ -14,6 +14,19 @@ function capitalizeFirst(str, locale = UI_LOCALE) {
     return str.slice(0, startIdx) + first + trimmedStart.slice(1);
 }
 
+let FILTER_GROUPS = [];
+
+function getRangeI18n() {
+    // Simple client-side i18n for range labels
+    switch ((UI_LOCALE || 'it').toLowerCase()) {
+        case 'en':
+            return { from: 'From', to: 'To' };
+        case 'it':
+        default:
+            return { from: 'Da', to: 'A' };
+    }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await loadFilters();
     await loadCards();
@@ -26,6 +39,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         clearBtn.addEventListener("click", async (e) => {
             e.preventDefault();
             document.querySelectorAll('#filter-groups input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+            // Clear range inputs
+            document.querySelectorAll('#filter-groups input[type="number"]').forEach(inp => { inp.value = ''; });
             currentPage = 1;
             await loadCards();
         });
@@ -49,6 +64,7 @@ async function loadFilters() {
     // Phase 1: Render empty filter groups
     const structureRes = await fetch(`/api/${COLLECTION_ID}/filters?structureOnly=true`);
     const groups = await structureRes.json();
+    FILTER_GROUPS = groups;
 
     for (const group of groups) {
         const groupId = `group-${group.key}`;
@@ -72,8 +88,23 @@ async function loadFilters() {
         wrapper.className = "collapse ps-2";
         wrapper.id = groupId;
 
-        // Placeholder content
-        wrapper.innerHTML = `<div class="small fst-italic py-2">Caricamento...</div>`;
+        // Placeholder content or special UI for range
+        if ((group.type || 'checkbox') === 'range') {
+            const minId = `range-${group.key}-min`;
+            const maxId = `range-${group.key}-max`;
+            const i18n = getRangeI18n();
+            wrapper.innerHTML = `
+              <div class="py-2 pe-3">
+                <div class="range-fields d-flex align-items-center gap-2 flex-wrap">
+                  <label class="form-label m-0 small" for="${minId}">${i18n.from}</label>
+                  <input type="number" inputmode="numeric" class="form-control form-control-sm year-input" id="${minId}" placeholder="min">
+                  <label class="form-label m-0 small" for="${maxId}">${i18n.to}</label>
+                  <input type="number" inputmode="numeric" class="form-control form-control-sm year-input" id="${maxId}" placeholder="max">
+                </div>
+              </div>`;
+        } else {
+            wrapper.innerHTML = `<div class="small fst-italic py-2">Caricamento...</div>`;
+        }
 
         section.appendChild(header);
         section.appendChild(wrapper);
@@ -83,6 +114,7 @@ async function loadFilters() {
     // Phase 2: Fetch actual filter values
     const fullRes = await fetch(`/api/${COLLECTION_ID}/filters`);
     const fullGroups = await fullRes.json();
+    FILTER_GROUPS = fullGroups;
 
     fullGroups.forEach(group => {
         const groupId = `group-${group.key}`;
@@ -91,7 +123,37 @@ async function loadFilters() {
 
         wrapper.innerHTML = "";  // Clear loading message
 
-        if (group.options.length === 0) {
+        if ((group.type || 'checkbox') === 'range') {
+            // Ensure the inputs exist even if Phase 1 didn't render them
+            const minId = `range-${group.key}-min`;
+            const maxId = `range-${group.key}-max`;
+            if (!wrapper.querySelector(`#${minId}`)) {
+                const i18n = getRangeI18n();
+                wrapper.innerHTML = `
+                  <div class="py-2 pe-3">
+                    <div class="range-fields d-flex align-items-center gap-2 flex-wrap">
+                      <label class="form-label m-0 small" for="${minId}">${i18n.from}</label>
+                      <input type="number" inputmode="numeric" class="form-control form-control-sm year-input" id="${minId}" placeholder="min">
+                      <label class="form-label m-0 small" for="${maxId}">${i18n.to}</label>
+                      <input type="number" inputmode="numeric" class="form-control form-control-sm year-input" id="${maxId}" placeholder="max">
+                    </div>
+                  </div>`;
+            }
+            const minEl = document.getElementById(minId);
+            const maxEl = document.getElementById(maxId);
+            const r = group.range || {};
+            if (minEl && typeof r.min === 'number') {
+                minEl.setAttribute('min', r.min);
+                minEl.setAttribute('placeholder', r.min);
+            }
+            if (maxEl && typeof r.max === 'number') {
+                maxEl.setAttribute('max', r.max);
+                maxEl.setAttribute('placeholder', r.max);
+            }
+            return;
+        }
+
+        if (!group.options || group.options.length === 0) {
             wrapper.innerHTML = `<div class="small fst-italic py-2">Nessun filtro disponibile</div>`;
         } else {
             group.options.forEach(opt => {
@@ -172,6 +234,19 @@ async function loadCards() {
         const key = input.name;
         if (!selectedFilters[key]) selectedFilters[key] = [];
         selectedFilters[key].push(input.value);
+    });
+
+    // Gather range filters
+    FILTER_GROUPS.forEach(g => {
+        if ((g.type || 'checkbox') !== 'range') return;
+        const minEl = document.getElementById(`range-${g.key}-min`);
+        const maxEl = document.getElementById(`range-${g.key}-max`);
+        if (!minEl && !maxEl) return;
+        const minV = minEl && minEl.value ? parseInt(minEl.value, 10) : null;
+        const maxV = maxEl && maxEl.value ? parseInt(maxEl.value, 10) : null;
+        if (minV != null || maxV != null) {
+            selectedFilters[g.key] = { min: minV, max: maxV };
+        }
     });
 
     const res = await fetch(`/api/${COLLECTION_ID}/cards`, {

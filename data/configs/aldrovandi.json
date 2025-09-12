@@ -104,6 +104,16 @@
             "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?uri .  ?uri rdfs:label ?label . FILTER( lang(?label) = \"$LANG$\")} ORDER BY ?label"
         },
         {
+            "key": "year",
+            "type": "range",
+            "label_it": "Periodo",
+            "label_en": "Period",
+            "triples": "?creation crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end .",
+            "begin_var": "?begin",
+            "end_var": "?end",
+            "range_query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT (MIN(YEAR(?begin)) AS ?min) (MAX(YEAR(?end)) AS ?max) WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation lrmoo:R17_created ?expression ; crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end . }"
+        },
+        {
             "key": "conservation_org",
             "label_it": "Ente Conservatore",
             "label_en": "Conservation Institution",

@@ -342,6 +342,27 @@ header .nav-link:focus {
     font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
+/* Year range inputs responsiveness */
+.catalogue-sidebar .range-fields {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.catalogue-sidebar .year-input {
+    flex: 1 1 110px;
+    min-width: 90px;
+    max-width: 140px;
+}
+
+@media (max-width: 576px) {
+    .catalogue-sidebar .year-input {
+        flex: 1 1 90px;
+        max-width: 120px;
+    }
+}
+
 /* On small screens, fall back to natural flow */
 @media (max-width: 991.98px) {
     .catalogue-layout {
