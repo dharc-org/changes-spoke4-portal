@@ -9,6 +9,9 @@
     display: none !important;
   }
 </style>
+{% if item_api and item_api.style %}
+<link rel="stylesheet" href="{{ item_api.style }}">
+{% endif %}
 {% endblock %}
 
 {% from 'macros/header_brand.html' import header_brand_collection %}
@@ -27,32 +30,10 @@
           class="link-on-dark text-decoration-none small">&larr; {{ gettext('torna alla mostra') }}</a>
       </div>
 
-      <!-- Metadata blocks (placeholder; will be fed by API) -->
-      <div class="item-sidebar-section border-bottom border-secondary px-3 py-3">
-        {% if item.technique_label %}
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="small text-uppercase opacity-75">{{ gettext('Tecnica') }}</span>
-          <span class="badge bg-secondary text-light">{{ gettext('Badge') }}</span>
-        </div>
-        <div class="small"><span class="opacity-75">{{ gettext('Tecnica') }}</span> – <span class="text-light">{{
-            item.technique_label }}</span></div>
-        {% endif %}
-        {% if item.begin or item.end %}
-        <div class="small mt-1"><span class="opacity-75">{{ gettext('Datazione') }}</span> – <span class="text-light">{{
-            item.begin }}{% if item.end and item.end != item.begin %} – {{ item.end }}{% endif %}</span></div>
-        {% endif %}
-        {% if item.conservation_org_label %}
-        <div class="small mt-1"><span class="opacity-75">{{ gettext('Ente Conservatore') }}</span> – <span
-            class="text-light">{{ item.conservation_org_label }}</span></div>
-        {% endif %}
-        <div class="small mt-1"><span class="opacity-75">URI</span> – <a href="{{ item.id }}" target="_blank"
-            rel="noopener" class="link-on-dark">{{ item.id }}</a></div>
-      </div>
-
-      <!-- Placeholder additional sections -->
-      <div class="item-sidebar-section border-bottom border-secondary px-3 py-3">
-        <div class="small opacity-75">{{ gettext('Altre informazioni (API)') }}</div>
-      </div>
+      <!-- API-driven metadata sidebar content -->
+      <div id="api-sidebar-content" class="item-sidebar-section px-3 py-3" data-api-url="{{ (item_api.url or '') }}"
+        data-config-url="{{ (item_api.config_url or '') }}" data-item-uri="{{ item.id }}"
+        data-lang="{{ get_locale() }}"></div>
     </aside>
 
     <!-- 3D viewer / media area (right) -->
@@ -61,4 +42,15 @@
     </section>
   </div>
 </section>
+{% if item_api and item_api.script %}
+<script>
+  window.MELODY_CONFIG = {
+    API_URL: {{ (item_api.url or '') | tojson }},
+  CONFIG_URL: { { (item_api.config_url or '') | tojson } },
+  ITEM_URI: { { item.id | tojson } },
+  LANG: { { get_locale() | tojson } }
+  };
+</script>
+<script src="{{ item_api.script }}" defer></script>
+{% endif %}
 {% endblock %}

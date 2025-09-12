@@ -513,5 +513,6 @@ LIMIT 1
             'id': collection['id'],
             'image': collection.get('image'),
             'nav_title': nav_title
-        }
+        },
+        item_api=config.get('item_api') or {}
     )
