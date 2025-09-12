@@ -408,4 +408,18 @@ header .nav-link:focus {
 /* Catalogue cards: primary border color */
 .catalogue-results .card {
     border-color: var(--color-primary) !important;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+/* Lift effect on hover/focus to hint clickability */
+.catalogue-results a:hover .card,
+.catalogue-results a:focus .card {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .catalogue-results .card {
+        transition: none;
+    }
 }
