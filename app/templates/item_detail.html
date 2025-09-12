@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title or 'Item' }}{% endblock %}
+
+{% from 'macros/header_brand.html' import header_brand_collection %}
+{% block header_brand %}
+{{ header_brand_collection(collection_meta.id, collection_meta.image, collection_meta.nav_title) }}
+{% endblock %}
+
+{% block content %}
+<section class="container py-3">
+  <a href="{{ url_for('main.catalogue', collection_id=collection_meta.id) }}"
+    class="link-dark text-decoration-none mb-3 d-inline-block">&larr; {{ gettext('Torna al catalogo') }}</a>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-8">
+      <h1 class="h3">{{ item.title }}</h1>
+      <dl class="row small">
+        {% if item.technique_label %}
+        <dt class="col-sm-3">{{ gettext('Tecnica') }}</dt>
+        <dd class="col-sm-9">{{ item.technique_label }}</dd>
+        {% endif %}
+        {% if item.begin or item.end %}
+        <dt class="col-sm-3">{{ gettext('Datazione') }}</dt>
+        <dd class="col-sm-9">{{ item.begin }}{% if item.end and item.end != item.begin %} – {{ item.end }}{% endif %}
+        </dd>
+        {% endif %}
+        {% if item.conservation_org_label %}
+        <dt class="col-sm-3">{{ gettext('Ente Conservatore') }}</dt>
+        <dd class="col-sm-9">{{ item.conservation_org_label }}</dd>
+        {% endif %}
+        <dt class="col-sm-3">URI</dt>
+        <dd class="col-sm-9"><a href="{{ item.id }}" target="_blank" rel="noopener" class="link-dark">{{ item.id }}</a>
+        </dd>
+      </dl>
+    </div>
+  </div>
+</section>
+{% endblock %}

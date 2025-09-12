@@ -289,13 +289,16 @@ async function loadCards() {
             .filter(Boolean)
             .map(escapeHtml);
         const meta = metaParts.join(' • ');
+        const href = `/collection/${COLLECTION_ID}/item?uri=${encodeURIComponent(card.id)}`;
         col.innerHTML = `
-      <div class="card h-100 hover-shadow">
-        <div class="card-body">
-          <h5 class="card-title">${escapeHtml(card.title)}</h5>
-          ${meta ? `<p class="card-text card-meta">${meta}</p>` : ''}
+      <a href="${href}" class="text-decoration-none text-reset">
+        <div class="card h-100 hover-shadow">
+          <div class="card-body">
+            <h5 class="card-title">${escapeHtml(card.title)}</h5>
+            ${meta ? `<p class="card-text card-meta">${meta}</p>` : ''}
+          </div>
         </div>
-      </div>`;
+      </a>`;
         container.appendChild(col);
     });
 }

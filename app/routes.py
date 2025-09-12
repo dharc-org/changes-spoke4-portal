@@ -5,6 +5,7 @@ from .extensions import get_locale
 from SPARQLWrapper import SPARQLWrapper, JSON
 import math
 import re
+from urllib.parse import unquote
 
 # Helpers to load and validate registry/configs
 
@@ -435,3 +436,82 @@ def set_language(lang: str):
     resp.set_cookie('lang', lang, max_age=60 * 60 *
                     24 * 180, path='/', samesite='Lax')
     return resp
+
+
+@main.route('/collection/<collection_id>/item')
+def item_detail(collection_id):
+    """Simple item detail page using the same SELECT as cards.
+
+    Expects query parameter `uri` with the item URI.
+    """
+    collection = get_collection(collection_id)
+    if not collection:
+        abort(404)
+
+    item_uri = request.args.get('uri')
+    if not item_uri:
+        abort(400)
+    # Decode potential encodings from the client
+    item_uri = unquote(item_uri)
+
+    config_path = os.path.join(
+        DATA_DIR, collection["config_path"])  # absolute within repo
+    with open(config_path, encoding='utf-8') as f:
+        config = json.load(f)
+    _validate_config(config, collection_id)
+
+    lang = get_locale()
+    prefixes = _sparql_prefixes()
+    select_clause = _inject_lang(config['cards']['select'], lang)
+    base_where = _inject_lang(config['cards']['where'], lang)
+    # Constrain to single item
+    where = base_where + f"\nVALUES ?item {{ <{item_uri}> }}\n"
+
+    query = f"""
+{prefixes}
+SELECT DISTINCT {select_clause}
+WHERE {{
+  {where}
+}}
+LIMIT 1
+"""
+    sparql = SPARQLWrapper(config['sparql_endpoint'])
+    sparql.setReturnFormat(JSON)
+    sparql.setQuery(query)
+    data_raw = sparql.query().convert()
+    rows = data_raw['results']['bindings']
+
+    def get_val(b, key):
+        x = b.get(key)
+        return x.get('value') if isinstance(x, dict) else None
+
+    item = {
+        'id': item_uri,
+        'title': None,
+        'begin': None,
+        'end': None,
+        'technique_label': None,
+        'conservation_org_label': None,
+    }
+    if rows:
+        b = rows[0]
+        item.update({
+            'title': get_val(b, 'title') or get_val(b, 'label') or item_uri,
+            'begin': get_val(b, 'begin'),
+            'end': get_val(b, 'end'),
+            'technique_label': get_val(b, 'technique_label'),
+            'conservation_org_label': get_val(b, 'conservation_org_label'),
+        })
+
+    lang = get_locale()
+    nav_title = collection.get(f'nav_title_{lang}', collection.get(
+        f'title_{lang}', collection['title_it']))
+    return render_template(
+        'item_detail.html',
+        item=item,
+        collection_meta={
+            'id': collection['id'],
+            'image': collection.get('image'),
+            'nav_title': nav_title
+        }
+    )
