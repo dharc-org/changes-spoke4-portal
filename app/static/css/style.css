@@ -404,3 +404,8 @@ header .nav-link:focus {
     /* similar to .text-muted */
     margin: 0;
 }
+
+/* Catalogue cards: primary border color */
+.catalogue-results .card {
+    border-color: var(--color-primary) !important;
+}
