@@ -109,7 +109,7 @@
             "label_en": "Conservation Institution",
             "var": "?conservation_org_uri",
             "triples": "?activity crm:P16_used_specific_object ?item ; a crm:E7_Activity ; crm:P14_carried_out_by ?conservation_org_uri .",
-            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/page/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; a crm:E7_Activity ; crm:P14_carried_out_by ?uri . BIND(REPLACE(REPLACE(STRAFTER(STR(?uri), \"/acr/\"), \"/\\\\d+$\", \"\"), \"_\", \" \") AS ?label)} "
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/page/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; a crm:E7_Activity ; crm:P14_carried_out_by ?uri . ?uri crm:P1_is_identified_by ?appellation . ?appellation crm:P190_has_symbolic_content ?label.} ORDER BY ?label "
         }
     ],
     "cards": {
