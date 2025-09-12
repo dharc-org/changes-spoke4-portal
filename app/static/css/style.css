@@ -366,3 +366,20 @@ header .nav-link:focus {
         padding-bottom: 0;
     }
 }
+
+/* Catalogue cards: title size and meta font */
+.catalogue-results .card-title {
+    font-family: 'PT Serif', serif;
+    font-size: 1rem;
+    /* smaller title */
+    line-height: 1.25;
+    margin-bottom: .25rem;
+}
+
+.catalogue-results .card-meta {
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: .75rem;
+    color: #6c757d;
+    /* similar to .text-muted */
+    margin: 0;
+}

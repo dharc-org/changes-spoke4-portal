@@ -140,6 +140,32 @@ function attachArrowListeners() {
 
 
 
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
+function yearOnly(dateStr) {
+    if (!dateStr || typeof dateStr !== 'string') return null;
+    // Expecting e.g. 1500-01-01T00:00:00+00:00 -> take leading year part
+    const m = dateStr.match(/^(-?\d{1,4})/);
+    return m ? m[1] : null;
+}
+
+function formatDateRange(begin, end) {
+    const y1 = yearOnly(begin);
+    const y2 = yearOnly(end);
+    if (y1 && y2) {
+        return y1 === y2 ? y1 : `${y1}${y2}`.replace('\u0016', '–');
+    }
+    return y1 || y2 || null;
+}
+
 async function loadCards() {
     const selectedFilters = {};
     document.querySelectorAll("#filter-groups input:checked").forEach(input => {
@@ -170,11 +196,17 @@ async function loadCards() {
     cards.forEach(card => {
         const col = document.createElement("div");
         col.className = "col-md-4 mb-3";
+        const date = formatDateRange(card.begin, card.end);
+        const tech = card.technique_label ? capitalizeFirst(card.technique_label) : null;
+        const metaParts = [tech, date, card.conservation_org_label]
+            .filter(Boolean)
+            .map(escapeHtml);
+        const meta = metaParts.join(' • ');
         col.innerHTML = `
       <div class="card h-100 hover-shadow">
         <div class="card-body">
-          <h5 class="card-title">${card.title}</h5>
-          <p class="card-text">${card.summary}</p>
+          <h5 class="card-title">${escapeHtml(card.title)}</h5>
+          ${meta ? `<p class="card-text card-meta">${meta}</p>` : ''}
         </div>
       </div>`;
         container.appendChild(col);

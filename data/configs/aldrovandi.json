@@ -113,8 +113,8 @@
         }
     ],
     "cards": {
-        "select": "?item ?title",
-        "where": " ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?work crm:P102_has_title ?title_uri . ?title_uri crm:P190_has_symbolic_content ?title. FILTER( lang(?title) = \"$LANG$\")",
+        "select": "?item ?title ?begin ?end ?technique_label ?conservation_org_label",
+        "where": " ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?creation lrmoo:R17_created ?expression . ?work crm:P102_has_title ?title_uri . ?title_uri crm:P190_has_symbolic_content ?title. FILTER( lang(?title) = \"$LANG$\") OPTIONAL {?creation crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end .} OPTIONAL {?creation crm:P32_used_general_technique ?technique . ?technique rdfs:label ?technique_label . FILTER( lang(?technique_label) = \"$LANG$\")} OPTIONAL {?activity crm:P16_used_specific_object ?item  ; crm:P14_carried_out_by ?conservation_org . ?conservation_org crm:P1_is_identified_by ?org_appellation . ?org_appellation crm:P190_has_symbolic_content ?conservation_org_label.}",
         "limit": 24
     },
     "visualizations": [

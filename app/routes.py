@@ -350,9 +350,18 @@ OFFSET {offset}
         item = get_val(b, 'item') or get_val(b, 'id') or get_val(b, 'uri')
         title = get_val(b, 'title') or get_val(
             b, 'label') or (item or 'Untitled')
+        # Pass through optional metadata when present in the SELECT
+        begin = get_val(b, 'begin')
+        end = get_val(b, 'end')
+        technique_label = get_val(b, 'technique_label')
+        conservation_org_label = get_val(b, 'conservation_org_label')
         cards.append({
             'id': item,
             'title': title,
+            'begin': begin,
+            'end': end,
+            'technique_label': technique_label,
+            'conservation_org_label': conservation_org_label,
             'summary': ''
         })
 
