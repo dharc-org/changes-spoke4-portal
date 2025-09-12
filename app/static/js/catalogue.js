@@ -1,6 +1,7 @@
 // app/static/js/catalogue.js
 
 let currentPage = 1;
+let TOTAL_PAGES = 1;
 const cardsPerPage = 24;
 const UI_LOCALE = document.documentElement?.lang || 'it';
 
@@ -52,8 +53,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
     document.getElementById("next-page").addEventListener("click", async () => {
-        currentPage++;
-        await loadCards();
+        if (currentPage < TOTAL_PAGES) {
+            currentPage++;
+            await loadCards();
+        }
     });
 });
 
@@ -261,7 +264,16 @@ async function loadCards() {
     }
 
     const { cards, totalPages } = await res.json();
-    document.getElementById("page-number").textContent = `${currentPage} / ${totalPages}`;
+    TOTAL_PAGES = Math.max(1, Number(totalPages) || 1);
+    document.getElementById("page-number").textContent = `${currentPage} / ${TOTAL_PAGES}`;
+
+    // Update pagination buttons state
+    const prevBtn = document.getElementById("prev-page");
+    const nextBtn = document.getElementById("next-page");
+    prevBtn.disabled = currentPage <= 1;
+    nextBtn.disabled = currentPage >= TOTAL_PAGES;
+    prevBtn.setAttribute('aria-disabled', prevBtn.disabled ? 'true' : 'false');
+    nextBtn.setAttribute('aria-disabled', nextBtn.disabled ? 'true' : 'false');
 
     const container = document.getElementById("cards-container");
     container.innerHTML = "";
