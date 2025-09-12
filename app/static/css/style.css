@@ -423,3 +423,27 @@ header .nav-link:focus {
         transition: none;
     }
 }
+
+/* Item detail layout */
+.item-layout {
+    height: calc(100vh - var(--header-h));
+}
+
+.item-layout>.row {
+    height: 100%;
+}
+
+.item-sidebar {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.item-viewer {
+    height: 100%;
+    background: var(--color-secondary);
+}
+
+.viewer-placeholder {
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    letter-spacing: .02em;
+}

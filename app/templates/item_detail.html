@@ -2,38 +2,63 @@
 
 {% block title %}{{ item.title or 'Item' }}{% endblock %}
 
+{% block extra_head %}
+<style>
+  /* Hide global footer on item detail */
+  footer {
+    display: none !important;
+  }
+</style>
+{% endblock %}
+
 {% from 'macros/header_brand.html' import header_brand_collection %}
 {% block header_brand %}
 {{ header_brand_collection(collection_meta.id, collection_meta.image, collection_meta.nav_title) }}
 {% endblock %}
 
 {% block content %}
-<section class="container py-3">
-  <a href="{{ url_for('main.catalogue', collection_id=collection_meta.id) }}"
-    class="link-dark text-decoration-none mb-3 d-inline-block">&larr; {{ gettext('Torna al catalogo') }}</a>
+<section class="container-fluid px-0 item-layout">
+  <div class="row g-0 h-100">
+    <!-- Sidebar (left, dark) -->
+    <aside class="col-12 col-lg-4 bg-dark text-light border-end border-dark item-sidebar">
+      <div class="px-3 py-2 border-bottom border-secondary d-flex align-items-center justify-content-between">
+        <h1 class="h4 m-0">{{ item.title }}</h1>
+        <a href="{{ url_for('main.catalogue', collection_id=collection_meta.id) }}"
+          class="link-on-dark text-decoration-none small">&larr; {{ gettext('torna alla mostra') }}</a>
+      </div>
 
-  <div class="row g-3">
-    <div class="col-12 col-lg-8">
-      <h1 class="h3">{{ item.title }}</h1>
-      <dl class="row small">
+      <!-- Metadata blocks (placeholder; will be fed by API) -->
+      <div class="item-sidebar-section border-bottom border-secondary px-3 py-3">
         {% if item.technique_label %}
-        <dt class="col-sm-3">{{ gettext('Tecnica') }}</dt>
-        <dd class="col-sm-9">{{ item.technique_label }}</dd>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="small text-uppercase opacity-75">{{ gettext('Tecnica') }}</span>
+          <span class="badge bg-secondary text-light">{{ gettext('Badge') }}</span>
+        </div>
+        <div class="small"><span class="opacity-75">{{ gettext('Tecnica') }}</span> – <span class="text-light">{{
+            item.technique_label }}</span></div>
         {% endif %}
         {% if item.begin or item.end %}
-        <dt class="col-sm-3">{{ gettext('Datazione') }}</dt>
-        <dd class="col-sm-9">{{ item.begin }}{% if item.end and item.end != item.begin %} – {{ item.end }}{% endif %}
-        </dd>
+        <div class="small mt-1"><span class="opacity-75">{{ gettext('Datazione') }}</span> – <span class="text-light">{{
+            item.begin }}{% if item.end and item.end != item.begin %} – {{ item.end }}{% endif %}</span></div>
         {% endif %}
         {% if item.conservation_org_label %}
-        <dt class="col-sm-3">{{ gettext('Ente Conservatore') }}</dt>
-        <dd class="col-sm-9">{{ item.conservation_org_label }}</dd>
+        <div class="small mt-1"><span class="opacity-75">{{ gettext('Ente Conservatore') }}</span> – <span
+            class="text-light">{{ item.conservation_org_label }}</span></div>
         {% endif %}
-        <dt class="col-sm-3">URI</dt>
-        <dd class="col-sm-9"><a href="{{ item.id }}" target="_blank" rel="noopener" class="link-dark">{{ item.id }}</a>
-        </dd>
-      </dl>
-    </div>
+        <div class="small mt-1"><span class="opacity-75">URI</span> – <a href="{{ item.id }}" target="_blank"
+            rel="noopener" class="link-on-dark">{{ item.id }}</a></div>
+      </div>
+
+      <!-- Placeholder additional sections -->
+      <div class="item-sidebar-section border-bottom border-secondary px-3 py-3">
+        <div class="small opacity-75">{{ gettext('Altre informazioni (API)') }}</div>
+      </div>
+    </aside>
+
+    <!-- 3D viewer / media area (right) -->
+    <section class="col-12 col-lg-8 item-viewer d-flex align-items-center justify-content-center">
+      <div class="viewer-placeholder text-muted">{{ gettext('IMMAGINE OGGETTO (3D)') }}</div>
+    </section>
   </div>
 </section>
 {% endblock %}
