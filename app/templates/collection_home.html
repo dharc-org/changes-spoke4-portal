@@ -81,8 +81,7 @@
                 {% for paragraph in collection.description_text %}
                 <p class="mb-3 font-sans">{{ paragraph }}</p>
                 {% endfor %}
-                <a class="mt-4 d-inline-block font-sans link-on-dark link-underline-opacity-0 link-underline-opacity-75-hover"
-                    href="{{ collection.overview_link }}">
+                <a class="mt-4 d-inline-block font-sans link-on-dark" href="{{ collection.overview_link }}">
                     {{ gettext('Esplora i dettagli di progetto') }} →
                 </a>
             </div>
