@@ -131,6 +131,43 @@ header .nav-link:focus {
     color: var(--bs-body-color) !important;
 }
 
+/* Homepage collections: make cards more compact */
+.home-collections .card-body {
+    padding: 1rem 1rem;
+}
+
+.home-collections .card-body.d-flex {
+    gap: 1rem !important;
+}
+
+
+.home-collections .link-dark {
+    font-size: .9rem;
+}
+
+/* Homepage collections: target size and proportions */
+.home-collections .card {
+    width: 560px;
+    height: 200px;
+}
+
+.home-collections .row {
+    /* give cards some breathing room vertically */
+    align-items: stretch;
+}
+
+/* Ensure right column fills height and CTA/badge sits at bottom */
+.home-collections .flex-grow-1 {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.home-collections .flex-grow-1 a:last-child,
+.home-collections .flex-grow-1 span[aria-disabled]:last-child {
+    margin-top: auto;
+}
+
 /* Self-hosted fonts (place files under app/static/fonts/...) */
 @font-face {
     font-family: 'PT Serif';
