@@ -11,7 +11,7 @@
 <style>
     /* Page-scoped styles for the collection home */
     .collection-hero {
-        padding: 10rem;
+        padding: 15rem;
         background-color: var(--bs-dark);
         color: var(--color-secondary);
     }
@@ -33,7 +33,7 @@
     }
 
     .band {
-        padding: 5rem 2rem;
+        padding: 4rem 6rem;
         border-top: 1px solid var(--color-secondary);
         border-bottom: 1px solid var(--color-secondary);
         background-color: var(--bs-dark);
@@ -56,9 +56,9 @@
 </style>
 
 <!-- Hero -->
-<section class="collection-hero text-center font-sans px-5">
+<section class="collection-hero text-center font-sans">
     <div class="container-xxl">
-        <h3 class="display-8 mb-4">{{ collection.header_title }}</h3>
+        <h3 class="mx-auto mb-4" style="max-width: 60ch;">{{ collection.header_title }}</h3>
         <p class="mx-auto mb-4" style="max-width: 56ch;">
             {{ collection.header_subtitle }}
         </p>
@@ -70,10 +70,10 @@
 </section>
 
 <!-- Description band -->
-<section class="band px-5">
+<section class="band">
     <div class="container-xxl">
-        <div class="row align-items-start gy-4">
-            <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center justify-content-md-start">
+        <div class="row align-items-center justify-content-center gy-4">
+            <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center">
                 <div class="decor-circle"></div>
             </div>
             <div class="col-12 col-md-9 col-lg-7">
@@ -91,8 +91,8 @@
 </section>
 
 <!-- Partners / Credits -->
-<section class="py-5 credits px5" style="background-color: var(--bs-dark); color: var(--color-secondary);">
-    <div class="container-xxl text-center">
+<section class="py-5 credits px-5" style="background-color: var(--bs-dark); color: var(--color-secondary);">
+    <div class="container-xxl text-center py-5">
         <h3 class="h5 mb-5">{{ gettext('Partners and Credits') }}</h3>
         <div class="row g-5 justify-content-center">
             <div class="col-4 col-md-3 col-lg-2 d-flex justify-content-center">
