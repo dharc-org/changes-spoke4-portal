@@ -18,15 +18,21 @@
 .item-sidebar .metadata-caption {
   font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   text-transform: none;
-  color: rgba(255, 255, 255, .8);
+  color: var(--color-secondary);
 }
 
 .item-sidebar .metadata-content {
   color: var(--color-secondary);
+  font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
 .item-sidebar .badge {
   background-color: var(--color-accent);
+  color: var(--color-secondary);
+  font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-weight: 400;
+  border-radius: 0.1rem;
+  text-transform: uppercase;
 }
 
 .item-sidebar .sidebar-button a {
@@ -37,6 +43,10 @@
   text-decoration: none;
 }
 
-.item-sidebar .sidebar-button a:hover {
-  background: rgba(255, 255, 255, .08);
+.item-sidebar a {
+  color: var(--color-secondary);
+}
+
+.item-sidebar a:hover {
+  background-color: var(--color-accent);
 }
