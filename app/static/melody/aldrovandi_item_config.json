@@ -5,7 +5,7 @@
     "01": {
       "type": "text",
       "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
-      "query": "PREFIX aat: <http://vocab.getty.edu/page/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?content WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression ; crm:P102_has_title ?title . ?title crm:P2_has_type aat:300417207 ; crm:P190_has_symbolic_content ?content . FILTER( lang(?content) = \"$LANG$\") }",
+      "query": "PREFIX aat: <http://vocab.getty.edu/page/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?content WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression ; crm:P102_has_title ?title . ?title  crm:P190_has_symbolic_content ?content . FILTER( lang(?content) = \"$LANG$\") } LIMIT 1",
       "content": "<h1 class='sidebar-title'><<<content>>></h1>"
     },
     "02": {
