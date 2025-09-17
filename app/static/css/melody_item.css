@@ -1,4 +1,9 @@
 /* Sidebar styles for API-rendered content */
+#title-object {
+  font-family: 'PT Serif', serif;
+  color: var(--color-secondary);
+}
+
 .item-sidebar {
   background-color: var(--bs-dark);
   color: var(--color-secondary);
