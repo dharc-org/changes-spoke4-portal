@@ -442,6 +442,24 @@ header .nav-link:focus {
     margin: 0;
 }
 
+/* Accent badges for type/technique on catalogue cards */
+.catalogue-results .badge-accent {
+    background-color: var(--color-accent);
+    color: var(--color-secondary);
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    border-radius: .2rem;
+}
+
+/* Tweak badge sizing within meta line */
+.catalogue-results .card-meta .badge {
+    font-size: .6rem;
+    padding: .25em .4em;
+    line-height: 1;
+    vertical-align: middle;
+}
+
 /* Catalogue cards: primary border color */
 .catalogue-results .card {
     border-color: var(--color-primary) !important;

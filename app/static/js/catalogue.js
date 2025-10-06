@@ -286,17 +286,25 @@ async function loadCards() {
         const date = formatDateRange(card.begin, card.end);
         const type = card.type_label ? capitalizeFirst(card.type_label) : null;
         const tech = card.technique_label ? capitalizeFirst(card.technique_label) : null;
-        const metaParts = [type, tech, date, card.conservation_org_label]
+
+        // Build badges for type and technique using accent color
+        const badges = [type, tech]
+            .filter(Boolean)
+            .map(lbl => `<span class=\"badge badge-accent me-1\">${escapeHtml(lbl)}</span>`)
+            .join('');
+
+        // Remaining text meta (date, institution)
+        const metaTextParts = [date, card.conservation_org_label]
             .filter(Boolean)
             .map(escapeHtml);
-        const meta = metaParts.join(' • ');
+        const metaText = metaTextParts.join(' • ');
         const href = `/collection/${COLLECTION_ID}/item?uri=${encodeURIComponent(card.id)}`;
         col.innerHTML = `
       <a href="${href}" class="text-decoration-none text-reset">
         <div class="card h-100 hover-shadow">
           <div class="card-body">
             <h5 class="card-title">${escapeHtml(card.title)}</h5>
-            ${meta ? `<p class="card-text card-meta">${meta}</p>` : ''}
+            ${(badges || metaText) ? `<p class=\"card-text card-meta\">${badges}${metaText ? `<span class=\"meta-text\"> ${metaText}</span>` : ''}</p>` : ''}
           </div>
         </div>
       </a>`;
