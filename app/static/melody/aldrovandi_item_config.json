@@ -6,13 +6,13 @@
       "type": "text",
       "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
       "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?label WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item ; crm:P2_has_type ?type . ?type rdfs:label ?label . FILTER( lang(?label) = \"$LANG$\")}",
-      "content": "<p class='metadata-header'><span class='metadata-caption'>OGGETTO</span> – <span class='metadata-content'><<<label>>></span></p>"
+      "content": "<p class='metadata-header'><span class='metadata-caption'>OGGETTO</span> – <span class='metadata-content badge'><<<label>>></span></p>"
     },
     "02": {
       "type": "text",
       "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
       "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?label WHERE { VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?creation a lrmoo:F28_Expression_Creation ; lrmoo:R17_created ?expression ; crm:P32_used_general_technique ?technique . ?technique rdfs:label ?label . FILTER( lang(?label) = \"$LANG$\")}",
-      "content": "<p class='metadata-header'><span class='metadata-caption'>TECNICA</span> – <span class='metadata-content'><<<label>>></span></p>"
+      "content": "<p class='metadata-header'><span class='metadata-caption'>TECNICA</span> – <span class='metadata-content badge'><<<label>>></span></p>"
     },
     "03": {
       "type": "text",
