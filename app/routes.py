@@ -403,6 +403,7 @@ OFFSET {offset}
         # Pass through optional metadata when present in the SELECT
         begin = get_val(b, 'begin')
         end = get_val(b, 'end')
+        type_label = get_val(b, 'type_label')
         technique_label = get_val(b, 'technique_label')
         conservation_org_label = get_val(b, 'conservation_org_label')
         cards.append({
@@ -410,6 +411,7 @@ OFFSET {offset}
             'title': title,
             'begin': begin,
             'end': end,
+            'type_label': type_label,
             'technique_label': technique_label,
             'conservation_org_label': conservation_org_label,
             'summary': ''

@@ -284,8 +284,9 @@ async function loadCards() {
         const col = document.createElement("div");
         col.className = "col-md-4 mb-3";
         const date = formatDateRange(card.begin, card.end);
+        const type = card.type_label ? capitalizeFirst(card.type_label) : null;
         const tech = card.technique_label ? capitalizeFirst(card.technique_label) : null;
-        const metaParts = [tech, date, card.conservation_org_label]
+        const metaParts = [type, tech, date, card.conservation_org_label]
             .filter(Boolean)
             .map(escapeHtml);
         const meta = metaParts.join(' • ');
