@@ -93,25 +93,37 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-3 mt-auto">
-        <div class="container text-center">
-            <ul class="list-inline mb-0 small font-sans text-white-50">
-                <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" href="#">{{
-                        gettext('Contatti') }}</a></li>
-                <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" href="#">{{
-                        gettext('Accessibilità') }}</a></li>
-                <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" href="#">{{
-                        gettext('Licenze') }}</a></li>
-                <li class="list-inline-item mx-2"><a
-                        class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" href="#">{{
-                        gettext('Credits') }}</a></li>
-            </ul>
+    {% block footer %}
+    <!-- New footer (logos left/center, text right) -->
+    <footer class="site-footer bg-dark text-white py-5 mt-auto">
+        <style>
+            .site-footer .footer-logo {
+                height: 64px;
+                width: auto;
+            }
+
+            .site-footer .footer-logo-center {
+                height: 48px;
+                width: auto;
+            }
+        </style>
+        <div class="container-xxl">
+            <div class="row align-items-center gy-4">
+                <div class="col-12 col-md-4 d-flex justify-content-center justify-content-md-start">
+                    <img class="footer-logo" src="{{ url_for('static', filename='img/logo_unibo.png') }}"
+                        alt="{{ gettext('Logo Unibo') }}">
+                </div>
+                <div class="col-12 col-md-4 d-flex justify-content-center">
+                    <img class="footer-logo-center" src="{{ url_for('static', filename='img/logo_changes.png') }}"
+                        alt="{{ gettext('Logo Changes') }}">
+                </div>
+                <div class="col-12 col-md-4 d-flex justify-content-center justify-content-md-end">
+                    <a class="link-light small text-decoration-none" href="#">{{ gettext('contatto diretto') }}</a>
+                </div>
+            </div>
         </div>
     </footer>
+    {% endblock %}
 
     <!-- Bootstrap JS Bundle (local) -->
     <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -9,6 +9,14 @@
     const COLLECTION_ID = "{{ collection_id }}";
 </script>
 <script src="{{ url_for('static', filename='js/catalogue.js') }}" defer></script>
+<style>
+    /* On catalogue, no footer: remove reserved footer height on large screens */
+    @media (min-width: 992px) {
+        .catalogue-layout {
+            height: calc(100vh - var(--header-h));
+        }
+    }
+</style>
 {% endblock %}
 
 {% from 'macros/header_brand.html' import header_brand_collection %}
@@ -16,6 +24,9 @@
 {% block header_brand %}
 {{ header_brand_collection(collection_meta.id, collection_meta.image, collection_meta.nav_title) }}
 {% endblock %}
+
+{# Catalogue page: hide footer by overriding the block #}
+{% block footer %}{% endblock %}
 
 {% block header_links %}
 {{ header_collection_links(collection_meta.id, 'catalogue') }}
