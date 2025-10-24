@@ -88,7 +88,7 @@ async function loadFilters() {
     `;
 
         const wrapper = document.createElement("div");
-        wrapper.className = "collapse ps-2";
+        wrapper.className = "collapse ps-2 filter-target";
         wrapper.id = groupId;
 
         // Placeholder content or special UI for range

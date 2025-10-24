@@ -324,7 +324,7 @@ header .nav-link:focus {
     --bs-btn-focus-shadow-rgb: 255, 248, 240;
 }
 
-.catalogue-sidebar .collapse {
+.catalogue-sidebar .filter-target {
     padding: .25rem 1rem .75rem 1rem !important;
     /* align labels with sidebar header */
 }
