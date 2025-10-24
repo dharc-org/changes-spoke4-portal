@@ -38,6 +38,39 @@
         background-color: var(--color-accent);
     }
 
+    /* Description band carousel (cropped + overlay like homepage) */
+    .band-carousel {
+        width: 100%;
+        max-width: 434px;
+        aspect-ratio: 434 / 252;
+        border-radius: .5rem;
+        overflow: hidden;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .25);
+    }
+
+    .band-carousel .carousel-inner {
+        height: 100%;
+    }
+
+    .band-carousel .carousel-item {
+        height: 100%;
+    }
+
+    .band-carousel .carousel-item::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--color-accent);
+        opacity: .38;
+        mix-blend-mode: multiply;
+        pointer-events: none;
+    }
+
+    .carousel-item img {
+        object-fit: cover;
+        height: 100%;
+    }
+
     .band {
         padding: 4rem 6rem;
         border-top: 1px solid var(--color-secondary);
@@ -79,10 +112,32 @@
 <section class="band">
     <div class="container-xxl">
         <div class="row align-items-center justify-content-center gy-4">
-            <div class="col-12 col-md-3 col-lg-2 d-flex justify-content-center">
-                <div class="decor-circle"></div>
+            <div class="col-12 col-md-5 col-lg-5 d-flex justify-content-center justify-content-md-start">
+                {% set _slides = collection.get('carousel_images') or ['img/01.png','img/02.jpg','img/03.jpg',
+                'img/04.jpg'] %}
+                <div id="descCarousel" class="carousel slide band-carousel" data-bs-interval="false"
+                    data-bs-touch="false">
+                    <div class="carousel-inner">
+                        {% for img in _slides %}
+                        <div class="carousel-item {{ 'active' if loop.index0 == 0 else '' }}">
+                            <img src="{{ url_for('static', filename=img) }}" class="d-block w-100"
+                                alt="Slide {{ loop.index }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#descCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">{{ gettext('Precedente') }}</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#descCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">{{ gettext('Successivo') }}</span>
+                    </button>
+                </div>
             </div>
-            <div class="col-12 col-md-9 col-lg-7">
+            <div class="col-12 col-md-7 col-lg-6">
                 <h3 class="h4 mb-3">{{ collection.description_title }}</h3>
                 {% for paragraph in collection.description_text %}
                 <p class="mb-3 font-sans">{{ paragraph }}</p>

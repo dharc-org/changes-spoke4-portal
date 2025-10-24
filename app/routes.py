@@ -11,6 +11,7 @@ from urllib.parse import unquote
 
 BASE_DIR = os.path.dirname(__file__)
 DATA_DIR = os.path.join(BASE_DIR, '..', 'data')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 
 def _load_json(path):
@@ -49,6 +50,25 @@ def load_collections():
     collections = _load_json(path)
     _validate_collections(collections)
     return collections
+
+
+def _list_static_images(rel_dir):
+    """Return a list of static image paths (relative to static/) inside rel_dir.
+    Supports png, jpg, jpeg, webp. Sorted by name.
+    """
+    if not rel_dir:
+        return []
+    rel_dir = rel_dir.replace('\\', '/').lstrip('/')
+    abs_dir = os.path.join(STATIC_DIR, rel_dir)
+    if not os.path.isdir(abs_dir):
+        return []
+    allowed = {'.png', '.jpg', '.jpeg', '.webp'}
+    items = []
+    for name in os.listdir(abs_dir):
+        ext = os.path.splitext(name)[1].lower()
+        if ext in allowed:
+            items.append(f"{rel_dir}/{name}")
+    return sorted(items)
 
 
 def get_collection(collection_id):
@@ -118,6 +138,11 @@ def collection_home(collection_id):
         'overview_link': url_for('main.collection_overview', collection_id=collection['id']),
         'catalogue_link': url_for('main.catalogue', collection_id=collection['id']),
     }
+
+    # Populate optional carousel images from collection-specific directory
+    slides = _list_static_images(collection.get('carousel_dir'))
+    if slides:
+        collection_data['carousel_images'] = slides
 
     return render_template('collection_home.html', collection=collection_data)
 

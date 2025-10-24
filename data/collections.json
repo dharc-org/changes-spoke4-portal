@@ -7,6 +7,7 @@
         "title_en": "The Digital Renaissance of Ulisse Aldrovandi – Acquisition and digitisation of cultural heritage objects",
         "nav_title_it": "Mostra di Ulisse Aldrovandi",
         "nav_title_en": "Ulisse Aldrovandi Exhibition",
+        "carousel_dir": "img/aldrovandi",
         "keywords_it": [
             "Mostra virtuale",
             "Digital Library",
@@ -41,6 +42,7 @@
     {
         "id": "capellini",
         "config_path": "configs/capellini.json",
+        "carousel_dir": "img/capellini",
         "title_it": "Museo Giovanni Capellini",
         "title_en": "Giovanni Capellini Museum",
         "coming_soon": true,
