@@ -3,8 +3,14 @@
 {% block title %}{{ collection.display_title or collection.header_title }}{% endblock %}
 
 {% from 'macros/header_brand.html' import header_brand_collection %}
+{% from 'macros/header_links.html' import header_collection_links %}
 {% block header_brand %}
 {{ header_brand_collection(collection.id, collection.image, collection.nav_title or collection.display_title) }}
+{% endblock %}
+
+{# Right-side header links for collection pages #}
+{% block header_links %}
+{{ header_collection_links(collection.id, '') }}
 {% endblock %}
 
 {% block content %}

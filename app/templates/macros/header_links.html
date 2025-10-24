@@ -1,0 +1,16 @@
+{% macro header_collection_links(collection_id, active='') -%}
+<ul class="nav gap-3 small font-sans flex-nowrap text-nowrap mb-0">
+    <li class="nav-item">
+        <a class="nav-link px-0 text-body {{ 'active-accent' if active == 'home' else '' }}"
+            href="{{ url_for('main.homepage') }}">{{ gettext('Home') }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link px-0 text-body {{ 'active-accent' if active == 'overview' else '' }}"
+            href="{{ url_for('main.collection_overview', collection_id=collection_id) }}">{{ gettext('Progetto') }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link px-0 text-body {{ 'active-accent' if active == 'catalogue' else '' }}"
+            href="{{ url_for('main.catalogue', collection_id=collection_id) }}">{{ gettext('Catalogo') }}</a>
+    </li>
+</ul>
+{%- endmacro %}
