@@ -30,6 +30,34 @@
     .card .flex-grow-1 p.mb-2:first-of-type:empty+p.mb-2 {
         display: block;
     }
+
+    /* Technologies image with accent overlay matching mockup */
+    .tech-image-wrap {
+        position: relative;
+        width: 558px;
+        aspect-ratio: 558 / 324;
+        border-radius: .25rem;
+        overflow: hidden;
+        max-width: 100%;
+    }
+
+    .tech-image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .tech-image-wrap::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--color-accent);
+        opacity: .38;
+        /* optional: improve contrast on light images */
+        mix-blend-mode: multiply;
+        pointer-events: none;
+    }
 </style>
 <!-- Title & Objectives -->
 <section id="hp-hero" class="text-center pt-5 border-bottom border-dark px-5">
@@ -189,18 +217,47 @@
 <!-- Technologies -->
 <section class="py-5 my-5 px-5">
     <div class="row align-items-center g-4 justify-content-center">
-        <div class="col-12 col-md-4 col-lg-3 d-flex justify-content-center justify-content-md-start">
-            <div class="rounded-circle" style="width:72px;height:72px;background-color: var(--color-accent);"></div>
+        <div class="col-12 col-md-4 col-lg-6 d-flex justify-content-center">
+            <div class="tech-image-wrap">
+                <img src="{{ url_for('static', filename='img/01.png') }}" alt="{{ gettext('Tecnologie - immagine') }}">
+            </div>
         </div>
         <div class="col-12 col-md-8 col-lg-6">
-            <ul class="list-unstyled mb-0 font-sans">
-                <li>Technologie di acquisizione</li>
-                <li>Fotogrammetria</li>
-                <li>Scansioni a luce strutturata</li>
-                <li>Technologie di modellazione</li>
-                <li>Blender</li>
-                <li>Figma</li>
-                <li>Technologie di prototipazione</li>
+            <ul class="list-unstyled mb-0 font-sans tech-list">
+                <li class='fw-semibold'>{{ gettext('Tecnologie di acquisizione') }}</li>
+                <li><i>{{ gettext('Fotogrammetria') }}</i> — {{ gettext("Tecnica di acquisizione digitale che permette
+                    di misurare e ricostruire la forma, la posizione e le dimensioni di un oggetto o di un'area
+                    attraverso l'analisi di immagini fotografiche scattate da diverse angolazioni. Output: Serie di
+                    immagini fotografiche calibrate") }}</li>
+                <li><i>{{ gettext('Scanner a luce strutturata') }}</i> — {{ gettext("Tecnologia di scansione 3D ottica
+                    che proietta pattern luminosi sull'oggetto (griglie, punti, linee) per rilevarne la geometria
+                    superficiale tramite la deformazione del reticolo proiettato. Output: Nuvola di punti ad alta
+                    densità") }}</li>
+                <li><i>{{ gettext('Laser scanner') }}</i> — {{ gettext("Tecnologia di scansione 3D che emette un raggio
+                    laser verso la superficie di un oggetto o di un ambiente. La forma e la posizione vengono rilevate
+                    misurando il tempo di ritorno del raggio riflesso o la differenza di fase tra emissione e ritorno.
+                    Output: Nuvola di punti georeferenziata ad alta precisione") }}</li>
+
+                <li class='fw-semibold'>{{ gettext('Tecnologie di elaborazione') }}</li>
+                <li><i>{{ gettext("Software utilizzati per l'editing, l'elaborazione e l'allineamento dell'output
+                        fotogrammetrico") }}</i> — {{ gettext('Photoshop, RawTherapee, 3DF Zephyr, Metashape') }}</li>
+                <li><i>{{ gettext("Software utilizzati per l'elaborazione e l'allineamento dell'output da scanner a luce
+                        strutturata") }}</i> — {{ gettext('Artec Studio') }}</li>
+                <li><i>{{ gettext("Software utilizzati per l'elaborazione e l'allineamento dell'output da laser
+                        scanner") }}</i> — {{ gettext('SCENE') }}</li>
+                <li>{{ gettext('Output finale: Mesh 3D ad alta densità geometrica texturizzata') }}</li>
+
+                <li class='fw-semibold'>{{ gettext('Tecnologie di modellazione 3D ed esportazione') }}</li>
+                <li><i>{{ gettext('Software utilizzati') }}</i> — {{ gettext('Blender') }}</li>
+
+                <li class='fw-semibold'>{{ gettext('Tecnologie di ottimizzazione') }}</li>
+                <li><i>{{ gettext('Software utilizzati') }}</i> — {{ gettext('Instant Meshes, Photoshop, Gimp, 3DF
+                    Zephyr, Artec Studio') }}</li>
+
+                <li class='fw-semibold'>{{ gettext('Tecnologie di presentazione e sviluppo') }}</li>
+                <li><i>{{ gettext('Software utilizzati') }}</i> — {{ gettext('ATON framework, MELODY API') }}</li>
+
+                <li class='fw-semibold'>{{ gettext('Tecnologie di prototipazione') }}</li>
             </ul>
         </div>
     </div>
