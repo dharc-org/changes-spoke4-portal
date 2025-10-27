@@ -134,14 +134,16 @@
                     <div class="flex-grow-1">
                         <h2 class="h6 mb-1">{{ c.display_title }}</h2>
                         <p class="mb-2 small text-body-secondary font-sans">{% if c.display_keywords %}{{
-                            c.display_keywords | join(' • ') }}{% endif %}</p>
-                        <p class="mb-2 small text-body-secondary font-sans">Digital Library • 3D • Open Access</p>
+                            c.display_keywords | join(' Ã¢â‚¬Â¢ ') }}{% endif %}</p>
+                        <p class="mb-2 small text-body-secondary font-sans">Digital Library Ã¢â‚¬Â¢ 3D Ã¢â‚¬Â¢ Open
+                            Access</p>
                         {% if c.get('coming_soon') %}
                         <span class="text-body-secondary small font-sans" aria-disabled="true">{{
                             gettext('Prossimamente') }}</span>
                         {% else %}
                         <a href="{{ url_for('main.collection_home', collection_id=c.id) }}"
-                            class="link-dark fw-semibold font-sans text-decoration-none">{{ gettext('Esplora') }} →</a>
+                            class="link-dark fw-semibold font-sans text-decoration-none">{{ gettext('Esplora') }}
+                            Ã¢â€ â€™</a>
                         {% endif %}
                     </div>
                 </div>
@@ -159,14 +161,14 @@
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#accOne" aria-expanded="false" aria-controls="accOne">
-                    {{ gettext('Descrizione delle attività di metadatazione') }}
+                    {{ gettext('Descrizione delle attivitÃƒÂ  di metadatazione') }}
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </button>
             </h2>
             <div id="accOne" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
                 <div class="accordion-body text-body-secondary font-sans">{{ gettext('Testo segnaposto per
                     descrivere le
-                    attività di metadatazione.') }}</div>
+                    attivitÃƒÂ  di metadatazione.') }}</div>
             </div>
         </div>
         <div class="accordion-item px-3 border-bottom border-dark-subtle">
@@ -216,46 +218,43 @@
 
 <!-- Technologies -->
 <section class="py-5 my-5 px-5">
-    <div class="row align-items-center g-4 justify-content-center">
-        <div class="col-12 col-md-4 col-lg-6 d-flex justify-content-center">
+    <div class="row align-items-center g-1 justify-content-center">
+        <div class="col-12 col-md-5 col-lg-6 d-flex justify-content-center">
             <div class="tech-image-wrap">
                 <img src="{{ url_for('static', filename='img/01.png') }}" alt="{{ gettext('Tecnologie - immagine') }}">
             </div>
         </div>
-        <div class="col-12 col-md-8 col-lg-6">
+        <div class="col-12 col-md-7 col-lg-5">
             <ul class="list-unstyled mb-0 font-sans tech-list">
                 <li class='fw-semibold'>{{ gettext('Tecnologie di acquisizione') }}</li>
-                <li><i>{{ gettext('Fotogrammetria') }}</i> — {{ gettext("Tecnica di acquisizione digitale che permette
-                    di misurare e ricostruire la forma, la posizione e le dimensioni di un oggetto o di un'area
-                    attraverso l'analisi di immagini fotografiche scattate da diverse angolazioni. Output: Serie di
-                    immagini fotografiche calibrate") }}</li>
-                <li><i>{{ gettext('Scanner a luce strutturata') }}</i> — {{ gettext("Tecnologia di scansione 3D ottica
-                    che proietta pattern luminosi sull'oggetto (griglie, punti, linee) per rilevarne la geometria
-                    superficiale tramite la deformazione del reticolo proiettato. Output: Nuvola di punti ad alta
-                    densità") }}</li>
-                <li><i>{{ gettext('Laser scanner') }}</i> — {{ gettext("Tecnologia di scansione 3D che emette un raggio
-                    laser verso la superficie di un oggetto o di un ambiente. La forma e la posizione vengono rilevate
-                    misurando il tempo di ritorno del raggio riflesso o la differenza di fase tra emissione e ritorno.
-                    Output: Nuvola di punti georeferenziata ad alta precisione") }}</li>
+                <li><i>{{ gettext('Fotogrammetria') }}</i> &ndash; {{ gettext("Acquisizione digitale della forma e delle
+                    dimensioni di un oggetto tramite fotografie scattate da diverse angolazioni.") }}</li>
+                <li><i>{{ gettext('Scanner a luce strutturata') }}</i> &ndash; {{ gettext("Scansione 3D tramite
+                    proiezione
+                    di
+                    pattern luminosi per rilevare la geometria superficiale.") }}</li>
+                <li><i>{{ gettext('Laser scanner') }}</i> &ndash; {{ gettext("Rilievo 3D ad alta precisione tramite
+                    misurazione del ritorno del raggio laser.") }}</li>
 
                 <li class='fw-semibold'>{{ gettext('Tecnologie di elaborazione') }}</li>
-                <li><i>{{ gettext("Software utilizzati per l'editing, l'elaborazione e l'allineamento dell'output
-                        fotogrammetrico") }}</i> — {{ gettext('Photoshop, RawTherapee, 3DF Zephyr, Metashape') }}</li>
-                <li><i>{{ gettext("Software utilizzati per l'elaborazione e l'allineamento dell'output da scanner a luce
-                        strutturata") }}</i> — {{ gettext('Artec Studio') }}</li>
-                <li><i>{{ gettext("Software utilizzati per l'elaborazione e l'allineamento dell'output da laser
-                        scanner") }}</i> — {{ gettext('SCENE') }}</li>
-                <li>{{ gettext('Output finale: Mesh 3D ad alta densità geometrica texturizzata') }}</li>
+                <li><i>{{ gettext("Software per editing, elaborazione e allineamento output
+                        fotogrammetrico") }}</i> &ndash; {{ gettext('Photoshop, RawTherapee, 3DF Zephyr, Metashape') }}
+                </li>
+                <li><i>{{ gettext("Software per elaborazione e allineamento output da scanner a luce
+                        strutturata") }}</i> &ndash; {{ gettext('Artec Studio') }}</li>
+                <li><i>{{ gettext("Software per elaborazione e allineamento output da laser
+                        scanner") }}</i> &ndash; {{ gettext('SCENE') }}</li>
+                <li>{{ gettext('Output: Mesh 3D ad alta densitÃƒÂ  geometrica texturizzata') }}</li>
 
                 <li class='fw-semibold'>{{ gettext('Tecnologie di modellazione 3D ed esportazione') }}</li>
-                <li><i>{{ gettext('Software utilizzati') }}</i> — {{ gettext('Blender') }}</li>
+                <li><i>{{ gettext('Software') }}</i> &ndash; {{ gettext('Blender') }}</li>
 
                 <li class='fw-semibold'>{{ gettext('Tecnologie di ottimizzazione') }}</li>
-                <li><i>{{ gettext('Software utilizzati') }}</i> — {{ gettext('Instant Meshes, Photoshop, Gimp, 3DF
+                <li><i>{{ gettext('Software') }}</i> &ndash; {{ gettext('Instant Meshes, Photoshop, Gimp, 3DF
                     Zephyr, Artec Studio') }}</li>
 
                 <li class='fw-semibold'>{{ gettext('Tecnologie di presentazione e sviluppo') }}</li>
-                <li><i>{{ gettext('Software utilizzati') }}</i> — {{ gettext('ATON framework, MELODY API') }}</li>
+                <li><i>{{ gettext('Software') }}</i> &ndash; {{ gettext('ATON framework, MELODY API') }}</li>
 
                 <li class='fw-semibold'>{{ gettext('Tecnologie di prototipazione') }}</li>
             </ul>
