@@ -226,7 +226,7 @@ function formatDateRange(begin, end) {
     const y1 = yearOnly(begin);
     const y2 = yearOnly(end);
     if (y1 && y2) {
-        return y1 === y2 ? y1 : `${y1}${y2}`.replace('\u0016', '–');
+        return y1 === y2 ? y1 : `${y1}${y2}`.replace('\u0016', '-');
     }
     return y1 || y2 || null;
 }
@@ -282,29 +282,28 @@ async function loadCards() {
 
     cards.forEach(card => {
         const col = document.createElement("div");
-        col.className = "col-md-4 mb-3";
+        col.className = "col-sm-6 col-md-4 col-lg-3 mb-3";
         const date = formatDateRange(card.begin, card.end);
         const type = card.type_label ? capitalizeFirst(card.type_label) : null;
         const tech = card.technique_label ? capitalizeFirst(card.technique_label) : null;
 
-        // Build badges for type and technique using accent color
         const badges = [type, tech]
             .filter(Boolean)
-            .map(lbl => `<span class=\"badge badge-accent me-1\">${escapeHtml(lbl)}</span>`)
+            .map(lbl => `<span class="badge badge-accent me-1">${escapeHtml(lbl)}</span>`)
             .join('');
 
-        // Remaining text meta (date, institution)
         const metaTextParts = [date, card.conservation_org_label]
             .filter(Boolean)
             .map(escapeHtml);
-        const metaText = metaTextParts.join(' • ');
+        const metaText = metaTextParts.join(' \u2022 ');
         const href = `/collection/${COLLECTION_ID}/item?uri=${encodeURIComponent(card.id)}`;
         col.innerHTML = `
       <a href="${href}" class="text-decoration-none text-reset">
         <div class="card h-100 hover-shadow">
+          <div class="card-media-placeholder" aria-hidden="true"></div>
           <div class="card-body">
             <h5 class="card-title">${escapeHtml(card.title)}</h5>
-            ${(badges || metaText) ? `<p class=\"card-text card-meta\">${badges}${metaText ? `<span class=\"meta-text\"> ${metaText}</span>` : ''}</p>` : ''}
+            ${(badges || metaText) ? `<p class="card-text card-meta">${badges}${metaText ? `<span class="meta-text"> ${metaText}</span>` : ''}</p>` : ''}
           </div>
         </div>
       </a>`;

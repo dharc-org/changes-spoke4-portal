@@ -502,3 +502,19 @@ header .nav-link:focus {
     font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     letter-spacing: .02em;
 }
+
+/* Catalogue cards: top media placeholder (black block) */
+.catalogue-results .card-media-placeholder {
+    background-color: var(--color-primary);
+    width: 100%;
+    height: 140px;
+    /* matches mockup proportion */
+    border-top-left-radius: calc(var(--bs-border-radius) - 1px);
+    border-top-right-radius: calc(var(--bs-border-radius) - 1px);
+}
+
+@media (max-width: 576px) {
+    .catalogue-results .card-media-placeholder {
+        height: 120px;
+    }
+}
