@@ -84,7 +84,7 @@
       "type": "text",
       "sparql_endpoint": "http://localhost:3030/chad-kg/sparql",
       "query": "PREFIX crmdig: <http://www.ics.forth.gr/isl/CRMdig/> PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?item ?licence_label WHERE {VALUES ?item {<<<uri1>>>} ?item a lrmoo:F5_Item . ?digitisation crmdig:L1_digitized ?item ; crmdig:L11_had_output ?model . ?licence crm:P67_refers_to ?model ; crm:P1_is_identified_by ?licence_app . ?licence_app crm:P190_has_symbolic_content ?licence_label .}",
-      "content": "<p class='metadata-digitisation'><span class='metadata-caption'>LICENZA</span> <span class='metadata-content badge'><<<licence_label>>></span></p>"
+      "content": "<p class='metadata-digitisation'><span class='metadata-caption'>LICENZA OGGETTO 3D </span> <span class='metadata-content badge'><<<licence_label>>></span></p>"
     },
     "15": {
       "type": "data_viz",
