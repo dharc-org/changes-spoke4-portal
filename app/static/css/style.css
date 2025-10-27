@@ -503,7 +503,46 @@ header .nav-link:focus {
     letter-spacing: .02em;
 }
 
+
+
 /* Catalogue cards: top media placeholder (black block) */
+/* Item detail: back link with long arrow above label */
+.item-sidebar .back-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    gap: .25rem;
+    width: 120px;
+    text-decoration: none;
+}
+
+.item-sidebar .back-link .back-arrow {
+    position: relative;
+    width: 120px;
+    height: 0;
+    border-top: 1px solid var(--color-secondary);
+    opacity: .9;
+}
+
+.item-sidebar .back-link .back-arrow::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: -5px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 8px solid var(--color-secondary);
+    /* pointing left */
+}
+
+.item-sidebar .back-link .back-label {
+    white-space: nowrap;
+    line-height: 1;
+}
+
 .catalogue-results .card-media-placeholder {
     background-color: var(--color-primary);
     width: 100%;

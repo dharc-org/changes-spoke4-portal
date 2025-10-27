@@ -26,8 +26,11 @@
     <aside class="col-12 col-lg-4 bg-dark text-light border-end border-dark item-sidebar">
       <div class="px-3 py-2 border-bottom border-secondary d-flex align-items-center justify-content-between">
         <h5 class="py-2" id='title-object'>{{ item.title }}</h5>
-        <a href="{{ url_for('main.catalogue', collection_id=collection_meta.id) }}"
-          class="link-on-dark text-decoration-none small" id='back-btn'>&larr; {{ gettext('torna alla mostra') }}</a>
+        <a href="{{ url_for('main.catalogue', collection_id=collection_meta.id) }}" id="back-btn"
+          class="back-link link-on-dark text-decoration-none small">
+          <span class="back-arrow" aria-hidden="true"></span>
+          <span class="back-label">{{ gettext('torna al catalogo') }}</span>
+        </a>
       </div>
 
       <!-- API-driven metadata sidebar content -->
