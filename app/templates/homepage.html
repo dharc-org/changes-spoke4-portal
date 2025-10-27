@@ -134,8 +134,9 @@
                     <div class="flex-grow-1">
                         <h2 class="h6 mb-1">{{ c.display_title }}</h2>
                         <p class="mb-2 small text-body-secondary font-sans">{% if c.display_keywords %}{{
-                            c.display_keywords | join(' Ã¢â‚¬Â¢ ') }}{% endif %}</p>
-                        <p class="mb-2 small text-body-secondary font-sans">Digital Library Ã¢â‚¬Â¢ 3D Ã¢â‚¬Â¢ Open
+                            c.display_keywords | join(' • ') }}{% endif %}</p>
+                        <p class="mb-2 small text-body-secondary font-sans">Digital Library &bull; 3D
+                            &bull; Open
                             Access</p>
                         {% if c.get('coming_soon') %}
                         <span class="text-body-secondary small font-sans" aria-disabled="true">{{
@@ -143,7 +144,7 @@
                         {% else %}
                         <a href="{{ url_for('main.collection_home', collection_id=c.id) }}"
                             class="link-dark fw-semibold font-sans text-decoration-none">{{ gettext('Esplora') }}
-                            Ã¢â€ â€™</a>
+                            &#x2192;</a>
                         {% endif %}
                     </div>
                 </div>
@@ -161,14 +162,14 @@
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#accOne" aria-expanded="false" aria-controls="accOne">
-                    {{ gettext('Descrizione delle attivitÃƒÂ  di metadatazione') }}
+                    {{ gettext('Descrizione delle attività di metadatazione') }}
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </button>
             </h2>
             <div id="accOne" class="accordion-collapse collapse" data-bs-parent="#hpAccordion">
                 <div class="accordion-body text-body-secondary font-sans">{{ gettext('Testo segnaposto per
                     descrivere le
-                    attivitÃƒÂ  di metadatazione.') }}</div>
+                    attività di metadatazione.') }}</div>
             </div>
         </div>
         <div class="accordion-item px-3 border-bottom border-dark-subtle">
@@ -244,7 +245,7 @@
                         strutturata") }}</i> &ndash; {{ gettext('Artec Studio') }}</li>
                 <li><i>{{ gettext("Software per elaborazione e allineamento output da laser
                         scanner") }}</i> &ndash; {{ gettext('SCENE') }}</li>
-                <li>{{ gettext('Output: Mesh 3D ad alta densitÃƒÂ  geometrica texturizzata') }}</li>
+                <li>{{ gettext('Output: Mesh 3D ad alta densit&agrave; geometrica texturizzata') }}</li>
 
                 <li class='fw-semibold'>{{ gettext('Tecnologie di modellazione 3D ed esportazione') }}</li>
                 <li><i>{{ gettext('Software') }}</i> &ndash; {{ gettext('Blender') }}</li>
