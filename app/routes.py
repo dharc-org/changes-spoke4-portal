@@ -533,6 +533,21 @@ LIMIT 1
     lang = get_locale()
     nav_title = collection.get(f'nav_title_{lang}', collection.get(
         f'title_{lang}', collection['title_it']))
+    # Localize Melody config file by language when available
+    item_api_cfg = config.get('item_api') or {}
+    cfg_url = item_api_cfg.get('config_url', '')
+    if isinstance(cfg_url, str) and cfg_url.endswith('.json'):
+        base = cfg_url[:-5]
+        lang_suffix = 'it' if lang == 'it' else 'en'
+        # Try underscore and dotted variants
+        for candidate_url in (f"{base}_{lang_suffix}.json", f"{base}.{lang_suffix}.json"):
+            rel = candidate_url[len(
+                '/static/'):] if candidate_url.startswith('/static/') else None
+            candidate_fs = os.path.join(STATIC_DIR, rel) if rel else None
+            if candidate_fs and os.path.exists(candidate_fs):
+                item_api_cfg = {**item_api_cfg, 'config_url': candidate_url}
+                break
+
     return render_template(
         'item_detail.html',
         item=item,
@@ -541,5 +556,5 @@ LIMIT 1
             'image': collection.get('image'),
             'nav_title': nav_title
         },
-        item_api=config.get('item_api') or {}
+        item_api=item_api_cfg
     )
