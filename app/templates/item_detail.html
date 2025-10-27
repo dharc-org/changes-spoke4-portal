@@ -15,8 +15,13 @@
 {% endblock %}
 
 {% from 'macros/header_brand.html' import header_brand_collection %}
+{% from 'macros/header_links.html' import header_collection_links %}
 {% block header_brand %}
 {{ header_brand_collection(collection_meta.id, collection_meta.image, collection_meta.nav_title) }}
+{% endblock %}
+
+{% block header_links %}
+{{ header_collection_links(collection_meta.id, 'catalogue') }}
 {% endblock %}
 
 {% block content %}
