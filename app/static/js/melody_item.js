@@ -76,30 +76,110 @@
     const { r = 0, g = 0, b = 0 } = rgb || {};
     return alpha === 1 ? `rgb(${r}, ${g}, ${b})` : `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
-  function getYearUTC(x) {
-    const d = new Date(x);
-    return Number.isFinite(d.getTime()) ? d.getUTCFullYear() : NaN;
+  const MIN_NATIVE_ISO_YEAR = -271821;
+  const MAX_NATIVE_ISO_YEAR = 275760;
+  function coerceYearValue(value) {
+    if (value == null || value === '') return NaN;
+    if (typeof value === 'object' && value !== null && 'value' in value) return coerceYearValue(value.value);
+    if (typeof value === 'number') return Number.isFinite(value) ? value : NaN;
+    const str = String(value).trim();
+    if (!str) return NaN;
+    const edtf = str.match(/^Y(-?\d+)(?:-.*)?$/i);
+    if (edtf) {
+      const year = Number(edtf[1]);
+      if (Number.isFinite(year)) return year;
+    }
+    if (/^-?\d+$/.test(str)) return Number(str);
+    const date = new Date(str);
+    return Number.isFinite(date.getTime()) ? date.getUTCFullYear() : NaN;
   }
+  function getYearUTC(x) { return coerceYearValue(x); }
   function representativeYear(a, b) {
     return (a === b) ? a : Math.round((a + b) / 2);
+  }
+  function safeIsoFromYear(year, { endOfYear = false } = {}) {
+    if (!Number.isFinite(year)) return null;
+    if (year < MIN_NATIVE_ISO_YEAR || year > MAX_NATIVE_ISO_YEAR) return null;
+    const month = endOfYear ? 11 : 0;
+    const day = endOfYear ? 31 : 1;
+    const hour = endOfYear ? 23 : 0;
+    const minute = endOfYear ? 59 : 0;
+    const second = endOfYear ? 59 : 0;
+    const ms = endOfYear ? 999 : 0;
+    const date = new Date(Date.UTC(year, month, day, hour, minute, second, ms));
+    return Number.isFinite(date.getTime()) ? date.toISOString() : null;
+  }
+  function pickYear(...candidates) {
+    for (const candidate of candidates) {
+      const y = getYearUTC(candidate);
+      if (Number.isFinite(y)) return y;
+    }
+    return NaN;
   }
   function floorToBinStart(y, binSize) {
     return Math.floor(y / binSize) * binSize;
   }
-  function makeBinLabel(start, binSize, clampEndToYear = null) {
-    if (binSize <= 1) return String(start);
-    let end = start + binSize - 1;
-    if (Number.isFinite(clampEndToYear)) end = Math.min(end, clampEndToYear);
-    return String(start) + '-' + String(end);
+  function makeBinLabel(start, end) {
+    const s = Number.isFinite(start) ? Math.round(start) : null;
+    const e = Number.isFinite(end) ? Math.round(end) : null;
+    if (s === null && e === null) return '';
+    if (e === null || s === e) return s !== null ? String(s) : String(e);
+    if (s === null) return String(e);
+    return `${s} \u2013 ${e}`;
   }
 
-  function chooseBinSize(minYear, maxYear) {
+  function createYearTransform(years, opts = {}) {
+    if (!years.length) {
+      return { forward: (v) => v, inverse: (v) => v, span: 1 };
+    }
+    const spanRaw = Number(opts.logThreshold);
+    const span = Number.isFinite(spanRaw) && spanRaw > 0 ? spanRaw : 1000;
+    const compressPos = Boolean(opts.logCompressPositive);
+    const forward = (year) => {
+      if (!Number.isFinite(year)) return NaN;
+      if (year < -span) {
+        const ratio = Math.max(1, (-year) / span);
+        return -1 - Math.log10(ratio);
+      }
+      if (compressPos && year > span) {
+        const ratio = Math.max(1, year / span);
+        return 1 + Math.log10(ratio);
+      }
+      return year / span;
+    };
+    const inverse = (value) => {
+      if (!Number.isFinite(value)) return NaN;
+      if (value < -1) {
+        const ratio = Math.pow(10, -(value + 1));
+        return -span * ratio;
+      }
+      if (compressPos && value > 1) {
+        const ratio = Math.pow(10, value - 1);
+        return span * ratio;
+      }
+      return value * span;
+    };
+    return { forward, inverse };
+  }
+
+  function chooseBinSize(minYear, maxYear, opts = {}) {
     const range = Math.max(0, (maxYear ?? 0) - (minYear ?? 0) + 1);
+    const target = Math.max(4, Number(opts.targetBins) || 64);
+    const minBins = Math.max(3, Number(opts.minBins) || 24);
+    const maxBins = Math.max(minBins, Number(opts.maxBins) || 128);
+    const candidates = Array.isArray(opts.allowed)
+      ? opts.allowed
+      : [
+        0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5,
+        1, 2, 5, 10, 20, 25, 50, 75, 100,
+        200, 250, 500, 1000, 2000, 2500, 5000, 7500, 10000,
+        20000, 25000, 50000, 100000, 200000, 250000, 500000,
+        1000000, 2000000, 2500000, 5000000,
+        10000000, 20000000, 25000000, 50000000,
+        100000000, 200000000, 250000000, 500000000,
+        1000000000
+      ];
     if (!range || range <= 1) return 1;
-    const candidates = [1, 2, 5, 10, 20, 25, 50, 75, 100, 200, 250, 500, 1000, 5000, 10000];
-    const target = 32;
-    const minBins = 12;
-    const maxBins = 64;
     let best = candidates[0];
     let bestScore = Infinity;
     for (const s of candidates) {
@@ -115,18 +195,20 @@
     return best;
   }
 
-  function processToBins(data) {
+  function processToBins(data, opts = {}) {
     const years = [];
+    let actualMin = Infinity;
+    let actualMax = -Infinity;
     for (const obj of data) {
-      const beginRaw = obj.begin ?? obj?.begin?.value ?? obj.start ?? obj.dateBegin ?? obj.from;
-      const endRaw = obj.end ?? obj?.end?.value ?? obj.finish ?? obj.dateEnd ?? obj.to ?? beginRaw;
-      if (!beginRaw || !endRaw) continue;
-      const by = getYearUTC(beginRaw);
-      const ey = getYearUTC(endRaw);
-      if (!Number.isFinite(by) || !Number.isFinite(ey)) continue;
+      const by = pickYear(obj.beginYear, obj.begin, obj?.begin?.value, obj.start, obj.dateBegin, obj.from);
+      let ey = pickYear(obj.endYear, obj.end, obj?.end?.value, obj.finish, obj.dateEnd, obj.to);
+      if (!Number.isFinite(by)) continue;
+      if (!Number.isFinite(ey)) ey = by;
+      actualMin = Math.min(actualMin, by, ey);
+      actualMax = Math.max(actualMax, by, ey);
       years.push(representativeYear(by, ey));
     }
-    if (!years.length) {
+    if (!years.length || !Number.isFinite(actualMin) || !Number.isFinite(actualMax)) {
       return {
         starts: [],
         labels: [],
@@ -137,24 +219,51 @@
         binSize: 0
       };
     }
-    const minYear = Math.min(...years);
-    const maxYear = Math.max(...years);
-    const binSize = chooseBinSize(minYear, maxYear);
-    const countMap = {};
-    for (const y of years) {
-      const bucket = floorToBinStart(y, binSize);
-      countMap[bucket] = (countMap[bucket] || 0) + 1;
+    const transform = createYearTransform(years, opts);
+    const transformedYears = years.map(transform.forward).filter(Number.isFinite);
+    if (!transformedYears.length) {
+      return {
+        starts: [],
+        labels: [],
+        counts: [],
+        maxCount: 0,
+        minYear: null,
+        maxYear: null,
+        binSize: 0
+      };
+    }
+    const minTrans = Math.min(...transformedYears);
+    const maxTrans = Math.max(...transformedYears);
+    const binSize = chooseBinSize(minTrans, maxTrans, opts);
+    const bucketCount = Math.max(1, Math.ceil((maxTrans - minTrans) / binSize));
+    const countsByBucket = new Array(bucketCount + 1).fill(0);
+    for (const value of transformedYears) {
+      const idx = Math.max(0, Math.min(bucketCount, Math.floor((value - minTrans) / binSize)));
+      countsByBucket[idx] = (countsByBucket[idx] || 0) + 1;
     }
     const starts = [];
     const labels = [];
     const counts = [];
-    for (let b = floorToBinStart(minYear, binSize); b <= maxYear; b += binSize) {
-      starts.push(b);
-      labels.push(makeBinLabel(b, binSize, maxYear));
-      counts.push(countMap[b] ?? 0);
+    const ranges = [];
+    for (let idx = 0; idx <= bucketCount; idx++) {
+      const startTrans = minTrans + idx * binSize;
+      const endTrans = Math.min(maxTrans, startTrans + binSize);
+      let startActual = transform.inverse(startTrans);
+      let endActual = transform.inverse(endTrans);
+      if (Number.isFinite(startActual)) startActual = Math.max(actualMin, Math.min(actualMax, startActual));
+      if (Number.isFinite(endActual)) endActual = Math.max(actualMin, Math.min(actualMax, endActual));
+      if (Number.isFinite(startActual) && Number.isFinite(endActual) && endActual < startActual) {
+        const tmp = startActual;
+        startActual = endActual;
+        endActual = tmp;
+      }
+      starts.push(startActual);
+      labels.push(makeBinLabel(startActual, endActual));
+      counts.push(countsByBucket[idx] || 0);
+      ranges.push({ start: startActual, end: endActual });
     }
     const maxCount = counts.length ? Math.max(...counts) : 0;
-    return { starts, labels, counts, maxCount, minYear, maxYear, binSize };
+    return { starts, labels, counts, maxCount, minYear: actualMin, maxYear: actualMax, binSize, ranges };
   }
 
   function buildEqualWidthDatasets(starts, labels, counts, maxCount, highlightIndex) {
@@ -268,45 +377,60 @@
       const endRaw = r.end ?? r.finish ?? r.dateEnd ?? r.to ?? beginRaw;
       if (!beginRaw) continue;
       const key = item || `range:${beginRaw}|${endRaw}`;
-      const entry = byKey.get(key) || { item: item || null, minY: Infinity, maxY: -Infinity };
+      const entry = byKey.get(key) || { item: item || null, minY: Infinity, maxY: -Infinity, minRaw: null, maxRaw: null };
       const by = getYearUTC(beginRaw);
       const ey = getYearUTC(endRaw);
-      if (Number.isFinite(by)) entry.minY = Math.min(entry.minY, by);
-      if (Number.isFinite(ey)) entry.maxY = Math.max(entry.maxY, ey);
+      if (Number.isFinite(by)) {
+        if (!(Number.isFinite(entry.minY)) || by < entry.minY) {
+          entry.minY = by;
+          entry.minRaw = beginRaw;
+        }
+      }
+      if (Number.isFinite(ey)) {
+        if (!(Number.isFinite(entry.maxY)) || ey > entry.maxY) {
+          entry.maxY = ey;
+          entry.maxRaw = endRaw;
+        }
+      }
       byKey.set(key, entry);
     }
     const result = [];
     for (const value of byKey.values()) {
       if (!Number.isFinite(value.minY) || !Number.isFinite(value.maxY)) continue;
-      const beginISO = new Date(Date.UTC(value.minY, 0, 1)).toISOString();
-      const endISO = new Date(Date.UTC(value.maxY, 11, 31, 23, 59, 59)).toISOString();
-      result.push({ item: value.item, begin: beginISO, end: endISO });
+      const beginISO = safeIsoFromYear(value.minY) ?? (value.minRaw != null ? String(value.minRaw) : null) ?? String(value.minY);
+      const endISO = safeIsoFromYear(value.maxY, { endOfYear: true }) ?? (value.maxRaw != null ? String(value.maxRaw) : null) ?? String(value.maxY);
+      result.push({ item: value.item, begin: beginISO, end: endISO, beginYear: value.minY, endYear: value.maxY });
     }
     return result;
   }
 
-  function findHighlightIndex(rows, starts, binSize, itemUri) {
-    if (!itemUri || !starts.length || !binSize) return -1;
+  function findHighlightIndex(rows, ranges, itemUri) {
+    if (!itemUri || !Array.isArray(ranges) || !ranges.length) return -1;
     const normalizedTarget = normalizeItemUri(itemUri);
     const match = rows.find(r => normalizeItemUri(r.item) === normalizedTarget);
     if (!match) return -1;
-    const beginYear = getYearUTC(match.begin);
-    const endYear = getYearUTC(match.end ?? match.begin);
+    const beginYear = Number.isFinite(match.beginYear) ? match.beginYear : getYearUTC(match.begin);
+    let endYear = Number.isFinite(match.endYear) ? match.endYear : getYearUTC(match.end ?? match.begin);
     if (!Number.isFinite(beginYear)) return -1;
-    const year = Number.isFinite(endYear) ? representativeYear(beginYear, endYear) : beginYear;
+    if (!Number.isFinite(endYear)) endYear = beginYear;
+    const year = representativeYear(beginYear, endYear);
     if (!Number.isFinite(year)) return -1;
-    const bucketStart = floorToBinStart(year, binSize);
-    return starts.indexOf(bucketStart);
+    return ranges.findIndex(range => {
+      if (!range) return false;
+      const start = Number.isFinite(range.start) ? range.start : year;
+      const end = Number.isFinite(range.end) ? range.end : start;
+      return year >= Math.min(start, end) && year <= Math.max(start, end);
+    });
   }
 
   function renderTimelineChart(canvas, rawRows, itemUri) {
     const deduped = dedupeTimelineRows(rawRows);
     const normalized = normalizeTimelineRows(deduped);
     if (!normalized.length) return;
-    const bucketed = processToBins(normalized);
-    const { starts, labels, counts, maxCount, binSize } = bucketed;
+    const bucketed = processToBins(normalized, { logThreshold: 1000 });
+    const { starts, labels, counts, maxCount, ranges } = bucketed;
     if (!starts.length) return;
-    const highlightIndex = findHighlightIndex(normalized, starts, binSize || 1, itemUri);
+    const highlightIndex = findHighlightIndex(normalized, ranges, itemUri);
     const datasets = buildEqualWidthDatasets(starts, labels, counts, maxCount || 0, highlightIndex);
 
     ensureTimelinePlugins();
@@ -340,8 +464,8 @@
                 if (!(idx >= 0 && idx < n)) return '';
                 if (idx % tickEvery !== 0) return '';
                 const lab = labels[idx] || '';
-                const start = String(lab).split(/[^0-9]/)[0] || lab;
-                return start;
+                const matches = String(lab).match(/-?\d+/g);
+                return matches ? matches[matches.length - 1] : lab;
               },
               maxRotation: 0,
               minRotation: 0,
@@ -449,5 +573,3 @@
     container.innerHTML = '<div class="small opacity-75">Failed to load sidebar data.</div>';
   });
 })();
-
-
