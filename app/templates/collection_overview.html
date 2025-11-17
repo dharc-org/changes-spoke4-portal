@@ -309,6 +309,7 @@
                         <p class="mb-7 text-center">{{ vtitle }}</p>
                         <div class="col-12 d-flex justify-content-lg-end">
                             <canvas class="timeline-chart w-100" id="timeline-chart-{{ loop.index }}"
+                                data-log-threshold="300" data-log-compress-positive="false"
                                 data-sparql="{{ viz.sparql_query }}" data-endpoint="{{ viz.sparql_endpoint }}" {% if
                                 viz.data_json %} data-json="{{ viz.data_json }}" {% endif %} data-title="{{ vtitle }}"
                                 aria-label="Timeline chart" role="img"></canvas>
