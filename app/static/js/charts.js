@@ -340,7 +340,7 @@
       const idx = Math.max(0, Math.min(bucketCount, Math.floor((value - minTrans) / binSize)));
       countsByBucket[idx] = (countsByBucket[idx] || 0) + 1;
     }
-    const starts = []; const labels = []; const counts = [];
+    const starts = []; const labels = []; const counts = []; const ranges = [];
     for (let idx = 0; idx <= bucketCount; idx++) {
       const startTrans = minTrans + idx * binSize;
       const endTrans = Math.min(maxTrans, startTrans + binSize);
@@ -355,7 +355,9 @@
       }
       starts.push(startActual);
       labels.push(makeBinLabel(startActual, endActual));
-      counts.push(countsByBucket[idx] || 0);
+      const count = countsByBucket[idx] || 0;
+      counts.push(count);
+      ranges.push({ start: startActual, end: endActual, count });
     }
     const maxCount = counts.length ? Math.max(...counts) : 0;
     return {
@@ -365,7 +367,8 @@
       maxCount,
       minYear: Math.min(...years),
       maxYear: Math.max(...years),
-      binSize
+      binSize,
+      ranges
     };
   }
 
@@ -377,6 +380,53 @@
       datasets.push({ label: labels[i], data: [1], backgroundColor: rgbToCss(rgb), borderWidth: 0, stack: 'halfcenturies', _realCount: c });
     }
     return datasets;
+  }
+
+  function filterRowsByRange(rows, range) {
+    if (!range) return [];
+    const start = Number(range.start);
+    const end = Number(range.end);
+    if (!Number.isFinite(start) || !Number.isFinite(end)) return [];
+    const minRange = Math.min(start, end);
+    const maxRange = Math.max(start, end);
+    return rows.filter(r => {
+      const by = Number.isFinite(r.beginYear) ? r.beginYear : getYearUTC(r.begin);
+      let ey = Number.isFinite(r.endYear) ? r.endYear : getYearUTC(r.end ?? r.begin);
+      if (!Number.isFinite(by)) return false;
+      if (!Number.isFinite(ey)) ey = by;
+      const rowStart = Math.min(by, ey);
+      const rowEnd = Math.max(by, ey);
+      return rowEnd >= minRange && rowStart <= maxRange;
+    });
+  }
+
+  function ensureDetailElements(canvas) {
+    if (canvas._timelineDetail) return canvas._timelineDetail;
+    const wrap = document.createElement('div');
+    wrap.className = 'timeline-detail mt-3 pt-3 border-top d-none';
+    wrap.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="timeline-detail-title fw-semibold small text-uppercase"></div>
+        <button type="button" class="btn btn-link btn-sm px-0 timeline-detail-close">Chiudi</button>
+      </div>
+      <canvas class="timeline-detail-canvas" aria-hidden="true"></canvas>
+    `;
+    const titleEl = wrap.querySelector('.timeline-detail-title');
+    const detailCanvas = wrap.querySelector('canvas');
+    detailCanvas.style.height = canvas.dataset.detailHeight || '140px';
+    const closeBtn = wrap.querySelector('.timeline-detail-close');
+    closeBtn.addEventListener('click', () => {
+      wrap.classList.add('d-none');
+      if (detailCanvas._chart) {
+        detailCanvas._chart.destroy();
+        detailCanvas._chart = null;
+      }
+    });
+    const parent = canvas.parentNode || canvas;
+    parent.appendChild(wrap);
+    const detail = { wrap, titleEl, canvas: detailCanvas };
+    canvas._timelineDetail = detail;
+    return detail;
   }
 
 
@@ -399,7 +449,7 @@
     }
   };
 
-  function renderTimeline(canvas, labels, datasets, tickEvery = null) {
+  function renderTimeline(canvas, labels, datasets, tickEvery = null, meta = null) {
     if (typeof Chart === 'undefined') { return; }
     Chart.register(barBackgroundPlugin);
     const ctx = canvas.getContext('2d'); if (canvas._chart) { canvas._chart.destroy(); }
@@ -434,7 +484,14 @@
           y: { stacked: true, ticks: { display: false }, grid: { display: false, drawOnChartArea: false, drawTicks: false, drawBorder: false }, border: { display: false } }
         },
         plugins: { barBackground: { color: '#faf5f8' }, legend: { display: false }, tooltip: { callbacks: { title: items => items[0]?.dataset?.label || '', label: item => `Count: ${item.dataset?._realCount ?? 0}` } } },
-        animation: { duration: 0 }
+        animation: { duration: 0 },
+        onClick: (evt, elements, chartInstance) => {
+          if (!(meta && typeof meta.onClick === 'function')) return;
+          const hit = (elements && elements.length) ? elements[0]
+            : chartInstance.getElementsAtEventForMode(evt, 'nearest', { intersect: false }, false)[0];
+          if (!hit) return;
+          meta.onClick(hit, chartInstance);
+        }
       }
     });
   }
@@ -550,7 +607,16 @@
         }
         const deduped = dedupeTimelineRows(raw);
         const normalized = normalizeTimelineRows(deduped);
-        const { starts, labels, counts } = processToBins(normalized, {
+        const {
+          starts,
+          labels,
+          counts,
+          binSize,
+          ranges,
+          maxCount: overviewMaxCount,
+          minYear: overviewMinYear,
+          maxYear: overviewMaxYear
+        } = processToBins(normalized, {
           binSize: binSizeOpt,
           targetBins: targetBinsOpt,
           minBins: minBinsOpt,
@@ -560,9 +626,48 @@
           logCompressPositive
         });
         if (!starts.length) { return; }
-        const datasets = buildEqualWidthDatasets(starts, labels, counts, Math.max(...counts, 0));
+        const datasets = buildEqualWidthDatasets(starts, labels, counts, overviewMaxCount || Math.max(...counts, 0));
         const tickEvery = Math.max(1, Math.ceil(labels.length / 8));
-        renderTimeline(canvas, labels, datasets, tickEvery);
+        const showDetail = (range) => {
+          const rowsInRange = filterRowsByRange(normalized, range);
+          if (!rowsInRange.length) return;
+          const detailResult = processToBins(rowsInRange, {
+            targetBins: Math.min(32, Math.max(12, ranges?.length || 16)),
+            minBins: 8,
+            maxBins: 48,
+            allowed: allowedBinsOpt && allowedBinsOpt.length ? allowedBinsOpt : undefined,
+            logThreshold: logThresholdOpt,
+            logCompressPositive
+          });
+          if (!detailResult.starts.length) return;
+          const detailDatasets = buildEqualWidthDatasets(
+            detailResult.starts,
+            detailResult.labels,
+            detailResult.counts,
+            detailResult.maxCount || Math.max(...detailResult.counts, 0)
+          );
+          const detailTick = Math.max(1, Math.ceil(detailResult.labels.length / 8));
+          const detail = ensureDetailElements(canvas);
+          const startLabel = Number.isFinite(range?.start) ? range.start : overviewMinYear;
+          const endLabel = Number.isFinite(range?.end) ? range.end : overviewMaxYear;
+          detail.titleEl.textContent = formatYearSpan(
+            Math.round(Math.min(startLabel, endLabel)),
+            Math.round(Math.max(startLabel, endLabel))
+          );
+          renderTimeline(detail.canvas, detailResult.labels, detailDatasets, detailTick);
+          detail.wrap.classList.remove('d-none');
+        };
+        renderTimeline(canvas, labels, datasets, tickEvery, {
+          onClick: (element, chart) => {
+            const datasetIndex = element?.datasetIndex;
+            if (!(datasetIndex >= 0)) return;
+            const dataSet = chart?.data?.datasets?.[datasetIndex];
+            if (!dataSet || (dataSet._realCount ?? 0) <= 0) return;
+            const range = ranges && ranges[datasetIndex];
+            if (!range) return;
+            showDetail(range);
+          }
+        });
       } catch (e) { console.error('Timeline error:', e); }
     });
   });
