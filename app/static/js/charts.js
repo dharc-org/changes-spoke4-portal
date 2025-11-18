@@ -649,6 +649,7 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('canvas.timeline-chart').forEach(async (canvas) => {
+      canvas.style.cursor = 'pointer';
       const sparql = canvas.dataset.sparql || ''; const endpoint = canvas.dataset.endpoint || '';
       const dataJson = canvas.dataset.json || '';
       // Optional controls to influence binning behavior per chart
@@ -772,5 +773,4 @@
     });
   });
 })();
-
 
