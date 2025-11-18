@@ -307,13 +307,30 @@
                     <div class="row gx-2 gy-3 align-items-start">
                         {% set vtitle = viz.title and (viz.title[lang] or viz.title['it']) %}
                         <p class="mb-7 text-center">{{ vtitle }}</p>
-                        <div class="col-12 d-flex justify-content-lg-end">
+
+                        <!-- Main chart column: ONLY the main canvas lives here -->
+                        <div class="col-12 d-flex flex-column gap-3 justify-content-lg-end">
                             <canvas class="timeline-chart w-100" id="timeline-chart-{{ loop.index }}"
                                 data-log-threshold="300" data-log-compress-positive="false"
                                 data-sparql="{{ viz.sparql_query }}" data-endpoint="{{ viz.sparql_endpoint }}" {% if
                                 viz.data_json %} data-json="{{ viz.data_json }}" {% endif %} data-title="{{ vtitle }}"
                                 aria-label="Timeline chart" role="img"></canvas>
                         </div>
+
+                        <!-- Detail panel: sibling, not part of the chart's parent -->
+                        <div class="col-12">
+                            <div class="timeline-detail mt-3 pt-3 border-top d-none"
+                                data-detail-for="timeline-chart-{{ loop.index }}">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="timeline-detail-title fw-semibold small text-uppercase"></div>
+                                    <button type="button" class="btn btn-link btn-sm px-0 timeline-detail-close">
+                                        Chiudi
+                                    </button>
+                                </div>
+                                <canvas class="timeline-detail-canvas" aria-hidden="true"></canvas>
+                            </div>
+                        </div>
+
                         {% set vtext = viz.text and (viz.text[lang] or viz.text['it']) %}
                         {% if vtext %}
                         <div class="col-12 col-lg-4">

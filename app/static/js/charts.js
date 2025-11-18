@@ -382,6 +382,22 @@
     return datasets;
   }
 
+  function formatYearCompact(year) {
+    if (!Number.isFinite(year)) return '';
+    const suffix = year < 0 ? ' a.C.' : ' d.C.';
+    const abs = Math.abs(year);
+    if (abs >= 1e9) return `${(year / 1e9).toFixed(abs >= 1e10 ? 0 : 1)}B${suffix}`;
+    if (abs >= 1e6) return `${(year / 1e6).toFixed(abs >= 1e7 ? 0 : 1)}M${suffix}`;
+    if (abs >= 1e3) return `${(year / 1e3).toFixed(abs >= 1e4 ? 0 : 1)}k${suffix}`;
+    if (abs === 0) return `0${suffix}`;
+    return `${abs}${suffix}`;
+  }
+
+  function formatYearSpan(minYear, maxYear) {
+    if (!Number.isFinite(minYear) || !Number.isFinite(maxYear)) return '';
+    return `${formatYearCompact(minYear)} – ${formatYearCompact(maxYear)}`;
+  }
+
   function filterRowsByRange(rows, range) {
     if (!range) return [];
     const start = Number(range.start);
@@ -401,33 +417,43 @@
   }
 
   function ensureDetailElements(canvas) {
+    // Reuse cached detail if already resolved
     if (canvas._timelineDetail) return canvas._timelineDetail;
-    const wrap = document.createElement('div');
-    wrap.className = 'timeline-detail mt-3 pt-3 border-top d-none';
-    wrap.innerHTML = `
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <div class="timeline-detail-title fw-semibold small text-uppercase"></div>
-        <button type="button" class="btn btn-link btn-sm px-0 timeline-detail-close">Chiudi</button>
-      </div>
-      <canvas class="timeline-detail-canvas" aria-hidden="true"></canvas>
-    `;
+
+    // Find pre-rendered wrapper in the DOM
+    const id = canvas.id;
+    const wrap = document.querySelector(`.timeline-detail[data-detail-for="${id}"]`);
+
+    if (!wrap) {
+      console.warn('[Timeline] No .timeline-detail found for', id);
+      return null;
+    }
+
     const titleEl = wrap.querySelector('.timeline-detail-title');
-    const detailCanvas = wrap.querySelector('canvas');
-    detailCanvas.style.height = canvas.dataset.detailHeight || '140px';
+    const detailCanvas = wrap.querySelector('.timeline-detail-canvas');
+
+    // Set a default height for the detail canvas if none is specified
+    if (detailCanvas && !detailCanvas.style.height) {
+      detailCanvas.style.height = canvas.dataset.detailHeight || '140px';
+    }
+
     const closeBtn = wrap.querySelector('.timeline-detail-close');
-    closeBtn.addEventListener('click', () => {
-      wrap.classList.add('d-none');
-      if (detailCanvas._chart) {
-        detailCanvas._chart.destroy();
-        detailCanvas._chart = null;
-      }
-    });
-    const parent = canvas.parentNode || canvas;
-    parent.appendChild(wrap);
+    if (closeBtn && !wrap._closeBound) {
+      closeBtn.addEventListener('click', () => {
+        wrap.classList.add('d-none');
+        if (detailCanvas && detailCanvas._chart) {
+          detailCanvas._chart.destroy();
+          detailCanvas._chart = null;
+        }
+      });
+      wrap._closeBound = true; // avoid double-binding if ensureDetailElements runs again
+    }
+
     const detail = { wrap, titleEl, canvas: detailCanvas };
     canvas._timelineDetail = detail;
     return detail;
   }
+
 
 
   const equalWidthLabelPlugin = {
@@ -449,20 +475,51 @@
     }
   };
 
-  function renderTimeline(canvas, labels, datasets, tickEvery = null, meta = null) {
+  function renderTimeline(canvas, labels, datasets, tickEvery = null) {
     if (typeof Chart === 'undefined') { return; }
     Chart.register(barBackgroundPlugin);
-    const ctx = canvas.getContext('2d'); if (canvas._chart) { canvas._chart.destroy(); }
-    canvas.style.height = canvas.dataset.height || '160px';
+
+    const ctx = canvas.getContext('2d');
+    if (canvas._chart) {
+      canvas._chart.destroy();
+    }
+
+    // Is this the detail chart?
+    const isDetail = canvas.classList.contains('timeline-detail-canvas');
+
+    // For the main (overview) chart we keep it responsive.
+    // For the detail chart we give it a fixed height and disable responsiveness.
+    if (!isDetail) {
+      // Main timeline: height from data-height or default
+      canvas.style.height = canvas.dataset.height || '160px';
+    } else {
+      // Detail timeline: fixed height; never let Chart.js resize based on parent
+      if (!canvas.style.height) {
+        canvas.style.height = canvas.dataset.height || '140px';
+      }
+    }
+
     Chart.defaults.devicePixelRatio = 2;
+
     const n = labels.length;
     const tickStep = Math.max(1, tickEvery || Math.ceil(n / 8));
-    canvas._chart = new Chart(ctx, {
-      type: 'bar', data: { labels: [''], datasets }, options: {
-        responsive: true, maintainAspectRatio: false, indexAxis: 'y', layout: { padding: 5 },
+
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: [''], datasets },
+      options: {
+        // 👇 main chart responsive, detail chart not
+        responsive: !isDetail,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        layout: { padding: 5 },
         scales: {
           x: {
-            type: 'linear', min: 0, max: n, stacked: true, position: 'top',
+            type: 'linear',
+            min: 0,
+            max: n,
+            stacked: true,
+            position: 'top',
             ticks: {
               stepSize: 1,
               callback: (val) => {
@@ -479,22 +536,43 @@
               crossAlign: 'center',
               padding: 5
             },
-            grid: { drawOnChartArea: false, drawTicks: false, drawBorder: false }, border: { display: false }
+            grid: {
+              drawOnChartArea: false,
+              drawTicks: false,
+              drawBorder: false
+            },
+            border: { display: false }
           },
-          y: { stacked: true, ticks: { display: false }, grid: { display: false, drawOnChartArea: false, drawTicks: false, drawBorder: false }, border: { display: false } }
+          y: {
+            stacked: true,
+            ticks: { display: false },
+            grid: {
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false,
+              drawBorder: false
+            },
+            border: { display: false }
+          }
         },
-        plugins: { barBackground: { color: '#faf5f8' }, legend: { display: false }, tooltip: { callbacks: { title: items => items[0]?.dataset?.label || '', label: item => `Count: ${item.dataset?._realCount ?? 0}` } } },
-        animation: { duration: 0 },
-        onClick: (evt, elements, chartInstance) => {
-          if (!(meta && typeof meta.onClick === 'function')) return;
-          const hit = (elements && elements.length) ? elements[0]
-            : chartInstance.getElementsAtEventForMode(evt, 'nearest', { intersect: false }, false)[0];
-          if (!hit) return;
-          meta.onClick(hit, chartInstance);
-        }
+        plugins: {
+          barBackground: { color: '#faf5f8' },
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: items => items[0]?.dataset?.label || '',
+              label: item => `Count: ${item.dataset?._realCount ?? 0}`
+            }
+          }
+        },
+        animation: { duration: 0 }
       }
     });
+
+    canvas._chart = chart;
+    return chart;
   }
+
 
   async function fetchTimelineSparql(query, endpoint) {
     const url = `${endpoint}?query=${encodeURIComponent(query)}`;
@@ -628,11 +706,31 @@
         if (!starts.length) { return; }
         const datasets = buildEqualWidthDatasets(starts, labels, counts, overviewMaxCount || Math.max(...counts, 0));
         const tickEvery = Math.max(1, Math.ceil(labels.length / 8));
-        const showDetail = (range) => {
+        renderTimeline(canvas, labels, datasets, tickEvery);
+        if (canvas._timelineDetailHandler) {
+          canvas.removeEventListener('click', canvas._timelineDetailHandler);
+        }
+        canvas._timelineDetailHandler = (event) => {
+          const chart = canvas._chart;
+          if (!chart || !ranges?.length) return;
+
+          const elements = chart.getElementsAtEventForMode(
+            event, 'nearest', { intersect: true }, false
+          );
+          if (!elements.length) return;
+
+          const datasetIndex = elements[0].datasetIndex;
+          if (!(datasetIndex >= 0)) return;
+
+          const dataset = chart.data.datasets[datasetIndex];
+          const range = ranges[datasetIndex];
+          if (!dataset || !range || (dataset._realCount ?? 0) <= 0) return;
+
           const rowsInRange = filterRowsByRange(normalized, range);
           if (!rowsInRange.length) return;
+
           const detailResult = processToBins(rowsInRange, {
-            targetBins: Math.min(32, Math.max(12, ranges?.length || 16)),
+            targetBins: Math.min(32, Math.max(12, ranges.length || 16)),
             minBins: 8,
             maxBins: 48,
             allowed: allowedBinsOpt && allowedBinsOpt.length ? allowedBinsOpt : undefined,
@@ -640,6 +738,7 @@
             logCompressPositive
           });
           if (!detailResult.starts.length) return;
+
           const detailDatasets = buildEqualWidthDatasets(
             detailResult.starts,
             detailResult.labels,
@@ -647,33 +746,31 @@
             detailResult.maxCount || Math.max(...detailResult.counts, 0)
           );
           const detailTick = Math.max(1, Math.ceil(detailResult.labels.length / 8));
+
           const detail = ensureDetailElements(canvas);
-          const startLabel = Number.isFinite(range?.start) ? range.start : overviewMinYear;
-          const endLabel = Number.isFinite(range?.end) ? range.end : overviewMaxYear;
+          if (!detail) return;
+
+          if (detail.canvas._chart) {
+            detail.canvas._chart.destroy();
+            detail.canvas._chart = null;
+          }
+
+          const startLabel = Number.isFinite(range.start) ? range.start : overviewMinYear;
+          const endLabel = Number.isFinite(range.end) ? range.end : overviewMaxYear;
+
           detail.titleEl.textContent = formatYearSpan(
             Math.round(Math.min(startLabel, endLabel)),
             Math.round(Math.max(startLabel, endLabel))
           );
+
           renderTimeline(detail.canvas, detailResult.labels, detailDatasets, detailTick);
           detail.wrap.classList.remove('d-none');
         };
-        renderTimeline(canvas, labels, datasets, tickEvery, {
-          onClick: (element, chart) => {
-            const datasetIndex = element?.datasetIndex;
-            if (!(datasetIndex >= 0)) return;
-            const dataSet = chart?.data?.datasets?.[datasetIndex];
-            if (!dataSet || (dataSet._realCount ?? 0) <= 0) return;
-            const range = ranges && ranges[datasetIndex];
-            if (!range) return;
-            showDetail(range);
-          }
-        });
+
+        canvas.addEventListener('click', canvas._timelineDetailHandler);
       } catch (e) { console.error('Timeline error:', e); }
     });
   });
 })();
-
-
-
 
 
