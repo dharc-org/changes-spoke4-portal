@@ -373,11 +373,12 @@
   }
 
   function buildEqualWidthDatasets(starts, labels, counts, maxCount) {
-    const datasets = []; const rgbWhite = { r: 255, g: 255, b: 255 }; const rgbMax = hexToRgb('#A62176');
+    const datasets = []; const rgbMin = hexToRgb('#fdf9fb'); const rgbMax = hexToRgb('#A62176');
     const denom = maxCount > 0 ? maxCount : 1;
     for (let i = 0; i < starts.length; i++) {
-      const c = counts[i]; const t = c / denom; const rgb = lerpColorRGB(rgbWhite, rgbMax, t);
-      datasets.push({ label: labels[i], data: [1], backgroundColor: rgbToCss(rgb), borderWidth: 0, stack: 'halfcenturies', _realCount: c });
+      const c = counts[i]; const t = c / denom; const rgb = lerpColorRGB(rgbMin, rgbMax, t);
+      const color = rgbToCss(rgb);
+      datasets.push({ label: labels[i], data: [1], backgroundColor: color, borderWidth: 0, stack: 'halfcenturies', _realCount: c });
     }
     return datasets;
   }
@@ -773,4 +774,3 @@
     });
   });
 })();
-
