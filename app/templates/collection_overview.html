@@ -168,6 +168,14 @@
             width: 100%;
         }
     }
+
+    .close-btn {
+        color: var(--color-primary);
+    }
+
+    .close-btn:hover {
+        color: var(--color-accent);
+    }
 </style>
 
 <!-- Intro / hero copy -->
@@ -323,8 +331,9 @@
                                 data-detail-for="timeline-chart-{{ loop.index }}">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <div class="timeline-detail-title fw-semibold small text-uppercase"></div>
-                                    <button type="button" class="btn btn-link btn-sm px-0 timeline-detail-close">
-                                        Chiudi
+                                    <button type="button"
+                                        class="btn btn-link btn-sm px-0 timeline-detail-close close-btn">
+                                        {{gettext('Chiudi')}}
                                     </button>
                                 </div>
                                 <canvas class="timeline-detail-canvas" aria-hidden="true"></canvas>
