@@ -184,6 +184,37 @@
   const MIN_NATIVE_ISO_YEAR = -271821;
   const MAX_NATIVE_ISO_YEAR = 275760;
 
+  function getPageLang() {
+    if (typeof document === 'undefined') return 'it';
+    const lang = (document.documentElement?.lang || '').toLowerCase();
+    if (lang.startsWith('en')) return 'en';
+    if (lang.startsWith('it')) return 'it';
+    if (lang) return lang.slice(0, 2);
+    return 'it';
+  }
+
+  function yearSuffix(year, lang) {
+    const langCode = lang || getPageLang();
+    const isBC = year < 0;
+    if (langCode === 'en') return isBC ? 'BC' : 'AD';
+    return isBC ? 'a.C.' : 'd.C.';
+  }
+  function formatYearNumber(absYear, lang) {
+    const locale = lang === 'it' ? 'it-IT' : 'en-US';
+    const useCompact = absYear >= 1000;
+    try {
+      const formatter = new Intl.NumberFormat(locale, {
+        notation: useCompact ? 'compact' : 'standard',
+        compactDisplay: 'short',
+        maximumFractionDigits: useCompact ? 1 : 0
+      });
+      console.log('Formatter', absYear, formatter);
+      return formatter.format(absYear);
+    } catch (e) {
+      return String(absYear);
+    }
+  }
+
   function hexToRgb(hex) {
     const m = (hex || '').replace('#', '').match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
     if (!m) return { r: 0, g: 0, b: 0 };
@@ -372,31 +403,47 @@
     };
   }
 
-  function buildEqualWidthDatasets(starts, labels, counts, maxCount) {
+  function buildEqualWidthDatasets(starts, labels, counts, maxCount, opts = {}) {
     const datasets = []; const rgbMin = hexToRgb('#fdf9fb'); const rgbMax = hexToRgb('#A62176');
     const denom = maxCount > 0 ? maxCount : 1;
+    const displayLabels = Array.isArray(opts.displayLabels) && opts.displayLabels.length === labels.length ? opts.displayLabels : labels;
     for (let i = 0; i < starts.length; i++) {
       const c = counts[i]; const t = c / denom; const rgb = lerpColorRGB(rgbMin, rgbMax, t);
       const color = rgbToCss(rgb);
-      datasets.push({ label: labels[i], data: [1], backgroundColor: color, borderWidth: 0, stack: 'halfcenturies', _realCount: c });
+      const label = displayLabels[i] ?? labels[i];
+      datasets.push({ label, data: [1], backgroundColor: color, borderWidth: 0, stack: 'halfcenturies', _realCount: c });
     }
     return datasets;
   }
 
-  function formatYearCompact(year) {
+  function formatYearCompact(year, lang = getPageLang()) {
     if (!Number.isFinite(year)) return '';
-    const suffix = year < 0 ? ' a.C.' : ' d.C.';
     const abs = Math.abs(year);
-    if (abs >= 1e9) return `${(year / 1e9).toFixed(abs >= 1e10 ? 0 : 1)}B${suffix}`;
-    if (abs >= 1e6) return `${(year / 1e6).toFixed(abs >= 1e7 ? 0 : 1)}M${suffix}`;
-    if (abs >= 1e3) return `${(year / 1e3).toFixed(abs >= 1e4 ? 0 : 1)}k${suffix}`;
-    if (abs === 0) return `0${suffix}`;
-    return `${abs}${suffix}`;
+    const number = formatYearNumber(abs, lang);
+    const suffix = yearSuffix(year, lang);
+    return number ? `${number} ${suffix}` : suffix;
   }
 
-  function formatYearSpan(minYear, maxYear) {
-    if (!Number.isFinite(minYear) || !Number.isFinite(maxYear)) return '';
-    return `${formatYearCompact(minYear)} – ${formatYearCompact(maxYear)}`;
+  function formatRangeLabel(startYear, endYear, lang = getPageLang()) {
+    const hasStart = Number.isFinite(startYear);
+    const hasEnd = Number.isFinite(endYear);
+    if (!hasStart && !hasEnd) return '';
+    if (hasStart && hasEnd) {
+      const suffixStart = yearSuffix(startYear, lang);
+      const suffixEnd = yearSuffix(endYear, lang);
+      const numStart = formatYearNumber(Math.abs(startYear), lang);
+      const numEnd = formatYearNumber(Math.abs(endYear), lang);
+      if (suffixStart === suffixEnd) {
+        if (numStart === numEnd) return `${numStart} ${suffixStart}`.trim();
+        return `${numStart}\u2013${numEnd} ${suffixStart}`.trim();
+      }
+      return `${numStart} ${suffixStart} \u2013 ${numEnd} ${suffixEnd}`.trim();
+    }
+    return hasStart ? formatYearCompact(startYear, lang) : formatYearCompact(endYear, lang);
+  }
+
+  function formatYearSpan(minYear, maxYear, lang = getPageLang()) {
+    return formatRangeLabel(minYear, maxYear, lang);
   }
 
   function filterRowsByRange(rows, range) {
@@ -476,7 +523,7 @@
     }
   };
 
-  function renderTimeline(canvas, labels, datasets, tickEvery = null) {
+  function renderTimeline(canvas, labels, datasets, tickEvery = null, renderOpts = {}) {
     if (typeof Chart === 'undefined') { return; }
     Chart.register(barBackgroundPlugin);
 
@@ -503,13 +550,19 @@
     Chart.defaults.devicePixelRatio = 2;
 
     const n = labels.length;
-    const tickStep = Math.max(1, tickEvery || Math.ceil(n / 8));
+    const displayLabels = Array.isArray(renderOpts.displayLabels) && renderOpts.displayLabels.length === labels.length
+      ? renderOpts.displayLabels
+      : labels;
+    const tickLabels = Array.isArray(renderOpts.tickLabels) && renderOpts.tickLabels.length === labels.length
+      ? renderOpts.tickLabels
+      : displayLabels;
+    const tickStep = Math.max(1, tickEvery || Math.ceil(tickLabels.length / 5));
 
     const chart = new Chart(ctx, {
       type: 'bar',
       data: { labels: [''], datasets },
       options: {
-        // 👇 main chart responsive, detail chart not
+        // main chart responsive, detail chart not
         responsive: !isDetail,
         maintainAspectRatio: false,
         indexAxis: 'y',
@@ -527,9 +580,8 @@
                 const i = Math.round(val - 0.5);
                 if (!(i >= 0 && i < n)) return '';
                 if (i % tickStep !== 0) return '';
-                const lab = labels[i] || '';
-                const matches = String(lab).match(/-?\d+/g);
-                return matches ? matches[matches.length - 1] : lab;
+                const lab = tickLabels[i];
+                return lab != null ? String(lab) : '';
               },
               maxRotation: 0,
               minRotation: 0,
@@ -649,6 +701,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
+    const pageLang = getPageLang();
     document.querySelectorAll('canvas.timeline-chart').forEach(async (canvas) => {
       canvas.style.cursor = 'pointer';
       const sparql = canvas.dataset.sparql || ''; const endpoint = canvas.dataset.endpoint || '';
@@ -706,9 +759,21 @@
           logCompressPositive
         });
         if (!starts.length) { return; }
-        const datasets = buildEqualWidthDatasets(starts, labels, counts, overviewMaxCount || Math.max(...counts, 0));
-        const tickEvery = Math.max(1, Math.ceil(labels.length / 8));
-        renderTimeline(canvas, labels, datasets, tickEvery);
+        const rangeLabels = ranges?.length ? ranges.map(r => formatRangeLabel(r.start, r.end, pageLang)) : labels;
+        const tickLabels = ranges?.length ? ranges.map(r => formatYearCompact(representativeYear(r.start, r.end), pageLang)) : rangeLabels;
+        const datasets = buildEqualWidthDatasets(
+          starts,
+          labels,
+          counts,
+          overviewMaxCount || Math.max(...counts, 0),
+          { displayLabels: rangeLabels }
+        );
+        const tickEvery = Math.max(1, Math.ceil(labels.length / 5));
+        renderTimeline(canvas, labels, datasets, tickEvery, {
+          displayLabels: rangeLabels,
+          tickLabels,
+          lang: pageLang
+        });
         if (canvas._timelineDetailHandler) {
           canvas.removeEventListener('click', canvas._timelineDetailHandler);
         }
@@ -741,11 +806,14 @@
           });
           if (!detailResult.starts.length) return;
 
+          const detailRangeLabels = detailResult.ranges?.length ? detailResult.ranges.map(r => formatRangeLabel(r.start, r.end, pageLang)) : detailResult.labels;
+          const detailTickLabels = detailResult.ranges?.length ? detailResult.ranges.map(r => formatYearCompact(representativeYear(r.start, r.end), pageLang)) : detailRangeLabels;
           const detailDatasets = buildEqualWidthDatasets(
             detailResult.starts,
             detailResult.labels,
             detailResult.counts,
-            detailResult.maxCount || Math.max(...detailResult.counts, 0)
+            detailResult.maxCount || Math.max(...detailResult.counts, 0),
+            { displayLabels: detailRangeLabels }
           );
           const detailTick = Math.max(1, Math.ceil(detailResult.labels.length / 8));
 
@@ -762,10 +830,15 @@
 
           detail.titleEl.textContent = formatYearSpan(
             Math.round(Math.min(startLabel, endLabel)),
-            Math.round(Math.max(startLabel, endLabel))
+            Math.round(Math.max(startLabel, endLabel)),
+            pageLang
           );
 
-          renderTimeline(detail.canvas, detailResult.labels, detailDatasets, detailTick);
+          renderTimeline(detail.canvas, detailResult.labels, detailDatasets, detailTick, {
+            displayLabels: detailRangeLabels,
+            tickLabels: detailTickLabels,
+            lang: pageLang
+          });
           detail.wrap.classList.remove('d-none');
         };
 
