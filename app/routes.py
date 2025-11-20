@@ -269,7 +269,7 @@ def _sparql_prefixes():
     return "\n".join([
         "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>",
         "PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/>",
-        "PREFIX aat: <http://vocab.getty.edu/page/aat/>",
+        "PREFIX aat: <http://vocab.getty.edu/aat/>",
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
     ])
 
@@ -412,6 +412,7 @@ WHERE {{
 LIMIT {limit}
 OFFSET {offset}
 """
+    print(data_query)
     sparql.setQuery(data_query)
     data_raw = sparql.query().convert()
     rows = data_raw['results']['bindings']

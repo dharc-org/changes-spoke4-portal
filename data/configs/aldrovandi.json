@@ -92,8 +92,8 @@
             "label_it": "Temi",
             "label_en": "Subjects",
             "var": "?subject_uri",
-            "triples": "?expression crm:P129_is_about ?subject_uri.",
-            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?expression crm:P129_is_about ?uri . ?uri crm:P1_is_identified_by ?uri_appellation . ?uri_appellation crm:P190_has_symbolic_content ?label .} ORDER BY ?label"
+            "triples": "?expression crm:P129_is_about ?subject . ?subject crm:P1_is_identified_by ?subject_uri.",
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT DISTINCT ?label ?uri WHERE { ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation ; crm:P129_is_about ?subject . ?subject crm:P1_is_identified_by ?uri . ?uri crm:P190_has_symbolic_content ?label . FILTER(LANG(?label) = \"$LANG$\")} ORDER BY ?label"
         },
         {
             "key": "object_type",
@@ -118,13 +118,21 @@
             "label_it": "Ente Conservatore",
             "label_en": "Conservation Institution",
             "var": "?conservation_org_uri",
-            "triples": "?activity crm:P16_used_specific_object ?item ; a crm:E7_Activity ; crm:P14_carried_out_by ?conservation_org_uri .",
-            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/page/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; a crm:E7_Activity ; crm:P14_carried_out_by ?uri . ?uri crm:P1_is_identified_by ?appellation . ?appellation crm:P190_has_symbolic_content ?label.} ORDER BY ?label "
+            "triples": "?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?conservation_org_uri .",
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item .  ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?uri . ?uri crm:P1_is_identified_by ?appellation . ?appellation crm:P190_has_symbolic_content ?label.} ORDER BY ?label "
+        },
+        {
+            "key": "conservation_place",
+            "label_it": "Luogo di Conservazione",
+            "label_en": "Conservation Place",
+            "var": "?conservation_place_uri",
+            "triples": "?item crm:P53_has_former_or_current_location ?conservation_place_uri .?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ; crm:P14_carried_out_by ?conservation_org_uri . ?conservation_org_uri crm:P53_has_former_or_current_residence ?conservation_place_uri .",
+            "query": "PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> PREFIX aat: <http://vocab.getty.edu/aat/> SELECT DISTINCT ?label ?uri WHERE {?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?activity crm:P16_used_specific_object ?item ; crm:P2_has_type aat:300054277 ;crm:P14_carried_out_by ?conservation_org .?item crm:P53_has_former_or_current_location ?uri .?conservation_org crm:P74_has_current_or_former_residence ?uri .?uri crm:P1_is_identified_by ?appellation . ?appellation crm:P190_has_symbolic_content ?label.} ORDER BY ?label"
         }
     ],
     "cards": {
         "select": "?item ?title ?begin ?end ?type_label ?technique_label ?conservation_org_label",
-        "where": " ?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?creation lrmoo:R17_created ?expression . ?work crm:P102_has_title ?title_uri . ?title_uri crm:P190_has_symbolic_content ?title. FILTER( lang(?title) = \"$LANG$\") OPTIONAL {?manifestation crm:P2_has_type ?type_uri . ?type_uri rdfs:label ?type_label . FILTER( lang(?type_label) = \"$LANG$\")} OPTIONAL {?creation crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end .} OPTIONAL {?creation crm:P32_used_general_technique ?technique . ?technique rdfs:label ?technique_label . FILTER( lang(?technique_label) = \"$LANG$\")} OPTIONAL {?activity crm:P16_used_specific_object ?item  ; crm:P14_carried_out_by ?conservation_org . ?conservation_org crm:P1_is_identified_by ?org_appellation . ?org_appellation crm:P190_has_symbolic_content ?conservation_org_label.}",
+        "where": "?item a lrmoo:F5_Item . ?manifestation lrmoo:R7i_is_exemplified_by ?item . ?expression lrmoo:R4i_is_embodied_in ?manifestation . ?work lrmoo:R3_is_realised_in ?expression . ?creation lrmoo:R17_created ?expression . ?work crm:P102_has_title ?title_uri . ?title_uri crm:P190_has_symbolic_content ?title; crm:P2_has_type aat:300417207. FILTER( lang(?title) = \"$LANG$\") OPTIONAL {?manifestation crm:P2_has_type ?type_uri . ?type_uri rdfs:label ?type_label . FILTER( lang(?type_label) = \"$LANG$\")} OPTIONAL {?creation crm:P4_has_time-span ?timespan . ?timespan crm:P82a_begin_of_the_begin ?begin ; crm:P82b_end_of_the_end ?end .} OPTIONAL {?creation crm:P32_used_general_technique ?technique . ?technique rdfs:label ?technique_label . FILTER( lang(?technique_label) = \"$LANG$\")} OPTIONAL {?activity crm:P16_used_specific_object ?item  ; crm:P14_carried_out_by ?conservation_org . ?conservation_org crm:P1_is_identified_by ?org_appellation . ?org_appellation crm:P190_has_symbolic_content ?conservation_org_label.}",
         "limit": 24
     },
     "visualizations": [
