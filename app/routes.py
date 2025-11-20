@@ -549,6 +549,35 @@ LIMIT 1
                 item_api_cfg = {**item_api_cfg, 'config_url': candidate_url}
                 break
 
+    # 3D viewer data (if configured)
+    viewer_data = {}
+    viewer_cfg = (config.get('item_viewer') or {})
+    if viewer_cfg:
+        try:
+            viewer_query = viewer_cfg.get('query', '')
+            if viewer_query:
+                # inject item URI placeholder
+                viewer_query = viewer_query.replace('${ITEM_URI}', item_uri)
+                sparql_view = SPARQLWrapper(viewer_cfg.get('endpoint', ''))
+                sparql_view.setReturnFormat(JSON)
+                sparql_view.setQuery(viewer_query)
+                viewer_raw = sparql_view.query().convert()
+                head_vars = (viewer_raw.get('head') or {}).get('vars') or []
+                bindings = viewer_raw.get('results', {}).get('bindings', [])
+                print('Viewer bindings:', bindings)
+                print('Viewer head vars:', head_vars)
+                if bindings:
+                    for b in bindings:
+                        for var in head_vars:
+                            val = b.get(var)
+                            if isinstance(val, dict) and 'value' in val:
+                                viewer_link = val['value']
+                                break
+                        if viewer_link:
+                            break
+        except Exception as err:
+            print('Viewer SPARQL error:', err)
+
     return render_template(
         'item_detail.html',
         item=item,
@@ -557,5 +586,6 @@ LIMIT 1
             'image': collection.get('image'),
             'nav_title': nav_title
         },
-        item_api=item_api_cfg
+        item_api=item_api_cfg,
+        viewer_link=viewer_link
     )

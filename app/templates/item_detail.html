@@ -45,7 +45,11 @@
 
     <!-- 3D viewer / media area (right) -->
     <section class="col-12 col-lg-8 item-viewer d-flex align-items-center justify-content-center">
+      {% if viewer_link %}
+      <iframe src="{{ viewer_link }}" class="w-100 h-100 border-0" allowfullscreen loading="lazy"></iframe>
+      {% else %}
       <div class="viewer-placeholder text-muted">{{ gettext('IMMAGINE OGGETTO (3D)') }}</div>
+      {% endif %}
     </section>
   </div>
 </section>

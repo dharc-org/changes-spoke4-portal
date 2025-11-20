@@ -175,5 +175,9 @@
         "config_url": "/static/melody/aldrovandi_item_config.json",
         "style": "/static/css/melody_item.css",
         "script": "/static/js/melody_item.js"
+    },
+    "item_viewer": {
+        "endpoint": "http://localhost:3030/chad-kg/sparql",
+        "query": "PREFIX aat: <http://vocab.getty.edu/aat/> PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/> PREFIX crmdig: <http://www.cidoc-crm.org/extensions/crmdig/> PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/> SELECT ?link_aton WHERE {VALUES ?item {<${ITEM_URI}>} ?item a lrmoo:F5_Item ; crm:P138i_has_representation ?model . ?model crm:P1_is_identified_by ?id_aton . ?id_aton crm:P2_has_type aat:300404630 ; crm:P190_has_symbolic_content ?link_aton .}"
     }
 }
