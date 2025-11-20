@@ -2,6 +2,19 @@
 (function () {
   const container = document.getElementById('api-sidebar-content');
   if (!container) return;
+
+  function detectTimelineLang() {
+    const explicit = (window.MELODY_CONFIG && window.MELODY_CONFIG.LANG)
+      || container.dataset.lang
+      || (typeof document !== 'undefined' ? document.documentElement?.lang : '')
+      || '';
+    const normalized = String(explicit).trim().toLowerCase();
+    if (!normalized) return 'it';
+    if (normalized.startsWith('en')) return 'en';
+    if (normalized.startsWith('it')) return 'it';
+    return normalized.slice(0, 2) || 'it';
+  }
+  const timelineLang = detectTimelineLang();
   const datasetCfg = {
     API_URL: container.dataset.apiUrl || '',
     CONFIG_URL: container.dataset.configUrl || '',
@@ -78,6 +91,50 @@
   }
   const MIN_NATIVE_ISO_YEAR = -271821;
   const MAX_NATIVE_ISO_YEAR = 275760;
+
+  function yearSuffix(year, lang = timelineLang) {
+    const isBC = year < 0;
+    if (lang === 'en') return isBC ? 'BC' : 'AD';
+    return isBC ? 'a.C.' : 'd.C.';
+  }
+  function formatYearNumber(absYear, lang = timelineLang) {
+    const locale = lang === 'it' ? 'it-IT' : 'en-US';
+    const useCompact = absYear >= 1000;
+    try {
+      const formatter = new Intl.NumberFormat(locale, {
+        notation: useCompact ? 'compact' : 'standard',
+        compactDisplay: 'short',
+        maximumFractionDigits: useCompact ? 1 : 0
+      });
+      return formatter.format(absYear);
+    } catch (e) {
+      return String(absYear);
+    }
+  }
+  function formatYearCompact(year, lang = timelineLang) {
+    if (!Number.isFinite(year)) return '';
+    const abs = Math.abs(year);
+    const number = formatYearNumber(abs, lang);
+    const suffix = yearSuffix(year, lang);
+    return number ? `${number} ${suffix}` : suffix;
+  }
+  function formatRangeLabel(startYear, endYear, lang = timelineLang) {
+    const hasStart = Number.isFinite(startYear);
+    const hasEnd = Number.isFinite(endYear);
+    if (!hasStart && !hasEnd) return '';
+    if (hasStart && hasEnd) {
+      const suffixStart = yearSuffix(startYear, lang);
+      const suffixEnd = yearSuffix(endYear, lang);
+      const numStart = formatYearNumber(Math.abs(startYear), lang);
+      const numEnd = formatYearNumber(Math.abs(endYear), lang);
+      if (suffixStart === suffixEnd) {
+        if (numStart === numEnd) return `${numStart} ${suffixStart}`.trim();
+        return `${numStart}\u2013${numEnd} ${suffixStart}`.trim();
+      }
+      return `${numStart} ${suffixStart} \u2013 ${numEnd} ${suffixEnd}`.trim();
+    }
+    return hasStart ? formatYearCompact(startYear, lang) : formatYearCompact(endYear, lang);
+  }
   function coerceYearValue(value) {
     if (value == null || value === '') return NaN;
     if (typeof value === 'object' && value !== null && 'value' in value) return coerceYearValue(value.value);
@@ -266,19 +323,23 @@
     return { starts, labels, counts, maxCount, minYear: actualMin, maxYear: actualMax, binSize, ranges };
   }
 
-  function buildEqualWidthDatasets(starts, labels, counts, maxCount, highlightIndex) {
+  function buildEqualWidthDatasets(starts, labels, counts, maxCount, highlightIndex, opts = {}) {
     const datasets = [];
-    const rgbWhite = { r: 255, g: 255, b: 255 };
+    const rgbWhite = hexToRgb('#fdf9fb');
     const rgbAccent = hexToRgb('#A62176');
     const denom = maxCount > 0 ? maxCount : 1;
+    const displayLabels = Array.isArray(opts.displayLabels) && opts.displayLabels.length === labels.length
+      ? opts.displayLabels
+      : labels;
     for (let i = 0; i < starts.length; i++) {
       const c = counts[i];
       const t = c / denom;
       const isHighlight = i === highlightIndex;
       const baseRgb = lerpColorRGB(rgbWhite, rgbAccent, t || 0);
       const backgroundColor = rgbToCss(baseRgb, isHighlight ? 1 : 0.85);
+      const label = displayLabels[i] ?? labels[i];
       datasets.push({
-        label: labels[i],
+        label,
         data: [1],
         backgroundColor,
         borderColor: 'transparent',
@@ -431,7 +492,20 @@
     const { starts, labels, counts, maxCount, ranges } = bucketed;
     if (!starts.length) return;
     const highlightIndex = findHighlightIndex(normalized, ranges, itemUri);
-    const datasets = buildEqualWidthDatasets(starts, labels, counts, maxCount || 0, highlightIndex);
+    const rangeLabels = ranges && ranges.length
+      ? ranges.map(r => formatRangeLabel(r?.start, r?.end, timelineLang))
+      : labels;
+    const tickLabels = ranges && ranges.length
+      ? ranges.map(r => formatYearCompact(representativeYear(r?.start, r?.end), timelineLang))
+      : rangeLabels;
+    const datasets = buildEqualWidthDatasets(
+      starts,
+      labels,
+      counts,
+      maxCount || 0,
+      highlightIndex,
+      { displayLabels: rangeLabels }
+    );
 
     ensureTimelinePlugins();
     if (typeof Chart === 'undefined') return;
@@ -441,7 +515,7 @@
     canvas.style.height = canvas.dataset.height || '160px';
 
     const n = labels.length;
-    const tickEvery = Math.max(1, Math.ceil(n / 20));
+    const tickEvery = Math.max(1, Math.ceil(tickLabels.length / 10));
     canvas._chart = new Chart(ctx, {
       type: 'bar',
       data: { labels: [''], datasets },
@@ -463,9 +537,8 @@
                 const idx = Math.round(val - 0.5);
                 if (!(idx >= 0 && idx < n)) return '';
                 if (idx % tickEvery !== 0) return '';
-                const lab = labels[idx] || '';
-                const matches = String(lab).match(/-?\d+/g);
-                return matches ? matches[matches.length - 1] : lab;
+                const lab = tickLabels[idx];
+                return lab != null ? String(lab) : '';
               },
               maxRotation: 0,
               minRotation: 0,
@@ -542,7 +615,7 @@
 
   (async () => {
     let configObj = null;
-    const lang = (window.MELODY_CONFIG && window.MELODY_CONFIG.LANG) || (container.dataset.lang || '');
+    const lang = timelineLang;
     if (cfg.CONFIG_URL) {
       try {
         const r = await fetch(cfg.CONFIG_URL, { credentials: 'same-origin' });
