@@ -465,6 +465,24 @@
     return result;
   }
 
+  function filterRowsByRange(rows, range) {
+    if (!Array.isArray(rows) || !rows.length || !range) return [];
+    const start = Number(range.start);
+    const end = Number(range.end);
+    if (!Number.isFinite(start) || !Number.isFinite(end)) return [];
+    const minRange = Math.min(start, end);
+    const maxRange = Math.max(start, end);
+    return rows.filter(r => {
+      const beginYear = Number.isFinite(r.beginYear) ? r.beginYear : getYearUTC(r.begin);
+      let endYear = Number.isFinite(r.endYear) ? r.endYear : getYearUTC(r.end ?? r.begin);
+      if (!Number.isFinite(beginYear)) return false;
+      if (!Number.isFinite(endYear)) endYear = beginYear;
+      const rowStart = Math.min(beginYear, endYear);
+      const rowEnd = Math.max(beginYear, endYear);
+      return rowEnd >= minRange && rowStart <= maxRange;
+    });
+  }
+
   function findHighlightIndex(rows, ranges, itemUri) {
     if (!itemUri || !Array.isArray(ranges) || !ranges.length) return -1;
     const normalizedTarget = normalizeItemUri(itemUri);
@@ -488,10 +506,30 @@
     const deduped = dedupeTimelineRows(rawRows);
     const normalized = normalizeTimelineRows(deduped);
     if (!normalized.length) return;
-    const bucketed = processToBins(normalized, { logThreshold: 1000 });
-    const { starts, labels, counts, maxCount, ranges } = bucketed;
+    let rowsForChart = normalized;
+    let bucketed = processToBins(rowsForChart, { logThreshold: 1000 });
+    if (!bucketed.starts.length) return;
+    let { starts, labels, counts, maxCount, ranges } = bucketed;
+    const approxDetailBins = Math.min(32, Math.max(12, (ranges?.length || 16)));
+    const initialHighlight = findHighlightIndex(rowsForChart, ranges, itemUri);
+    if (initialHighlight >= 0 && ranges && ranges[initialHighlight]) {
+      const detailRows = filterRowsByRange(normalized, ranges[initialHighlight]);
+      if (detailRows.length) {
+        const detailBucketed = processToBins(detailRows, {
+          logThreshold: 1000,
+          targetBins: approxDetailBins,
+          minBins: 8,
+          maxBins: 48
+        });
+        if (detailBucketed.starts.length) {
+          rowsForChart = detailRows;
+          bucketed = detailBucketed;
+          ({ starts, labels, counts, maxCount, ranges } = detailBucketed);
+        }
+      }
+    }
     if (!starts.length) return;
-    const highlightIndex = findHighlightIndex(normalized, ranges, itemUri);
+    const highlightIndex = findHighlightIndex(rowsForChart, ranges, itemUri);
     const rangeLabels = ranges && ranges.length
       ? ranges.map(r => formatRangeLabel(r?.start, r?.end, timelineLang))
       : labels;
