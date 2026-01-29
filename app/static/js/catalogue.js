@@ -353,4 +353,12 @@ async function loadCards() {
       </a>`;
         container.appendChild(col);
     });
+
+    // After rendering, scroll results back to top for the new page
+    const resultsSection = document.querySelector('.catalogue-results');
+    if (resultsSection) {
+        resultsSection.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    } else {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
 }
