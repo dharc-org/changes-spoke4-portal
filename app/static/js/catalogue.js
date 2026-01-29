@@ -253,6 +253,22 @@ function formatDateRange(begin, end) {
     return y1 || y2 || null;
 }
 
+function getCoverUrl(link) {
+    if (typeof link !== 'string') return null;
+    const raw = link.trim();
+    if (!raw) return null;
+    try {
+        const u = new URL(raw);
+        if (u.pathname.startsWith('/s/')) {
+            u.pathname = u.pathname.replace(/^\/s\//, '/scenes/') + '/cover.png';
+            return u.toString();
+        }
+    } catch {
+        // fall through to best-effort string handling below
+    }
+    return raw.replace(/\/$/, '').replace('/s/', '/scenes/') + '/cover.png';
+}
+
 async function loadCards() {
     const selectedFilters = {};
     document.querySelectorAll("#filter-groups input:checked").forEach(input => {
@@ -313,6 +329,7 @@ async function loadCards() {
         const date = formatDateRange(card.begin, card.end);
         const type = card.type_label ? capitalizeFirst(card.type_label) : null;
         const tech = card.technique_label ? capitalizeFirst(card.technique_label) : null;
+        const coverUrl = getCoverUrl(card.link_aton);
 
         const badges = [type, tech]
             .filter(Boolean)
@@ -327,7 +344,7 @@ async function loadCards() {
         col.innerHTML = `
       <a href="${href}" class="text-decoration-none text-reset">
         <div class="card h-100 hover-shadow">
-          <div class="card-media-placeholder" aria-hidden="true"></div>
+          <div class="card-media-placeholder" aria-hidden="true"${coverUrl ? ` style="background-image: url('${escapeHtml(coverUrl)}'); background-size: cover; background-position: center;"` : ''}></div>
           <div class="card-body">
             <h5 class="card-title">${escapeHtml(card.title)}</h5>
             ${(badges || metaText) ? `<p class="card-text card-meta">${badges}${metaText ? `<span class="meta-text"> ${metaText}</span>` : ''}</p>` : ''}

@@ -452,6 +452,7 @@ OFFSET {offset}
         type_label = get_val(b, 'type_label')
         technique_label = get_val(b, 'technique_label')
         conservation_org_label = get_val(b, 'conservation_org_label')
+        link_aton = get_val(b, 'link_aton')
         cards.append({
             'id': item,
             'title': title,
@@ -460,6 +461,7 @@ OFFSET {offset}
             'type_label': type_label,
             'technique_label': technique_label,
             'conservation_org_label': conservation_org_label,
+            'link_aton': link_aton,
             'summary': ''
         })
 
