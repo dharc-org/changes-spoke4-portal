@@ -89,3 +89,10 @@ msgstr ""
 msgid "Esplora"
 msgstr ""
 
+#: app/templates/collection_catalogue.html:55
+msgid "Precedente"
+msgstr ""
+
+#: app/templates/collection_catalogue.html:57
+msgid "Successivo"
+msgstr ""
