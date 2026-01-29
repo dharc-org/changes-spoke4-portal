@@ -346,6 +346,15 @@ def _inject_lang(query: str, lang: str) -> str:
     return out
 
 
+def _sparql_literal(s: str) -> str:
+    """Escape a Python string into a SPARQL string literal."""
+    if s is None:
+        return '""'
+    # Escape backslashes and double quotes
+    safe = str(s).replace("\\", "\\\\").replace('"', '\\"')
+    return f"\"{safe}\""
+
+
 @main.route("/api/<collection_id>/cards", methods=["POST"])
 def api_cards(collection_id):
     """Return paginated cards for a collection, applying selected filters.
@@ -372,6 +381,17 @@ def api_cards(collection_id):
     # Build WHERE with filters
     base_where = _inject_lang(config['cards']['where'], lang)
     where = _build_cards_where(base_where, config.get('filters', []), selected)
+    # Optional title search (client-side filter input)
+    title_search = selected.get('title')
+    if isinstance(title_search, str):
+        title_search = title_search.strip()
+    else:
+        title_search = None
+    if title_search:
+        title_var = "?title" if "?title" in base_where else (
+            "?label" if "?label" in base_where else None)
+        if title_var:
+            where += f"\nFILTER(CONTAINS(LCASE(STR({title_var})), LCASE({_sparql_literal(title_search)})))"
 
     prefixes = _sparql_prefixes()
 
@@ -550,9 +570,10 @@ LIMIT 1
                 break
 
     # 3D viewer data (if configured)
-    viewer_data = {}
+    viewer_link = None
     viewer_cfg = (config.get('item_viewer') or {})
     if viewer_cfg:
+        viewer_link = viewer_cfg.get('fallback_url')
         try:
             viewer_query = viewer_cfg.get('query', '')
             if viewer_query:

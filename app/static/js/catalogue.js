@@ -28,6 +28,16 @@ function getRangeI18n() {
     }
 }
 
+function getTitleSearchI18n() {
+    switch ((UI_LOCALE || 'it').toLowerCase()) {
+        case 'en':
+            return { label: 'Search in title', placeholder: 'Search...' };
+        case 'it':
+        default:
+            return { label: 'Cerca nel titolo', placeholder: 'Cerca...' };
+    }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await loadFilters();
     await loadCards();
@@ -42,6 +52,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.querySelectorAll('#filter-groups input[type="checkbox"]').forEach(cb => { cb.checked = false; });
             // Clear range inputs
             document.querySelectorAll('#filter-groups input[type="number"]').forEach(inp => { inp.value = ''; });
+            const titleEl = document.getElementById("title-search");
+            if (titleEl) titleEl.value = '';
             currentPage = 1;
             await loadCards();
         });
@@ -63,6 +75,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function loadFilters() {
     const container = document.getElementById("filter-groups");
     container.innerHTML = "";
+
+    const titleI18n = getTitleSearchI18n();
+    const titleSection = document.createElement("div");
+    titleSection.className = "px-3 py-3 border-bottom border-secondary";
+    titleSection.innerHTML = `
+      <label class="form-label small text-uppercase" for="title-search">${titleI18n.label}</label>
+      <input id="title-search" type="search" class="form-control form-control-sm"
+        placeholder="${titleI18n.placeholder}" autocomplete="off">
+    `;
+    container.appendChild(titleSection);
 
     // Phase 1: Render empty filter groups
     const structureRes = await fetch(`/api/${COLLECTION_ID}/filters?structureOnly=true`);
@@ -238,6 +260,11 @@ async function loadCards() {
         if (!selectedFilters[key]) selectedFilters[key] = [];
         selectedFilters[key].push(input.value);
     });
+
+    const titleEl = document.getElementById("title-search");
+    if (titleEl && titleEl.value.trim()) {
+        selectedFilters.title = titleEl.value.trim();
+    }
 
     // Gather range filters
     FILTER_GROUPS.forEach(g => {
