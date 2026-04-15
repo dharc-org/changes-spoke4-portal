@@ -1,14 +1,14 @@
 # Translations template for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
+# Copyright (C) 2026 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-06-06 17:17+0200\n"
+"POT-Creation-Date: 2026-04-15 18:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,78 +21,306 @@ msgstr ""
 msgid "Portale dello Spoke 4"
 msgstr ""
 
-#: app/templates/base.html:16
-msgid "PE5 - Spoke 4"
+#: app/templates/base.html:57
+msgid "Il progetto"
 msgstr ""
 
-#: app/templates/base.html:23
-msgid "Panoramica"
+#: app/templates/base.html:59
+msgid ""
+"I casi\n"
+"                            applicativi"
 msgstr ""
 
-#: app/templates/base.html:24
-msgid "Vai ai progetti"
+#: app/templates/base.html:61
+msgid ""
+"Contatti e\n"
+"                            informazioni"
 msgstr ""
 
-#: app/templates/base.html:25
-msgid "Contatti e Informazioni"
+#: app/templates/base.html:114
+msgid "Logo Unibo"
 msgstr ""
 
-#: app/templates/base.html:34
-msgid "Contatti"
+#: app/templates/base.html:118
+msgid "Logo Changes"
 msgstr ""
 
-#: app/templates/base.html:35
-msgid "Accessibilità"
+#: app/templates/base.html:121
+msgid "contatto diretto"
 msgstr ""
 
-#: app/templates/base.html:36
-msgid "Licence"
+#: app/templates/collection_catalogue.html:3
+msgid "Il catalogo"
 msgstr ""
 
-#: app/templates/base.html:37
-msgid "Credits"
+#: app/templates/collection_catalogue.html:41
+msgid "Filtra la collezione"
 msgstr ""
 
-#: app/templates/collection_home.html:12
-msgid "Inizia il tour"
+#: app/templates/collection_catalogue.html:43
+msgid "Applica"
 msgstr ""
 
-#: app/templates/collection_home.html:25
-msgid "Vai al catalogo"
-msgstr ""
-
-#: app/templates/collection_home.html:33
-msgid "Partner e Credits"
-msgstr ""
-
-#: app/templates/collection_home.html:34
-msgid "Sezione dedicata ai partner del progetto e ai crediti istituzionali."
-msgstr ""
-
-#: app/templates/homepage.html:5
-msgid "PE5 Spoke 4"
-msgstr ""
-
-#: app/templates/homepage.html:9
-msgid "Obiettivo 1"
-msgstr ""
-
-#: app/templates/homepage.html:13
-msgid "Obiettivo 2"
-msgstr ""
-
-#: app/templates/homepage.html:17
-msgid "Obiettivo 3"
-msgstr ""
-
-#: app/templates/homepage.html:28
-msgid "Esplora"
+#: app/templates/collection_catalogue.html:45
+msgid "Cancella"
 msgstr ""
 
 #: app/templates/collection_catalogue.html:55
+#: app/templates/collection_home.html:131
 msgid "Precedente"
 msgstr ""
 
 #: app/templates/collection_catalogue.html:57
+#: app/templates/collection_home.html:136
 msgid "Successivo"
 msgstr ""
+
+#: app/templates/collection_home.html:105
+msgid "Esplora il catalogo"
+msgstr ""
+
+#: app/templates/collection_home.html:146
+msgid "Esplora i dettagli di progetto"
+msgstr ""
+
+#: app/templates/collection_overview.html:3
+msgid "Dettagli di progetto"
+msgstr ""
+
+#: app/templates/collection_overview.html:215
+msgid "Fase 1"
+msgstr ""
+
+#: app/templates/collection_overview.html:233
+msgid "Fase 2"
+msgstr ""
+
+#: app/templates/collection_overview.html:251
+msgid "Fase 3"
+msgstr ""
+
+#: app/templates/collection_overview.html:336
+msgid "Chiudi"
+msgstr ""
+
+#: app/templates/homepage.html:64
+msgid "CHANGES Spoke 4"
+msgstr ""
+
+#: app/templates/homepage.html:74
+msgid "Digitalizzare e valorizzare il patrimonio in 3D"
+msgstr ""
+
+#: app/templates/homepage.html:75
+msgid ""
+"Creare una collezione digitale\n"
+"                        tridimensionale che unisca modelli accurati, dati"
+" descrittivi e contesti storici, rendendo il\n"
+"                        patrimonio culturale accessibile, documentato e "
+"interoperabile."
+msgstr ""
+
+#: app/templates/homepage.html:90
+msgid "Costruire un ambiente narrativo e interattivo"
+msgstr ""
+
+#: app/templates/homepage.html:91
+msgid ""
+"Sviluppare uno spazio virtuale\n"
+"                        navigabile dove i visitatori esplorano oggetti e "
+"relazioni attraverso storytelling e percorsi\n"
+"                        immersivi, favorendo una comprensione "
+"esperienziale del patrimonio."
+msgstr ""
+
+#: app/templates/homepage.html:106
+msgid "Definire un modello replicabile di digital twin"
+msgstr ""
+
+#: app/templates/homepage.html:107
+msgid ""
+"Progettare un metodo riutilizzabile per\n"
+"                        integrare modellazione 3D, semantica e "
+"interazione; validato con l'Aldrovandi Digital Twin, per\n"
+"                        creare ambienti digitali evolutivi e "
+"interdisciplinari."
+msgstr ""
+
+#: app/templates/homepage.html:125 app/templates/homepage.html:143
+msgid "Prossimamente"
+msgstr ""
+
+#: app/templates/homepage.html:146
+msgid "Esplora"
+msgstr ""
+
+#: app/templates/homepage.html:165
+msgid "Descrizione delle attività di metadatazione"
+msgstr ""
+
+#: app/templates/homepage.html:170
+msgid ""
+"Le attività di metadatazione hanno\n"
+"                    riguardato la strutturazione semantica dei dati "
+"associati agli oggetti fisici e digitali della\n"
+"                    mostra, con l’obiettivo di garantire interoperabilità"
+" e riuso. Ogni oggetto è stato descritto\n"
+"                    attraverso metadati tecnici, descrittivi e semantici "
+"coerenti con le linee guida del Ministero della\n"
+"                    Cultura e del Data Management Plan di Spoke 4. "
+"L’integrazione tra contenuti 3D, immagini, testi e\n"
+"                    link semantici è stata gestita attraverso MELODY, un "
+"sistema open-source per la creazione di storie\n"
+"                    dati basate su Linked Open Data."
+msgstr ""
+
+#: app/templates/homepage.html:183
+msgid "Standard adottati"
+msgstr ""
+
+#: app/templates/homepage.html:188
+msgid ""
+"Sono stati impiegati formati\n"
+"                    aperti e interoperabili per favorire la longevità e "
+"la condivisione dei dati:"
+msgstr ""
+
+#: app/templates/homepage.html:192
+msgid "Immagini e texture"
+msgstr ""
+
+#: app/templates/homepage.html:193
+msgid "Video e audio"
+msgstr ""
+
+#: app/templates/homepage.html:195
+msgid ""
+"Per la metadatazione semantica sono stati utilizzati standard RDF e "
+"ontologie condivise\n"
+"                    nel dominio dei beni culturali (CIDOC-CRM, Dublin "
+"Core). Il formato glTF è stato privilegiato per la\n"
+"                    compatibilità con ambienti Web3D e WebXR."
+msgstr ""
+
+#: app/templates/homepage.html:205
+msgid "Dettagli sulla validazione semantica"
+msgstr ""
+
+#: app/templates/homepage.html:210
+msgid ""
+"La validazione semantica è stata\n"
+"                    effettuata mediante un processo iterativo che ha "
+"coinvolto esperti di dominio e sviluppatori.\n"
+"                    L’obiettivo era verificare la coerenza tra la "
+"struttura dei metadati, le ontologie adottate e le\n"
+"                    informazioni effettivamente rappresentate dagli "
+"oggetti digitali. MELODY, attraverso query SPARQL\n"
+"                    dedicate, ha consentito la verifica e la "
+"visualizzazione dei dati in tempo reale, garantendo\n"
+"                    consistenza e corretto allineamento con i modelli "
+"concettuali."
+msgstr ""
+
+#: app/templates/homepage.html:222
+msgid "API per accesso ai dati in tempo reale"
+msgstr ""
+
+#: app/templates/homepage.html:227
+msgid ""
+"È stata sviluppata un’API modulare\n"
+"                    basata su architettura RESTful per l’interrogazione e"
+" la visualizzazione dei metadati. L’API si\n"
+"                    integra con MELODY e supporta la restituzione di dati"
+" in formato JSON e RDF, consentendo la\n"
+"                    fruizione in tempo reale sia all’interno del "
+"framework ATON (per l’esplorazione 3D del digital twin)\n"
+"                    sia nel catalogo online della collezione. Tale "
+"approccio permette di aggiornare dinamicamente i\n"
+"                    contenuti e di integrare visualizzazioni interattive "
+"basate su Linked Open Data. poi ce li validerà\n"
+"                    silvio spero."
+msgstr ""
+
+#: app/templates/homepage.html:244
+msgid "Tecnologie - immagine"
+msgstr ""
+
+#: app/templates/homepage.html:248
+msgid "Tecnologie di acquisizione"
+msgstr ""
+
+#: app/templates/homepage.html:250
+msgid "Fotogrammetria"
+msgstr ""
+
+#: app/templates/homepage.html:251
+msgid "Scanner a luce strutturata"
+msgstr ""
+
+#: app/templates/homepage.html:252
+msgid "Laser scanner"
+msgstr ""
+
+#: app/templates/homepage.html:253
+msgid ""
+"Tecniche spesso combinate per unire precisione geometrica e "
+"qualit&agrave;\n"
+"                    fotorealistica."
+msgstr ""
+
+#: app/templates/homepage.html:256
+msgid "Tecnologie di elaborazione"
+msgstr ""
+
+#: app/templates/homepage.html:258
+msgid ""
+"Software: Photoshop, RawTherapee, 3DF Zephyr, Metashape, Artec Studio, "
+"SCENE, Melody."
+msgstr ""
+
+#: app/templates/homepage.html:260
+msgid "Output: mesh 3D texturizzata ad alta densit&agrave; geometrica."
+msgstr ""
+
+#: app/templates/homepage.html:262
+msgid "Tecnologie di modellazione e ottimizzazione"
+msgstr ""
+
+#: app/templates/homepage.html:264
+msgid "Blender per la modellazione."
+msgstr ""
+
+#: app/templates/homepage.html:265
+msgid ""
+"Instant Meshes, Photoshop, Gimp, 3DF Zephyr, Artec Studio per "
+"ottimizzazione."
+msgstr ""
+
+#: app/templates/homepage.html:267
+msgid "Tecnologie di presentazione"
+msgstr ""
+
+#: app/templates/homepage.html:269
+msgid "ATON framework per il prototipo finale."
+msgstr ""
+
+#: app/templates/item_detail.html:36
+msgid "torna al catalogo"
+msgstr ""
+
+#: app/templates/item_detail.html:51
+msgid "IMMAGINE OGGETTO 3D NON DISPONIBILE"
+msgstr ""
+
+#: app/templates/macros/header_links.html:5
+msgid "Home"
+msgstr ""
+
+#: app/templates/macros/header_links.html:9
+msgid "Progetto"
+msgstr ""
+
+#: app/templates/macros/header_links.html:13
+msgid "Catalogo"
+msgstr ""
+
