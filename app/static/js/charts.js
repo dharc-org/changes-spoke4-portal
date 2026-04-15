@@ -614,7 +614,12 @@
           tooltip: {
             callbacks: {
               title: items => items[0]?.dataset?.label || '',
-              label: item => `Count: ${item.dataset?._realCount ?? 0}`
+              label: item => {
+                const count = item.dataset?._realCount ?? 0;
+                return getPageLang() === 'it'
+                  ? `${count} oggetti provengono da questo periodo.`
+                  : `${count} objects come from this period.`;
+              }
             }
           }
         },
