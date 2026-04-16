@@ -468,6 +468,67 @@ OFFSET {offset}
     return jsonify({'cards': cards, 'totalPages': total_pages})
 
 
+@main.route("/api/<collection_id>/title-suggestions", methods=["POST"])
+def api_title_suggestions(collection_id):
+    """Return distinct title suggestions for the catalogue title search."""
+    collection = get_collection(collection_id)
+    if not collection:
+        abort(404)
+
+    config_path = os.path.join(DATA_DIR, collection["config_path"])
+    with open(config_path, encoding='utf-8') as f:
+        config = json.load(f)
+    _validate_config(config, collection_id)
+
+    body = request.get_json(silent=True) or {}
+    selected = body.get('filters') or {}
+    query = body.get('query')
+    limit = min(10, max(1, int(body.get('limit') or 8)))
+    lang = get_locale()
+
+    if not isinstance(query, str):
+        return jsonify({'suggestions': []})
+
+    query = query.strip()
+    if len(query) < 2:
+        return jsonify({'suggestions': []})
+
+    base_where = _inject_lang(config['cards']['where'], lang)
+    where = _build_cards_where(base_where, config.get('filters', []), selected)
+
+    title_var = "?title" if "?title" in base_where else (
+        "?label" if "?label" in base_where else None)
+    if not title_var:
+        return jsonify({'suggestions': []})
+
+    where += f"\nFILTER(CONTAINS(LCASE(STR({title_var})), LCASE({_sparql_literal(query)})))"
+
+    prefixes = _sparql_prefixes()
+    suggestions_query = f"""
+{prefixes}
+SELECT DISTINCT {title_var}
+WHERE {{
+  {where}
+}}
+ORDER BY LCASE({title_var})
+LIMIT {limit}
+"""
+
+    sparql = SPARQLWrapper(config['sparql_endpoint'])
+    sparql.setReturnFormat(JSON)
+    sparql.setQuery(suggestions_query)
+    raw = sparql.query().convert()
+
+    key = title_var.lstrip('?')
+    suggestions = []
+    for row in raw.get('results', {}).get('bindings', []):
+        value = row.get(key, {}).get('value')
+        if value:
+            suggestions.append(value)
+
+    return jsonify({'suggestions': suggestions})
+
+
 @main.route('/set-language/<lang>')
 def set_language(lang: str):
     """Persist user language preference in a cookie and redirect back.

@@ -4,6 +4,11 @@ let currentPage = 1;
 let TOTAL_PAGES = 1;
 const cardsPerPage = 24;
 const UI_LOCALE = document.documentElement?.lang || 'it';
+const TITLE_SUGGESTIONS_MIN_CHARS = 2;
+const TITLE_SUGGESTIONS_LIMIT = 8;
+
+let titleSuggestionsTimer = null;
+let titleSuggestionsAbortController = null;
 
 function capitalizeFirst(str, locale = UI_LOCALE) {
     if (typeof str !== 'string') return str;
@@ -54,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.querySelectorAll('#filter-groups input[type="number"]').forEach(inp => { inp.value = ''; });
             const titleEl = document.getElementById("title-search");
             if (titleEl) titleEl.value = '';
+            clearTitleSuggestions();
             currentPage = 1;
             await loadCards();
         });
@@ -72,6 +78,112 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 });
 
+function collectSelectedFilters({ includeTitle = true } = {}) {
+    const selectedFilters = {};
+
+    document.querySelectorAll("#filter-groups input:checked").forEach(input => {
+        const key = input.name;
+        if (!selectedFilters[key]) selectedFilters[key] = [];
+        selectedFilters[key].push(input.value);
+    });
+
+    if (includeTitle) {
+        const titleEl = document.getElementById("title-search");
+        if (titleEl && titleEl.value.trim()) {
+            selectedFilters.title = titleEl.value.trim();
+        }
+    }
+
+    FILTER_GROUPS.forEach(g => {
+        if ((g.type || 'checkbox') !== 'range') return;
+        const minEl = document.getElementById(`range-${g.key}-min`);
+        const maxEl = document.getElementById(`range-${g.key}-max`);
+        if (!minEl && !maxEl) return;
+        const minV = minEl && minEl.value ? parseInt(minEl.value, 10) : null;
+        const maxV = maxEl && maxEl.value ? parseInt(maxEl.value, 10) : null;
+        if (minV != null || maxV != null) {
+            selectedFilters[g.key] = { min: minV, max: maxV };
+        }
+    });
+
+    return selectedFilters;
+}
+
+function clearTitleSuggestions() {
+    const listEl = document.getElementById("title-search-suggestions");
+    if (listEl) listEl.innerHTML = "";
+}
+
+async function updateTitleSuggestions() {
+    const titleEl = document.getElementById("title-search");
+    if (!titleEl) return;
+
+    const query = titleEl.value.trim();
+    if (query.length < TITLE_SUGGESTIONS_MIN_CHARS) {
+        if (titleSuggestionsAbortController) titleSuggestionsAbortController.abort();
+        clearTitleSuggestions();
+        return;
+    }
+
+    if (titleSuggestionsAbortController) titleSuggestionsAbortController.abort();
+    titleSuggestionsAbortController = new AbortController();
+
+    try {
+        const filters = collectSelectedFilters({ includeTitle: false });
+        const res = await fetch(`/api/${COLLECTION_ID}/title-suggestions`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                filters,
+                query,
+                limit: TITLE_SUGGESTIONS_LIMIT
+            }),
+            signal: titleSuggestionsAbortController.signal
+        });
+
+        if (!res.ok) {
+            clearTitleSuggestions();
+            return;
+        }
+
+        const { suggestions } = await res.json();
+        const listEl = document.getElementById("title-search-suggestions");
+        if (!listEl) return;
+
+        listEl.innerHTML = "";
+        (suggestions || []).forEach((suggestion) => {
+            const option = document.createElement("option");
+            option.value = suggestion;
+            listEl.appendChild(option);
+        });
+    } catch (err) {
+        if (err?.name !== 'AbortError') {
+            clearTitleSuggestions();
+            console.error("Error loading title suggestions:", err);
+        }
+    }
+}
+
+function setupTitleSearchSuggestions() {
+    const titleEl = document.getElementById("title-search");
+    if (!titleEl) return;
+
+    titleEl.addEventListener("input", () => {
+        if (titleSuggestionsTimer) clearTimeout(titleSuggestionsTimer);
+        titleSuggestionsTimer = window.setTimeout(() => {
+            updateTitleSuggestions();
+        }, 180);
+    });
+
+    titleEl.addEventListener("search", () => {
+        if (!titleEl.value.trim()) clearTitleSuggestions();
+    });
+
+    titleEl.addEventListener("blur", () => {
+        window.setTimeout(clearTitleSuggestions, 150);
+    });
+}
+
 async function loadFilters() {
     const container = document.getElementById("filter-groups");
     container.innerHTML = "";
@@ -82,9 +194,11 @@ async function loadFilters() {
     titleSection.innerHTML = `
       <label class="form-label small text-uppercase" for="title-search">${titleI18n.label}</label>
       <input id="title-search" type="search" class="form-control form-control-sm"
-        placeholder="${titleI18n.placeholder}" autocomplete="off">
+        placeholder="${titleI18n.placeholder}" autocomplete="off" list="title-search-suggestions">
+      <datalist id="title-search-suggestions"></datalist>
     `;
     container.appendChild(titleSection);
+    setupTitleSearchSuggestions();
 
     // Phase 1: Render empty filter groups
     const structureRes = await fetch(`/api/${COLLECTION_ID}/filters?structureOnly=true`);
@@ -270,30 +384,7 @@ function getCoverUrl(link) {
 }
 
 async function loadCards() {
-    const selectedFilters = {};
-    document.querySelectorAll("#filter-groups input:checked").forEach(input => {
-        const key = input.name;
-        if (!selectedFilters[key]) selectedFilters[key] = [];
-        selectedFilters[key].push(input.value);
-    });
-
-    const titleEl = document.getElementById("title-search");
-    if (titleEl && titleEl.value.trim()) {
-        selectedFilters.title = titleEl.value.trim();
-    }
-
-    // Gather range filters
-    FILTER_GROUPS.forEach(g => {
-        if ((g.type || 'checkbox') !== 'range') return;
-        const minEl = document.getElementById(`range-${g.key}-min`);
-        const maxEl = document.getElementById(`range-${g.key}-max`);
-        if (!minEl && !maxEl) return;
-        const minV = minEl && minEl.value ? parseInt(minEl.value, 10) : null;
-        const maxV = maxEl && maxEl.value ? parseInt(maxEl.value, 10) : null;
-        if (minV != null || maxV != null) {
-            selectedFilters[g.key] = { min: minV, max: maxV };
-        }
-    });
+    const selectedFilters = collectSelectedFilters();
 
     const res = await fetch(`/api/${COLLECTION_ID}/cards`, {
         method: "POST",
