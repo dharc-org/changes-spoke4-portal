@@ -233,7 +233,7 @@ def get_filters(collection_id):
             q = group.get("query", "")
             gtype = entry["type"]
             if gtype == "range":
-                range_q = group.get("range_query")
+                range_q = _build_range_metadata_query(group)
                 if range_q:
                     if "$LANG$" in range_q:
                         range_q = range_q.replace("$LANG$", lang)
@@ -271,7 +271,49 @@ def _sparql_prefixes():
         "PREFIX lrmoo: <http://iflastandards.info/ns/lrm/lrmoo/>",
         "PREFIX aat: <http://vocab.getty.edu/aat/>",
         "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>",
     ])
+
+
+def _sparql_safe_suffix(value: str) -> str:
+    safe = re.sub(r'[^A-Za-z0-9_]+', '_', str(value or 'range')).strip('_')
+    return safe or 'range'
+
+
+def _sparql_signed_year_bind(source_var: str, target_var: str) -> str:
+    """Return a SPARQL BIND that preserves signed years, including BCE values."""
+    dt_var = f"{target_var}_dt"
+    return (
+        f"BIND(DATATYPE({source_var}) AS {dt_var})\n"
+        f"BIND(IF({dt_var} IN (xsd:dateTime, xsd:date), "
+        f"YEAR({source_var}), "
+        f"xsd:integer(xsd:decimal(REPLACE(STR({source_var}), "
+        f"\"^Y?(-?\\\\d+).*$\", \"$1\")))) AS {target_var})"
+    )
+
+
+def _build_range_metadata_query(group: dict) -> str | None:
+    triples = (group.get('triples') or '').strip()
+    begin_var = group.get('begin_var')
+    end_var = group.get('end_var')
+    if not triples or not begin_var or not end_var:
+        return group.get('range_query')
+
+    begin_year_var = f"?{_sparql_safe_suffix(group.get('key'))}_beginYear"
+    end_year_var = f"?{_sparql_safe_suffix(group.get('key'))}_endYear"
+    return f"""
+{_sparql_prefixes()}
+SELECT (MIN({begin_year_var}) AS ?min) (MAX({end_year_var}) AS ?max)
+WHERE {{
+  ?item a lrmoo:F5_Item .
+  ?manifestation lrmoo:R7i_is_exemplified_by ?item .
+  ?expression lrmoo:R4i_is_embodied_in ?manifestation .
+  ?creation lrmoo:R17_created ?expression .
+  {triples}
+  {_sparql_signed_year_bind(begin_var, begin_year_var)}
+  {_sparql_signed_year_bind(end_var, end_year_var)}
+}}
+"""
 
 
 def _build_cards_where(base_where: str, config_filters: list, selected: dict):
@@ -303,11 +345,16 @@ def _build_cards_where(base_where: str, config_filters: list, selected: dict):
                 parts.append(triples)
             begin_var = group.get('begin_var', '?begin')
             end_var = group.get('end_var', '?end')
+            safe_key = _sparql_safe_suffix(key)
+            begin_year_var = f"?{safe_key}_beginYear"
+            end_year_var = f"?{safe_key}_endYear"
+            parts.append(_sparql_signed_year_bind(begin_var, begin_year_var))
+            parts.append(_sparql_signed_year_bind(end_var, end_year_var))
             conds = []
             if isinstance(min_y, (int, float, str)) and str(min_y).strip():
-                conds.append(f"YEAR({end_var}) >= {int(float(min_y))}")
+                conds.append(f"{end_year_var} >= {int(float(min_y))}")
             if isinstance(max_y, (int, float, str)) and str(max_y).strip():
-                conds.append(f"YEAR({begin_var}) <= {int(float(max_y))}")
+                conds.append(f"{begin_year_var} <= {int(float(max_y))}")
             if conds:
                 parts.append(f"FILTER( {' && '.join(conds)} )")
             continue
