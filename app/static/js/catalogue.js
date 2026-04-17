@@ -353,9 +353,11 @@ function escapeHtml(str) {
 
 function yearOnly(dateStr) {
     if (!dateStr || typeof dateStr !== 'string') return null;
-    // Expecting e.g. 1500-01-01T00:00:00+00:00 -> take leading year part
-    const m = dateStr.match(/^(-?\d{1,4})/);
-    return m ? m[1] : null;
+    // Accept xsd:date/xsd:dateTime and EDTF-style years such as Y-0500.
+    const m = dateStr.match(/^Y?(-?\d+)/);
+    if (!m) return null;
+    const year = Number.parseInt(m[1], 10);
+    return Number.isNaN(year) ? null : String(year);
 }
 
 function formatDateRange(begin, end) {
