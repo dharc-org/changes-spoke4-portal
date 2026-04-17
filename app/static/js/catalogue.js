@@ -53,6 +53,32 @@ function getDateEraLabels() {
     }
 }
 
+function getEmptyStateI18n(hasActiveFilters) {
+    switch ((UI_LOCALE || 'it').toLowerCase()) {
+        case 'en':
+            return hasActiveFilters
+                ? {
+                    title: 'No results found',
+                    message: 'No items match the selected filters. Try changing or clearing them.'
+                }
+                : {
+                    title: 'No items available',
+                    message: 'There are currently no items to display in this catalogue.'
+                };
+        case 'it':
+        default:
+            return hasActiveFilters
+                ? {
+                    title: 'Nessun risultato trovato',
+                    message: 'Nessun elemento corrisponde ai filtri selezionati. Prova a modificarli o a cancellarli.'
+                }
+                : {
+                    title: 'Nessun elemento disponibile',
+                    message: 'Al momento non ci sono elementi da visualizzare in questo catalogo.'
+                };
+    }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await loadFilters();
     await loadCards();
@@ -405,6 +431,17 @@ function getCoverUrl(link) {
     return raw.replace(/\/$/, '').replace('/s/', '/scenes/') + '/cover.png';
 }
 
+function hasActiveFilters(selectedFilters) {
+    return Object.values(selectedFilters || {}).some((value) => {
+        if (Array.isArray(value)) return value.length > 0;
+        if (typeof value === 'string') return value.trim().length > 0;
+        if (value && typeof value === 'object') {
+            return value.min != null || value.max != null;
+        }
+        return false;
+    });
+}
+
 async function loadCards() {
     const selectedFilters = collectSelectedFilters();
 
@@ -435,6 +472,18 @@ async function loadCards() {
     container.innerHTML = "";
 
     console.log(cards);
+
+    if (!cards || cards.length === 0) {
+        const emptyState = getEmptyStateI18n(hasActiveFilters(selectedFilters));
+        container.innerHTML = `
+          <div class="col-12">
+            <div class="catalogue-empty-state">
+              <h4 class="catalogue-empty-state-title">${escapeHtml(emptyState.title)}</h4>
+              <p class="catalogue-empty-state-text">${escapeHtml(emptyState.message)}</p>
+            </div>
+          </div>`;
+        return;
+    }
 
     cards.forEach(card => {
         const col = document.createElement("div");

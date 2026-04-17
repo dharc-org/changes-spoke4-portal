@@ -466,6 +466,26 @@ header .nav-link:focus {
     transition: transform .15s ease, box-shadow .15s ease;
 }
 
+.catalogue-results .catalogue-empty-state {
+    border: 1px solid rgba(30, 30, 30, 0.2);
+    background: rgba(255, 255, 255, 0.45);
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+
+.catalogue-results .catalogue-empty-state-title {
+    font-family: 'PT Serif', serif;
+    font-size: 1.2rem;
+    margin-bottom: .5rem;
+}
+
+.catalogue-results .catalogue-empty-state-text {
+    font-family: 'Work Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: .95rem;
+    color: #5c5c5c;
+    margin: 0;
+}
+
 /* Lift effect on hover/focus to hint clickability */
 .catalogue-results a:hover .card,
 .catalogue-results a:focus .card {
