@@ -43,6 +43,16 @@ function getTitleSearchI18n() {
     }
 }
 
+function getDateEraLabels() {
+    switch ((UI_LOCALE || 'it').toLowerCase()) {
+        case 'en':
+            return { bce: 'BCE', ce: 'CE' };
+        case 'it':
+        default:
+            return { bce: 'a.C.', ce: 'd.C.' };
+    }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     await loadFilters();
     await loadCards();
@@ -360,13 +370,23 @@ function yearOnly(dateStr) {
     return Number.isNaN(year) ? null : String(year);
 }
 
+function formatDisplayYear(yearStr) {
+    if (yearStr == null) return null;
+    const year = Number.parseInt(yearStr, 10);
+    if (Number.isNaN(year)) return null;
+    const labels = getDateEraLabels();
+    return year < 0 ? `${Math.abs(year)} ${labels.bce}` : `${year} ${labels.ce}`;
+}
+
 function formatDateRange(begin, end) {
     const y1 = yearOnly(begin);
     const y2 = yearOnly(end);
     if (y1 && y2) {
-        return y1 === y2 ? y1 : `${y1}${y2}`.replace('\u0016', '-');
+        const d1 = formatDisplayYear(y1);
+        const d2 = formatDisplayYear(y2);
+        return y1 === y2 ? d1 : `${d1} - ${d2}`;
     }
-    return y1 || y2 || null;
+    return formatDisplayYear(y1 || y2);
 }
 
 function getCoverUrl(link) {
