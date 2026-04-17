@@ -310,8 +310,8 @@ msgid "torna al catalogo"
 msgstr "back to the catalogue"
 
 #: app/templates/item_detail.html:51
-msgid "IMMAGINE OGGETTO 3D NON DISPONIBILE"
-msgstr "3D OBJECT IMAGE NOT AVAILABLE"
+msgid "OGGETTO 3D NON DISPONIBILE"
+msgstr "3D OBJECT NOT AVAILABLE"
 
 #: app/templates/macros/header_links.html:5
 msgid "Home"
