@@ -1,6 +1,8 @@
 console.log("JavaScript loaded successfully.");
 
 document.addEventListener("DOMContentLoaded", () => {
+    initCookieNotice();
+
     if (window.Chart && window.ChartDataLabels) {
         Chart.register(ChartDataLabels);
     }
@@ -72,6 +74,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+function initCookieNotice() {
+    const notice = document.querySelector('[data-cookie-notice]');
+    if (!notice) return;
+
+    const storageKey = 'changesCookieNoticeDismissed';
+    try {
+        if (window.localStorage.getItem(storageKey) === 'true') {
+            notice.remove();
+            return;
+        }
+    } catch (e) {
+        // If storage is unavailable, show the notice for the current page view.
+    }
+
+    notice.classList.add('is-visible');
+
+    const dismissButton = notice.querySelector('[data-cookie-notice-dismiss]');
+    if (!dismissButton) return;
+
+    dismissButton.addEventListener('click', () => {
+        try {
+            window.localStorage.setItem(storageKey, 'true');
+        } catch (e) {
+            // Dismiss visually even if the browser blocks localStorage.
+        }
+        notice.remove();
+    });
+}
 
 async function fetchSparqlData(query, endpoint) {
     const url = `${endpoint}?query=${encodeURIComponent(query)}`;

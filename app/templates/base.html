@@ -117,13 +117,38 @@
                     <img class="footer-logo-center" src="{{ url_for('static', filename='img/logo_changes.png') }}"
                         alt="{{ gettext('Logo Changes') }}">
                 </div>
-                <div class="col-12 col-md-4 d-flex justify-content-center justify-content-md-end">
-                    <a class="link-light small text-decoration-none" href="#">{{ gettext('contatto diretto') }}</a>
-                </div>
             </div>
         </div>
     </footer>
     {% endblock %}
+
+    <div class="cookie-notice" data-cookie-notice role="region" aria-label="{{ gettext('Informativa sui cookie') }}">
+        <div class="cookie-notice__content">
+            {% if get_locale() == 'en' %}
+            <p class="cookie-notice__text">
+                This site uses only technical cookies necessary for its operation, including cookies for session
+                management and language preference. For more information, see the
+                <a href="https://www.unibo.it/it/ateneo/privacy-e-note-legali/privacy/cookie-e-altri-strumenti-di-tracciamento-dei-dati-personali-nei-siti-del-sistema-portale-di-ateneo"
+                    target="_blank" rel="noopener noreferrer">University
+                    of Bologna cookie policy</a>.
+            </p>
+            <button class="btn btn-dark btn-sm cookie-notice__button" type="button" data-cookie-notice-dismiss>
+                I understand
+            </button>
+            {% else %}
+            <p class="cookie-notice__text">
+                Questo sito utilizza esclusivamente cookie tecnici necessari al funzionamento, inclusi quelli per la
+                gestione della sessione e della preferenza di lingua. Per maggiori informazioni consulta
+                <a href="https://www.unibo.it/it/ateneo/privacy-e-note-legali/privacy/cookie-e-altri-strumenti-di-tracciamento-dei-dati-personali-nei-siti-del-sistema-portale-di-ateneo"
+                    target="_blank" rel="noopener noreferrer">l'informativa
+                    cookie dell'Universita di Bologna</a>.
+            </p>
+            <button class="btn btn-dark btn-sm cookie-notice__button" type="button" data-cookie-notice-dismiss>
+                Ho capito
+            </button>
+            {% endif %}
+        </div>
+    </div>
 
     <!-- Bootstrap JS Bundle (local) -->
     <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
