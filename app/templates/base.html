@@ -40,8 +40,8 @@
                 {% block header_brand %}
                 <a href="{{ url_for('main.homepage') }}"
                     class="d-inline-flex align-items-center text-body text-decoration-none">
-                    <span class="rounded-circle bg-dark me-2" style="width:16px;height:16px;"></span>
-                    <span class="fw-semibold">PROJECT CHANGES - SPOKE 4</span>
+                    <img src="{{ url_for('static', filename='img/logo_changes_black.png') }}"
+                        alt="PROJECT CHANGES - SPOKE 4" style="height:40px;width:auto;max-width:100%;" />
                 </a>
                 {% endblock %}
             </div>
